@@ -9,9 +9,10 @@ sidebarTitle: 'Event Object'
 validatedOn: 2026-05-25
 ---
 
-The `event` object for the password-reset-post-challenge Actions trigger provides contextual information about the trigger execution.
+<div style={{marginTop: "24px"}} />
 
-<RequestExample>
+
+## `event schema`
 
 ```json Event Object
 {
@@ -28,8 +29,6 @@ The `event` object for the password-reset-post-challenge Actions trigger provide
 }
 ```
 
-</RequestExample>
-
 ## `event.authentication`
 
 <ResponseField name="event.authentication" type="dictionary">
@@ -40,34 +39,7 @@ The `event` object for the password-reset-post-challenge Actions trigger provide
 
       Array elements can be one of the following schemas:
 
-      <Tabs>
-        <Tab title="First Factor">
-          <ResponseField name="name" type="string">
-            The name of the first factor that was completed. Values include the following:
-            - `federated` A social or enterprise connection was used to authenticate the user as the first factor.
-            - `pwd` A password was used to authenticate a database connection user as the first factor.
-            - `passkey` A passkey was used to authenticate a database connection user as the first factor.
-            - `sms` A Passwordless SMS connection was used to authenticate the user as the first factor.
-            - `email` A Passwordless Email connection was used to authenticate the user as the first factor or verify email for password reset.
-            - `phone_number` A phone number was used for password reset.
-            - `mock` Used for internal testing.
-            - May also be a URL denoting a custom authentication method (as second or later factor).
           </ResponseField>
-          <ResponseField name="timestamp" type="string">
-          </ResponseField>
-        </Tab>
-        <Tab title="Multi-factor Authentication">
-          <ResponseField name="name" type="string">
-            The user completed multi-factor authentication (second or later factors).
-
-
-            Allowed values: `mfa`
-          </ResponseField>
-          <ResponseField name="timestamp" type="string">
-          </ResponseField>
-        </Tab>
-      </Tabs>
-    </ResponseField>
     <ResponseField name="riskAssessment" type="dictionary" post={["optional"]}>
       Supplemental risk assessment. This is available only if the Akamai Integration is enabled and Akamai forwards the headers for the transaction.
       <Expandable title="riskAssessment properties" defaultOpen>

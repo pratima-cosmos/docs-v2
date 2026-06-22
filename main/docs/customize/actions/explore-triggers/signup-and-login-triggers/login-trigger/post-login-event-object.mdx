@@ -9,39 +9,133 @@ sidebarTitle: 'Event Object'
 validatedOn: 2026-05-25
 ---
 
-The `event` object for the post-login Actions trigger provides contextual information about the trigger execution.
+<div style={{marginTop: '24px'}} />
 
-<RequestExample>
+<Info>
+Some fields are conditional — they only appear in specific flows. For example, `event.transaction` is present in browser-based login flows, `event.organization` only appears when a user logs in through an organization, and risk assessment fields require Attack Protection to be enabled. Fields marked **optional** may not be present in every execution. If you're looking for a field and can't find it, it may only appear under certain conditions — check the field description below for details.
+</Info>
 
-```json Event Object
+
+
+## `event schema`
+
+```json Event Object (all fields)
 {
-  "user": {
-    "user_id": "auth0|abc123",
-    "email": "jane.doe@example.com",
-    "email_verified": true,
-    "app_metadata": {},
-    "user_metadata": {}
+  "authentication": {
+    "methods": [{ "name": "pwd", "timestamp": "2026-06-05T12:00:00.000Z" }],
+    "riskAssessment": {
+      "confidence": "low",
+      "assessments": {
+        "ImpossibleTravel": { "code": "travel_from_last_login", "confidence": "low" },
+        "NewDevice": { "code": "no_match", "confidence": "low" },
+        "UntrustedIP": { "code": "not_found_on_deny_list", "confidence": "high" }
+      }
+    }
   },
-  "authentication": { "methods": [{ "name": "pwd", "timestamp": "2026-06-05T12:00:00.000Z" }] },
   "authorization": { "roles": ["admin"] },
-  "connection": { "id": "con_abc123", "name": "Username-Password-Authentication", "strategy": "auth0" },
-  "client": { "client_id": "AaiyAPdpYdesoKnqjj8HJqRn4T5titww", "name": "My Web App" },
-  "organization": { "id": "org_abc123", "name": "acme" },
-  "session": { "id": "sess_abc123", "device": { "initial_user_agent": "Mozilla/5.0" } },
+  "client": {
+    "client_id": "AaiyAPdpYdesoKnqjj8HJqRn4T5titww",
+    "name": "My Web App",
+    "metadata": {}
+  },
+  "connection": {
+    "id": "con_abc123",
+    "name": "Username-Password-Authentication",
+    "strategy": "auth0",
+    "metadata": {}
+  },
+  "custom_domain": {
+    "domain": "login.example.com",
+    "domain_metadata": {}
+  },
+  "organization": {
+    "id": "org_abc123",
+    "name": "acme",
+    "display_name": "Acme Corp",
+    "metadata": {}
+  },
+  "prompt": {
+    "id": "my-custom-prompt",
+    "fields": {},
+    "vars": {}
+  },
+  "refresh_token": {
+    "id": "rt_abc123",
+    "created_at": "2026-06-05T12:00:00.000Z",
+    "rotating": false
+  },
   "request": {
     "ip": "13.33.86.1",
     "method": "GET",
     "language": "en",
-    "geoip": { "cityName": "Seattle", "countryCode": "US" }
+    "hostname": "login.example.com",
+    "user_agent": "Mozilla/5.0",
+    "body": {},
+    "query": {},
+    "geoip": {
+      "cityName": "Seattle",
+      "countryCode": "US",
+      "countryName": "United States",
+      "latitude": 47.6062,
+      "longitude": -122.3321,
+      "timeZone": "America/Los_Angeles"
+    }
+  },
+  "resource_server": {
+    "identifier": "https://your-api.example.com"
+  },
+  "secrets": {},
+  "security_context": {
+    "ja3": "abc123fingerprint",
+    "ja4": "def456fingerprint"
+  },
+  "session": {
+    "id": "sess_abc123",
+    "device": { "initial_user_agent": "Mozilla/5.0" }
   },
   "stats": { "logins_count": 12 },
-  "transaction": { "locale": "en", "protocol": "oidc-basic-profile" },
   "tenant": { "id": "your-tenant" },
-  "secrets": {}
+  "transaction": {
+    "id": "txn_abc123",
+    "locale": "en",
+    "protocol": "oidc-basic-profile",
+    "requested_scopes": ["openid", "profile", "email"],
+    "response_type": ["code"],
+    "redirect_uri": "https://app.example.com/callback",
+    "state": "abc123",
+    "acr_values": [],
+    "metadata": {}
+  },
+  "user": {
+    "user_id": "auth0|abc123",
+    "email": "jane.doe@example.com",
+    "email_verified": true,
+    "name": "Jane Doe",
+    "given_name": "Jane",
+    "family_name": "Doe",
+    "nickname": "jane",
+    "picture": "https://example.com/photo.jpg",
+    "app_metadata": {},
+    "user_metadata": {},
+    "multifactor": ["guardian"],
+    "enrolledFactors": [{ "type": "phone", "options": {} }],
+    "identities": [
+      {
+        "connection": "Username-Password-Authentication",
+        "provider": "auth0",
+        "user_id": "abc123",
+        "isSocial": false
+      }
+    ],
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2026-06-05T12:00:00.000Z"
+  }
 }
 ```
 
-</RequestExample>
+<Info>
+Fields shown above represent the **full possible schema**. Many are conditional — they only appear in specific flows. `custom_domain` requires a custom domain to be configured. `organization` only appears in org-based logins. `prompt`, `refresh_token`, `resource_server`, and `security_context` are flow-specific. `event.transaction` is present in all browser-based flows but absent in M2M. If a field is missing at runtime, check whether your flow satisfies its conditions.
+</Info>
 
 ## `event.authentication`
 
@@ -53,34 +147,7 @@ The `event` object for the post-login Actions trigger provides contextual inform
 
       Array elements can be one of the following schemas:
 
-      <Tabs>
-        <Tab title="First Factor">
-          <ResponseField name="name" type="string">
-            The name of the first factor that was completed. Values include the following:
-            - `federated` A social or enterprise connection was used to authenticate the user as the first factor.
-            - `pwd` A password was used to authenticate a database connection user as the first factor.
-            - `passkey` A passkey was used to authenticate a database connection user as the first factor.
-            - `sms` A Passwordless SMS connection was used to authenticate the user as the first factor.
-            - `email` A Passwordless Email connection was used to authenticate the user as the first factor or verify email for password reset.
-            - `phone_number` A phone number was used for password reset.
-            - `mock` Used for internal testing.
-            - May also be a URL denoting a custom authentication method (as second or later factor).
           </ResponseField>
-          <ResponseField name="timestamp" type="string">
-          </ResponseField>
-        </Tab>
-        <Tab title="Multi-factor Authentication">
-          <ResponseField name="name" type="string">
-            The user completed multi-factor authentication (second or later factors).
-
-
-            Allowed values: `mfa`
-          </ResponseField>
-          <ResponseField name="timestamp" type="string">
-          </ResponseField>
-        </Tab>
-      </Tabs>
-    </ResponseField>
     <ResponseField name="riskAssessment" type="dictionary" post={["optional"]}>
       Details about risk assessments obtained during the login or password reset flow.
       <Expandable title="riskAssessment properties" defaultOpen>

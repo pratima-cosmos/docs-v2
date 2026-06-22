@@ -1,19 +1,146 @@
 ---
-description: Learn about Auth0 rate limiting policies that help prevent service interruption and degradation.
-sidebarTitle: Overview
+description: Rate limit values for every Auth0 subscription tier — Authentication API, Management API, and SCIM API endpoint policies.
 title: Rate Limit Configurations
 ---
-Auth0 enforces limitations to protect services from excessive requests and protect customers from service interruptions or degradation. Based on your subscription type, these rate limits may vary. Please see the table below for the rate limits associated with your account configuration.
 
-| Read | To learn... |
-| --- | --- |
-| [Free](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/free-public) | Rate limit policies for the Free subscription type. |
-| [Essentials and Professional](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/essentials-professional-b2b) | Rate limit policies for Essentials, Professional, and B2B Essentials pricing plans. |
-| [Enterprise](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/enterprise-public) | Rate limits policies for the Enterprise subscription type. |
-| [Tier Dev Private Cloud](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/tier-20-development-private-cloud) | Rate limit policies for the Tier Dev Private Cloud subscription type. |
-| [Private Cloud Basic 100 RPS (1x)](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/tier-100-rps-private-cloud) | Rate limit policies for the Private Cloud Basic 100 RPS (1x) subscription type. |
-| [Private Cloud Performance 500 RPS (5x)](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/tier-500-rps-private-cloud) | Rate limits in the Private Cloud Performance 500 (5x) RPS Private Cloud subscription type. |
-| [Private Cloud Performance 1,500 RPS (15x)](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/tier-1500-rps-private-cloud) | Rate limit policies in the Private Cloud Performance 1,500 (15x) RPS subscription type. |
-| [Private Cloud Performance 3,000 RPS (30x) and 3000 RPS (30x) Burst](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/tier-3000-rps-private-cloud) | Rate limit policies in the Private Cloud Performance 3,000 (30x) RPS subscription type. |
-| [Private Cloud Performance 6,000 RPS (60x) and 6000 RPS (60x) Burst](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/tier-6000-rps-private-cloud) | Rate limit policies in the Private Cloud Performance 6,000 (60x) RPS subscription type. |
-| [Private Cloud Performance 10,000 RPS (100x)](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations/tier-10000-rps-private-cloud) | Rate limit policies in the Private Cloud Performance 10,000(100x) RPS subscription type. |
+import { RateLimitTable } from '/snippets/RateLimitTable.jsx';
+
+Select your subscription tier to view the rate limits that apply to your tenant.
+
+<Tabs>
+  <Tab title="Free">
+    ## Authentication API
+
+    <RateLimitTable tier="free-public" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="free-public" api="Management API" />
+
+    ## SCIM API
+
+    <RateLimitTable tier="free-public" api="SCIM API" />
+  </Tab>
+
+  <Tab title="Essentials and Professional">
+    ## Authentication API
+
+    <RateLimitTable tier="essentials-professional" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="essentials-professional" api="Management API" />
+
+    ## SCIM API
+
+    <RateLimitTable tier="essentials-professional" api="SCIM API" />
+  </Tab>
+
+  <Tab title="Enterprise">
+    ## Authentication API
+
+    <RateLimitTable tier="enterprise-public" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="enterprise-public" api="Management API" />
+
+    ## SCIM API
+
+    <RateLimitTable tier="enterprise-public" api="SCIM API" />
+  </Tab>
+
+  <Tab title="Tier Dev Private Cloud">
+    ## Authentication API
+
+    <RateLimitTable tier="tier-dev-private-cloud" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="tier-dev-private-cloud" api="Management API" />
+
+    ## SCIM API
+
+    <RateLimitTable tier="tier-dev-private-cloud" api="SCIM API" />
+  </Tab>
+
+  <Tab title="Private Cloud 100 RPS (1x)">
+    ## Authentication API
+
+    <RateLimitTable tier="tier-100-rps" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="tier-100-rps" api="Management API" />
+
+    ## SCIM API
+
+    <RateLimitTable tier="tier-100-rps" api="SCIM API" />
+  </Tab>
+
+  <Tab title="Private Cloud 500 RPS (5x)">
+    ## Authentication API
+
+    <RateLimitTable tier="tier-500-rps" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="tier-500-rps" api="Management API" />
+
+    ## SCIM API
+
+    <RateLimitTable tier="tier-500-rps" api="SCIM API" />
+  </Tab>
+
+  <Tab title="Private Cloud 1,500 RPS (15x)">
+    ## Authentication API
+
+    <RateLimitTable tier="tier-1500-rps" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="tier-1500-rps" api="Management API" />
+
+    ## SCIM API
+
+    <RateLimitTable tier="tier-1500-rps" api="SCIM API" />
+  </Tab>
+
+  <Tab title="Private Cloud 3,000 RPS (30x)">
+    ## Authentication API
+
+    <RateLimitTable tier="tier-3000-rps" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="tier-3000-rps" api="Management API" />
+
+    ## SCIM API
+
+    <RateLimitTable tier="tier-3000-rps" api="SCIM API" />
+  </Tab>
+
+  <Tab title="Private Cloud 6,000 RPS (60x)">
+    ## Authentication API
+
+    <RateLimitTable tier="tier-6000-rps" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="tier-6000-rps" api="Management API" />
+
+    ## SCIM API
+
+    <RateLimitTable tier="tier-6000-rps" api="SCIM API" />
+  </Tab>
+
+  <Tab title="Private Cloud 10,000 RPS (100x)">
+    ## Authentication API
+
+    <RateLimitTable tier="tier-10000-rps" api="Authentication API" />
+
+    ## Management API
+
+    <RateLimitTable tier="tier-10000-rps" api="Management API" />
+  </Tab>
+</Tabs>

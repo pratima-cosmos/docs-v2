@@ -27,7 +27,7 @@ exports.onExecutePreUserRegistration = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="reason" type="string">
   An internal reason describing why this registration attempt is being denied. This value will appear in tenant logs.
 </ParamField>
@@ -35,7 +35,84 @@ exports.onExecutePreUserRegistration = async (event, api) => {
   A human-readable explanation for rejecting the registration attempt. This may be presented directly in end-user interfaces.
 </ParamField>
 </Expandable>
+</ParamField>
 
+## `api.cache`
+
+Store and retrieve data that persists across executions.
+
+<ParamField body="api.cache.delete(key)" type="void">
+
+Delete a cached record at the supplied key if it exists.
+
+```js Example
+exports.onExecutePreUserRegistration = async (event, api) => {
+  api.cache.delete('my-key');
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The key of the cache record to delete.
+</ParamField>
+</Expandable>
+</ParamField>
+
+<ParamField body="api.cache.get(key)" type="object | undefined">
+
+Retrieve a cached record at the supplied key. If found, access the value via `record.value`.
+
+```js Example
+exports.onExecutePreUserRegistration = async (event, api) => {
+  const record = api.cache.get('my-key');
+  if (record) console.log(record.value);
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The key of the record stored in the cache.
+</ParamField>
+</Expandable>
+</ParamField>
+
+<ParamField body="api.cache.set(key, value, options)" type="void">
+
+Store or update a string value in the cache at the specified key. Values are scoped to the Trigger and subject to the [Actions Cache Limits](https://auth0.com/docs/customize/actions/limitations). If no lifetime is specified, a default lifetime of 15 minutes will be used.
+
+**Important**: This cache is designed for short-lived, ephemeral data. Items may not be available in later transactions even if they are within their supplied lifetime.
+
+```js Example
+exports.onExecutePreUserRegistration = async (event, api) => {
+  api.cache.set('my-key', 'my-value', { ttl: 60000 });
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The key of the record to be stored.
+</ParamField>
+<ParamField body="value" type="string">
+  The value of the record to be stored.
+</ParamField>
+<ParamField body="options" type="CacheSetOptions">
+  Options for adjusting cache behavior. Optional.
+  <Expandable title="options properties">
+    <ParamField body="expires_at" type="number">
+      The absolute expiry time in milliseconds since the unix epoch. *Note*: Do not supply if `ttl` is also provided; the earlier expiry will be used.
+    </ParamField>
+    <ParamField body="ttl" type="number">
+      The time-to-live in milliseconds. *Note*: Do not supply if `expires_at` is also provided; the earlier expiry will be used.
+    </ParamField>
+  </Expandable>
+</ParamField>
+</Expandable>
 </ParamField>
 
 ## `api.user`
@@ -56,7 +133,7 @@ exports.onExecutePreUserRegistration = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="key" type="string">
   The metadata property to be set.
 </ParamField>
@@ -64,7 +141,6 @@ exports.onExecutePreUserRegistration = async (event, api) => {
   The value of the metadata property. This may be set to `null` to remove the metadata property.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.user.setUserMetadata(key, value)" type="void">
@@ -81,7 +157,7 @@ exports.onExecutePreUserRegistration = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="key" type="string">
   The metadata property to be set.
 </ParamField>
@@ -89,88 +165,6 @@ exports.onExecutePreUserRegistration = async (event, api) => {
   The value of the metadata property. This may be set to `null` to remove the metadata property.
 </ParamField>
 </Expandable>
-
-</ParamField>
-
-## `api.cache`
-
-Store and retrieve data that persists across executions.
-
-<ParamField body="api.cache.delete(key)" type="void">
-
-Delete a cached record at the supplied key if it exists.
-
-```js Example
-exports.onExecutePreUserRegistration = async (event, api) => {
-  api.cache.delete('my-key');
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The key of the cache record to delete.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.cache.get(key)" type="object | undefined">
-
-Retrieve a cached record at the supplied key. If found, access the value via `record.value`.
-
-```js Example
-exports.onExecutePreUserRegistration = async (event, api) => {
-  const record = api.cache.get('my-key');
-  if (record) console.log(record.value);
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The key of the record stored in the cache.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.cache.set(key, value, options)" type="void">
-
-Store or update a string value in the cache at the specified key. Values are scoped to the Trigger and subject to the [Actions Cache Limits](https://auth0.com/docs/customize/actions/limitations). If no lifetime is specified, a default lifetime of 15 minutes will be used.
-
-**Important**: This cache is designed for short-lived, ephemeral data. Items may not be available in later transactions even if they are within their supplied lifetime.
-
-```js Example
-exports.onExecutePreUserRegistration = async (event, api) => {
-  api.cache.set('my-key', 'my-value', { ttl: 60000 });
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The key of the record to be stored.
-</ParamField>
-<ParamField body="value" type="string">
-  The value of the record to be stored.
-</ParamField>
-<ParamField body="options" type="CacheSetOptions">
-  Options for adjusting cache behavior. Optional.
-  <Expandable title="options properties">
-    <ParamField body="expires_at" type="number">
-      The absolute expiry time in milliseconds since the unix epoch. *Note*: Do not supply if `ttl` is also provided; the earlier expiry will be used.
-    </ParamField>
-    <ParamField body="ttl" type="number">
-      The time-to-live in milliseconds. *Note*: Do not supply if `expires_at` is also provided; the earlier expiry will be used.
-    </ParamField>
-  </Expandable>
-</ParamField>
-</Expandable>
-
 </ParamField>
 
 ## `api.validation`
@@ -189,7 +183,7 @@ exports.onExecutePreUserRegistration = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="errorCode" type="string">
   A customer-defined error code describing why this registration attempt is being denied. This value will appear in tenant logs.
 </ParamField>
@@ -197,5 +191,4 @@ exports.onExecutePreUserRegistration = async (event, api) => {
   A customer-defined explanation for rejecting the registration attempt. This may be presented directly in end-user interfaces.
 </ParamField>
 </Expandable>
-
 </ParamField>

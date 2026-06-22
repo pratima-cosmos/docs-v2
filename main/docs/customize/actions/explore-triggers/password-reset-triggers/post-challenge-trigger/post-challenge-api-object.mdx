@@ -27,12 +27,11 @@ exports.onExecutePostChallenge = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="reason" type="string">
   A human-readable explanation for rejecting the password reset. This may be presented directly in end-user interfaces.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 ## `api.authentication`
@@ -51,7 +50,7 @@ exports.onExecutePostChallenge = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="factor" type="object">
   An object describing the type of factor to use for the initial challenge.
   <Expandable title="factor properties">
@@ -72,7 +71,6 @@ exports.onExecutePostChallenge = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.authentication.challengeWithAny(factors)" type="void">
@@ -87,12 +85,122 @@ exports.onExecutePostChallenge = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="factors" type="array of objects">
   An array of factors the user may choose from.
 </ParamField>
 </Expandable>
+</ParamField>
 
+## `api.cache`
+
+Store and retrieve data that persists across executions.
+
+<ParamField body="api.cache.delete(key)" type="void">
+
+Delete a cached record at the supplied key if it exists.
+
+```js Example
+exports.onExecutePostChallenge = async (event, api) => {
+  api.cache.delete('my-key');
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The key of the cache record to delete.
+</ParamField>
+</Expandable>
+</ParamField>
+
+<ParamField body="api.cache.get(key)" type="object | undefined">
+
+Retrieve a cached record at the supplied key. If found, access the value via `record.value`.
+
+```js Example
+exports.onExecutePostChallenge = async (event, api) => {
+  const record = api.cache.get('my-key');
+  if (record) console.log(record.value);
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The key of the record stored in the cache.
+</ParamField>
+</Expandable>
+</ParamField>
+
+<ParamField body="api.cache.set(key, value, options)" type="void">
+
+Store or update a string value in the cache at the specified key. Values are scoped to the Trigger and subject to the [Actions Cache Limits](https://auth0.com/docs/customize/actions/limitations). If no lifetime is specified, a default lifetime of 15 minutes will be used.
+
+**Important**: This cache is designed for short-lived, ephemeral data. Items may not be available in later transactions even if they are within their supplied lifetime.
+
+```js Example
+exports.onExecutePostChallenge = async (event, api) => {
+  api.cache.set('my-key', 'my-value', { ttl: 60000 });
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The key of the record to be stored.
+</ParamField>
+<ParamField body="value" type="string">
+  The value of the record to be stored.
+</ParamField>
+<ParamField body="options" type="CacheSetOptions">
+  Options for adjusting cache behavior. Optional.
+  <Expandable title="options properties">
+    <ParamField body="expires_at" type="number">
+      The absolute expiry time in milliseconds since the unix epoch. *Note*: Do not supply if `ttl` is also provided; the earlier expiry will be used.
+    </ParamField>
+    <ParamField body="ttl" type="number">
+      The time-to-live in milliseconds. *Note*: Do not supply if `expires_at` is also provided; the earlier expiry will be used.
+    </ParamField>
+  </Expandable>
+</ParamField>
+</Expandable>
+</ParamField>
+## `api.prompt`
+
+Render a custom prompt screen.
+
+<ParamField body="api.prompt.render(promptId, promptOptions)" type="void">
+
+Render a custom prompt during the flow.
+
+```js Example
+exports.onExecutePostChallenge = async (event, api) => {
+  api.prompt.render('my-custom-prompt', { vars: { name: event.user.name } });
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="promptId" type="string">
+  The prompt ID.
+</ParamField>
+<ParamField body="promptOptions" type="object">
+  The render options. Optional.
+  <Expandable title="promptOptions properties">
+    <ParamField body="fields" type="object">
+      Key-value pairs to populate field values (client-side). Optional.
+    </ParamField>
+    <ParamField body="vars" type="object">
+      Key-value pairs to inject variables (server-side). Optional.
+    </ParamField>
+  </Expandable>
+</ParamField>
+</Expandable>
 </ParamField>
 
 ## `api.redirect`
@@ -115,7 +223,7 @@ exports.onExecutePostChallenge = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="options" type="object">
   Configuration for encoding sensitive data into query parameters.
   <Expandable title="options properties">
@@ -131,7 +239,6 @@ exports.onExecutePostChallenge = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.redirect.sendUserTo(url, options)" type="void">
@@ -148,7 +255,7 @@ exports.onExecutePostChallenge = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="url" type="string">
   The URL to redirect the user to.
 </ParamField>
@@ -161,7 +268,6 @@ exports.onExecutePostChallenge = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.redirect.validateToken(options)" type="object">
@@ -179,7 +285,7 @@ exports.onContinuePostChallenge = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="options" type="object">
   Options for retrieving and verifying the token.
   <Expandable title="options properties">
@@ -192,42 +298,6 @@ exports.onContinuePostChallenge = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
-</ParamField>
-
-## `api.prompt`
-
-Render a custom prompt screen.
-
-<ParamField body="api.prompt.render(promptId, promptOptions)" type="void">
-
-Render a custom prompt during the flow.
-
-```js Example
-exports.onExecutePostChallenge = async (event, api) => {
-  api.prompt.render('my-custom-prompt', { vars: { name: event.user.name } });
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="promptId" type="string">
-  The prompt ID.
-</ParamField>
-<ParamField body="promptOptions" type="object">
-  The render options. Optional.
-  <Expandable title="promptOptions properties">
-    <ParamField body="fields" type="object">
-      Key-value pairs to populate field values (client-side). Optional.
-    </ParamField>
-    <ParamField body="vars" type="object">
-      Key-value pairs to inject variables (server-side). Optional.
-    </ParamField>
-  </Expandable>
-</ParamField>
-</Expandable>
-
 </ParamField>
 
 ## `api.transaction`
@@ -246,7 +316,7 @@ exports.onExecutePostChallenge = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="url" type="string">
   The URL to redirect the user to.
 </ParamField>
@@ -259,86 +329,5 @@ exports.onExecutePostChallenge = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
-## `api.cache`
-
-Store and retrieve data that persists across executions.
-
-<ParamField body="api.cache.delete(key)" type="void">
-
-Delete a cached record at the supplied key if it exists.
-
-```js Example
-exports.onExecutePostChallenge = async (event, api) => {
-  api.cache.delete('my-key');
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The key of the cache record to delete.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.cache.get(key)" type="object | undefined">
-
-Retrieve a cached record at the supplied key. If found, access the value via `record.value`.
-
-```js Example
-exports.onExecutePostChallenge = async (event, api) => {
-  const record = api.cache.get('my-key');
-  if (record) console.log(record.value);
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The key of the record stored in the cache.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.cache.set(key, value, options)" type="void">
-
-Store or update a string value in the cache at the specified key. Values are scoped to the Trigger and subject to the [Actions Cache Limits](https://auth0.com/docs/customize/actions/limitations). If no lifetime is specified, a default lifetime of 15 minutes will be used.
-
-**Important**: This cache is designed for short-lived, ephemeral data. Items may not be available in later transactions even if they are within their supplied lifetime.
-
-```js Example
-exports.onExecutePostChallenge = async (event, api) => {
-  api.cache.set('my-key', 'my-value', { ttl: 60000 });
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The key of the record to be stored.
-</ParamField>
-<ParamField body="value" type="string">
-  The value of the record to be stored.
-</ParamField>
-<ParamField body="options" type="CacheSetOptions">
-  Options for adjusting cache behavior. Optional.
-  <Expandable title="options properties">
-    <ParamField body="expires_at" type="number">
-      The absolute expiry time in milliseconds since the unix epoch. *Note*: Do not supply if `ttl` is also provided; the earlier expiry will be used.
-    </ParamField>
-    <ParamField body="ttl" type="number">
-      The time-to-live in milliseconds. *Note*: Do not supply if `expires_at` is also provided; the earlier expiry will be used.
-    </ParamField>
-  </Expandable>
-</ParamField>
-</Expandable>
-
-</ParamField>

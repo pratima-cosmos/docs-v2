@@ -33,7 +33,7 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="code" type="string">
   The error code justifying the rejection. Can be `invalid_request`, `server_error`, or any custom code.
 </ParamField>
@@ -41,7 +41,6 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
   A human-readable explanation for rejecting the token exchange request.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.access.rejectInvalidSubjectToken(reason)" type="void">
@@ -65,12 +64,11 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="reason" type="string">
   A human-readable explanation for rejecting the token exchange request.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 ## `api.authentication`
@@ -90,12 +88,11 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="user_id" type="string">
   The ID of the user; must be an existing user.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.authentication.setUserByConnection(connection_name, user_attributes, options)" type="void">
@@ -115,7 +112,7 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="connection_name" type="string">
   Name of the connection the user should be stored in.
 </ParamField>
@@ -150,7 +147,6 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.authentication.setOrganization(organization_id_or_name)" type="void">
@@ -166,12 +162,11 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="organization_id_or_name" type="string">
   The ID or name of the organization to set for the user.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.authentication.setActor(actor)" type="void">
@@ -188,7 +183,7 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="actor" type="object">
   A nested object representing a delegation chain. The `sub` field is required; up to 5 additional custom properties may be provided per level, up to 4 additional `act` levels.
   <Expandable title="actor properties">
@@ -197,57 +192,6 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
-</ParamField>
-
-## `api.user`
-
-Request changes to the user corresponding to the subject token.
-
-<ParamField body="api.user.setAppMetadata(key, value)" type="void">
-
-Set application-specific metadata for the user corresponding to the subject token.
-
-```js Example
-exports.onExecuteCustomTokenExchange = async (event, api) => {
-  api.user.setAppMetadata('group', subject_token.group);
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The metadata property to be set.
-</ParamField>
-<ParamField body="value" type="unknown">
-  The value of the metadata property. This may be set to `null` to remove the metadata property.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.user.setUserMetadata(key, value)" type="void">
-
-Set general metadata for the user corresponding to the subject token.
-
-```js Example
-exports.onExecuteCustomTokenExchange = async (event, api) => {
-  api.user.setUserMetadata('preferred_locale', subject_token.locale);
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The metadata property to be set.
-</ParamField>
-<ParamField body="value" type="unknown">
-  The value of the metadata property. This may be set to `null` to remove the metadata property.
-</ParamField>
-</Expandable>
-
 </ParamField>
 
 ## `api.cache`
@@ -266,12 +210,11 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="key" type="string">
   The key of the cache record to delete.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.cache.get(key)" type="object | undefined">
@@ -287,12 +230,11 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="key" type="string">
   The key of the record stored in the cache.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.cache.set(key, value, options)" type="void">
@@ -309,7 +251,7 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="key" type="string">
   The key of the record to be stored.
 </ParamField>
@@ -328,5 +270,52 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
+## `api.user`
+
+Request changes to the user corresponding to the subject token.
+
+<ParamField body="api.user.setAppMetadata(key, value)" type="void">
+
+Set application-specific metadata for the user corresponding to the subject token.
+
+```js Example
+exports.onExecuteCustomTokenExchange = async (event, api) => {
+  api.user.setAppMetadata('group', subject_token.group);
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The metadata property to be set.
+</ParamField>
+<ParamField body="value" type="unknown">
+  The value of the metadata property. This may be set to `null` to remove the metadata property.
+</ParamField>
+</Expandable>
+</ParamField>
+
+<ParamField body="api.user.setUserMetadata(key, value)" type="void">
+
+Set general metadata for the user corresponding to the subject token.
+
+```js Example
+exports.onExecuteCustomTokenExchange = async (event, api) => {
+  api.user.setUserMetadata('preferred_locale', subject_token.locale);
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The metadata property to be set.
+</ParamField>
+<ParamField body="value" type="unknown">
+  The value of the metadata property. This may be set to `null` to remove the metadata property.
+</ParamField>
+</Expandable>
+</ParamField>
+

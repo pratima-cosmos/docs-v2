@@ -1,0 +1,164 @@
+---
+description: How Auth0 rate limits work, what types of limits apply, and how the rate limit algorithm functions.
+title: Rate Limit Policy
+---
+
+Auth0 restricts service usage to maintain performance and guard against bad actors, technical errors, or excessive traffic.
+
+## Introduction to rate limits
+
+Auth0 enforces limits to protect services from excessive requests and prevent service interruptions. Limits apply to:
+
+- Requests to environments (Private Cloud only)
+- Requests to tenants via API or API endpoint
+- Miscellaneous limits
+
+### Environment request limits (Private Cloud only)
+
+Private Cloud environment request limits are based on the **Private Cloud Performance Tier**.
+
+Currently, Private Cloud environment rate limits represent the highest load under which the Auth0 product will meet SLAs.
+
+Auth0 only enforces and notifies customers when limits are exceeded on a **specific tenant** within the environment.
+
+| Feature | Authentication API | All other APIs (including Management API) |
+| --- | --- | --- |
+| Tenant rate limits | All tenants share a global environment-wide limit; exceeding it causes rate limiting of excess requests. | Tenant limits are enforced independently; the environment limit is a threshold for potential degradation, but does not directly rate-limit tenants. |
+| Environment limit exceeded example | Tenant 1 at 1400 RPS + Tenant 2 at 900 RPS (combined 2300 RPS) against a 1500 RPS limit = 800 requests rate limited. | The same combined load will **not** cause individual tenant rate limiting, but may degrade overall environment performance. |
+
+Exceeding an environment rate limit invalidates the Service Level Agreement (SLA).
+
+### Tenant request limits
+
+Auth0 limits requests per tenant, varying by:
+
+- API (Authentication or Management)
+- Tenant type (Production vs. Development/Staging)
+- Subscription level (Free, Essentials, Professional, Enterprise Public vs. Private)
+
+### User requests
+
+A single end-user login or signup typically triggers multiple Authentication API requests. Factors that affect the ratio include:
+
+- Entity being authenticated (machine, mobile, desktop)
+- Authentication experience (Universal Login vs. Classic Login)
+- Authentication flow (login, signup, change password)
+- Flow type (username/password, social login, existing token)
+
+Extensibility configurations can add requests to both the Authentication API and Management API.
+
+### Endpoint rate limits
+
+Auth0 limits requests to specific API endpoints, varying by:
+
+- API
+- Tenant type
+- Subscription level
+
+### Tenant request limits order
+
+Auth0 evaluates requests against the **global API limit first**, then against **specific endpoint rate limits**.
+
+## Miscellaneous limits
+
+### Database login limits
+
+Auth0 applies user/password rate limits to protect system health. Causes of degradation can include high-load stress tests, benchmark tests, or inefficient code causing repeated logins.
+
+**Same-user login rate limit:** If one IP makes 20 login attempts in one minute to the same user account, the rate limit activates. After that, 10 attempts per minute are allowed. Both successful and failed attempts count.
+
+Auth0's brute-force protection and suspicious IP throttling are independent of these rate limits.
+
+### SMS MFA limits (end-users only)
+
+- Limit: 10 SMS messages per device per hour
+- After exceeding the limit, users must wait at least one hour after the first request before retrying
+- One additional attempt becomes available per additional hour elapsed
+
+### Native social login limits
+
+Limits are applied based on request body criteria:
+
+| Request type | Body |
+| --- | --- |
+| `grant_type` | `urn:ietf:params:oauth:grant-type:token-exchange` |
+| `subject_token_type` | `http://auth0.com/oauth/token-type/apple-authz-code` |
+
+### Public Performance Burst
+
+An add-on for Enterprise subscriptions that allows a dynamic increase of the Authentication API request limit above the default 100 RPS for up to 48 hours monthly.
+
+This add-on only extends the Authentication API request limits and does not apply to the Management API.
+
+Available multipliers:
+
+| Multiplier | RPS |
+| --- | --- |
+| 2x | 200 RPS |
+| 3x | 300 RPS |
+| 4x | 400 RPS |
+
+48 hours equals 2,880 one-minute intervals monthly. When traffic exceeds 100 RPS, a 5-minute interval is deducted; traffic can remain elevated for those 5 minutes without further deduction. Each deduction generates an `appi` tenant log event with consumed and remaining allowance info.
+
+### Private Performance Burst
+
+Available for AWS at the 30x and 60x tiers, providing burst capacity for up to 80 hours per month.
+
+| Tier | Base capacity | Burst capacity |
+| --- | --- | --- |
+| 30x | 1,500 RPS (full month) | 3,000 RPS (up to 80 hrs/month) |
+| 60x | 3,000 RPS (full month) | 6,000 RPS (up to 80 hrs/month) |
+
+Burst deductions occur in one-hour increments. Once 80 hours are exhausted, traffic is rate-limited to base capacity until the next monthly allowance.
+
+### Extensibility concurrency limits
+
+Auth0 limits concurrent in-flight requests across Actions, Hooks, Rules, Custom Database Connections, Extensions, and Custom OAuth2 connections.
+
+| Subscription | Concurrency limit (per tenant) |
+| --- | --- |
+| Public Cloud | 250 |
+| Tier Dev Private Cloud | 100 |
+| Private Cloud Basic 100 RPS (1x) | 200 |
+| Private Cloud Performance 500 RPS (5x) | 400 |
+| Private Cloud Performance 1500 RPS (15x) | 1200 |
+| Private Cloud Performance 3000 RPS (30x) and 3000 RPS Burst | 1200 |
+| Private Cloud Performance 6000 RPS (60x) and 6000 RPS Burst | 1200 |
+
+Concurrency is calculated as: `Concurrency = RPS × latency per request`
+
+For example: Two post-login Actions each taking 250ms at 400 RPS = (2 × 400 × 0.25) = 200 concurrent requests.
+
+## Rate limit algorithm
+
+Auth0 uses a token bucket algorithm combining:
+
+- **Rate limit** — maximum sustainable traffic on a sustained basis
+- **Burst limit** — maximum short-term traffic volume within one time interval
+
+### API rate limits
+
+Limit keys are typically based on:
+
+- API and endpoint
+- Tenant type
+- In some cases, source IP or target user ID
+
+Limit values:
+
+- **Bucket size** — maximum requests before new requests are rate limited
+- **Refill rate** — rate at which new request capacity is added
+
+Derived limits:
+
+- **Burst limit** = bucket size
+- **Sustained rate limit** = refill rate (in requests per minute or second)
+
+If calculated in requests per second, capacity is refilled by milliseconds. If per minute, capacity is refilled on a per-second basis.
+
+## Learn more
+
+- [Rate Limit Configurations](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-configurations) — rate limit values for every subscription tier
+- [Rate Limit Use Cases](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/rate-limit-use-cases) — how to estimate your API usage and identify when you're being rate limited
+- [Custom Rate Limit Policies](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy/custom-rate-limit-policies) — per-application ceilings on top of tenant limits
+- [Entity Limit Policy](/docs/troubleshoot/customer-support/operational-policies/entity-limit-policy)

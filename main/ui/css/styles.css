@@ -274,3 +274,9 @@ img.icon.inline {
     right: 0;
   }
 }
+
+/* Remove stacked divider lines inside nested param/expandable blocks */
+[data-component-part="expandable-content"] > hr,
+[data-component-part="param-field-body"] > hr {
+  display: none !important;
+}

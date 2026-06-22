@@ -27,12 +27,11 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="reason" type="string">
   A human-readable explanation for rejecting the login. This may be presented directly in end-user interfaces.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 ## `api.accessToken`
@@ -51,7 +50,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="key" type="string">
   Name of the claim (note that this may need to be a fully-qualified URL).
 </ParamField>
@@ -59,7 +58,6 @@ exports.onExecutePostLogin = async (event, api) => {
   The value of the claim.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.accessToken.addScope(scope)" type="void">
@@ -74,12 +72,11 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="scope" type="string">
   The scope to be added.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.accessToken.removeScope(scope)" type="void">
@@ -94,39 +91,11 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="scope" type="string">
   The scope to be removed.
 </ParamField>
 </Expandable>
-
-</ParamField>
-
-## `api.idToken`
-
-Request changes to the ID token being issued.
-
-<ParamField body="api.idToken.setCustomClaim(key, value)" type="void">
-
-Set a custom claim on the ID token issued upon completion of the login flow.
-
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  api.idToken.setCustomClaim('https://example.com/department', 'engineering');
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  Name of the claim (note that this may need to be a fully-qualified URL).
-</ParamField>
-<ParamField body="value" type="unknown">
-  The value of the claim.
-</ParamField>
-</Expandable>
-
 </ParamField>
 
 ## `api.authentication`
@@ -149,7 +118,7 @@ api.authentication.challengeWith({ type: 'otp' }, {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="factor" type="object">
   The factor to use for the initial challenge.
   <Expandable title="factor properties">
@@ -170,7 +139,6 @@ api.authentication.challengeWith({ type: 'otp' }, {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.authentication.challengeWithAny(factors)" type="void">
@@ -185,12 +153,11 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="factors" type="array of objects">
   An array of factors.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.authentication.enrollWith(factor, options)" type="void">
@@ -207,7 +174,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="factor" type="object">
   The factor to use for enrollment.
   <Expandable title="factor properties">
@@ -228,7 +195,6 @@ exports.onExecutePostLogin = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.authentication.recordMethod(provider_url)" type="void">
@@ -243,12 +209,11 @@ exports.onContinuePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="provider_url" type="string">
   An `http:` or `https:` URL that uniquely represents the completed authentication method.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.authentication.setPrimaryUser(primary_user_id)" type="void">
@@ -265,12 +230,160 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="primary_user_id" type="string">
   The user ID of the user for whom tokens should be issued (the `sub` claim).
 </ParamField>
 </Expandable>
+</ParamField>
 
+## `api.cache`
+
+Store and retrieve data that persists across executions.
+
+<ParamField body="api.cache.delete(key)" type="void">
+
+Delete a cached record at the supplied key if it exists.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  api.cache.delete('my-key');
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The key of the cache record to delete.
+</ParamField>
+</Expandable>
+</ParamField>
+
+<ParamField body="api.cache.get(key)" type="object | undefined">
+
+Retrieve a cached record at the supplied key. If found, access the value via `record.value`.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  const record = api.cache.get('my-key');
+  if (record) console.log(record.value);
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The key of the record stored in the cache.
+</ParamField>
+</Expandable>
+</ParamField>
+
+<ParamField body="api.cache.set(key, value, options)" type="void">
+
+Store or update a string value in the cache at the specified key. Values are scoped to the Trigger and subject to the [Actions Cache Limits](https://auth0.com/docs/customize/actions/limitations). If no lifetime is specified, a default lifetime of 15 minutes will be used.
+
+**Important**: This cache is designed for short-lived, ephemeral data. Items may not be available in later transactions even if they are within their supplied lifetime.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  api.cache.set('my-key', 'my-value', { ttl: 60000 });
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The key of the record to be stored.
+</ParamField>
+<ParamField body="value" type="string">
+  The value of the record to be stored.
+</ParamField>
+<ParamField body="options" type="CacheSetOptions">
+  Options for adjusting cache behavior. Optional.
+  <Expandable title="options properties">
+    <ParamField body="expires_at" type="number">
+      The absolute expiry time in milliseconds since the unix epoch. *Note*: Do not supply if `ttl` is also provided; the earlier expiry will be used.
+    </ParamField>
+    <ParamField body="ttl" type="number">
+      The time-to-live in milliseconds. *Note*: Do not supply if `expires_at` is also provided; the earlier expiry will be used.
+    </ParamField>
+  </Expandable>
+</ParamField>
+</Expandable>
+</ParamField>
+## `api.groups`
+
+Get information about user group membership.
+
+<ParamField body="api.groups.getUserGroups(params)" type="Promise<object>">
+
+Get the paginated list of groups the user belongs to.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  const groups = await api.groups.getUserGroups({ take: 10 });
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="params" type="object">
+  Pagination options. Optional.
+  <Expandable title="params properties">
+    <ParamField body="take" type="number">Number of results to return. Optional.</ParamField>
+    <ParamField body="from" type="string">Cursor for pagination. Optional.</ParamField>
+  </Expandable>
+</ParamField>
+</Expandable>
+</ParamField>
+
+<ParamField body="api.groups.hasGroupMembership(groups)" type="Promise<object>">
+
+Check if the user is a member of any of the specified groups.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  const result = await api.groups.hasGroupMembership(['admins', 'editors']);
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="groups" type="array of strings">
+  An array of group identifiers (IDs or names) to check membership against.
+</ParamField>
+</Expandable>
+</ParamField>
+
+## `api.idToken`
+
+Request changes to the ID token being issued.
+
+<ParamField body="api.idToken.setCustomClaim(key, value)" type="void">
+
+Set a custom claim on the ID token issued upon completion of the login flow.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  api.idToken.setCustomClaim('https://example.com/department', 'engineering');
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  Name of the claim (note that this may need to be a fully-qualified URL).
+</ParamField>
+<ParamField body="value" type="unknown">
+  The value of the claim.
+</ParamField>
+</Expandable>
 </ParamField>
 
 ## `api.multifactor`
@@ -289,7 +402,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="provider" type="string">
   The MFA provider to use or `"any"` to use any configured provider. Allowed values: `duo`, `none`, `guardian`, `google-authenticator`, `any`.
 </ParamField>
@@ -305,7 +418,40 @@ exports.onExecutePostLogin = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
+</ParamField>
 
+## `api.prompt`
+
+Render a custom prompt screen.
+
+<ParamField body="api.prompt.render(promptId, promptOptions)" type="void">
+
+Render a custom prompt during the login flow.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  api.prompt.render('my-custom-prompt', { vars: { name: event.user.name } });
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="promptId" type="string">
+  The prompt ID.
+</ParamField>
+<ParamField body="promptOptions" type="object">
+  The render options. Optional.
+  <Expandable title="promptOptions properties">
+    <ParamField body="fields" type="object">
+      Key-value pairs to populate field values (client-side). Optional.
+    </ParamField>
+    <ParamField body="vars" type="object">
+      Key-value pairs to inject variables (server-side). Optional.
+    </ParamField>
+  </Expandable>
+</ParamField>
+</Expandable>
 </ParamField>
 
 ## `api.redirect`
@@ -329,7 +475,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="options" type="object">
   <Expandable title="options properties">
     <ParamField body="secret" type="string">
@@ -344,7 +490,6 @@ exports.onExecutePostLogin = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.redirect.sendUserTo(url, options)" type="void">
@@ -361,7 +506,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="url" type="string">
   The URL to redirect the user to.
 </ParamField>
@@ -374,7 +519,6 @@ exports.onExecutePostLogin = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.redirect.validateToken(options)" type="object">
@@ -392,7 +536,7 @@ exports.onContinuePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="options" type="object">
   <Expandable title="options properties">
     <ParamField body="secret" type="string">
@@ -404,130 +548,6 @@ exports.onContinuePostLogin = async (event, api) => {
   </Expandable>
 </ParamField>
 </Expandable>
-
-</ParamField>
-
-## `api.user`
-
-Make changes to the metadata of the user that is logging in.
-
-<ParamField body="api.user.setAppMetadata(key, value)" type="void">
-
-Set application-specific metadata for the user. This function works only with metadata in object format.
-
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  api.user.setAppMetadata('plan', 'enterprise');
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The metadata property to be set.
-</ParamField>
-<ParamField body="value" type="unknown">
-  The value of the metadata property. Set to `null` to remove the property.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.user.setUserMetadata(key, value)" type="void">
-
-Set general metadata for the user that is logging in. This function works only with metadata in object format.
-
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  api.user.setUserMetadata('last_login_ip', event.request.ip);
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The metadata property to be set.
-</ParamField>
-<ParamField body="value" type="unknown">
-  The value of the metadata property. Set to `null` to remove the property.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-## `api.session`
-
-Request changes to the current user's session.
-
-<ParamField body="api.session.revoke(reason, options)" type="void">
-
-[Enterprise] Revoke the current user session and mark the login attempt as denied.
-
-```js Revoke the session while preserving refresh tokens
-api.session.revoke('reason', { preserveRefreshTokens: true });
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="reason" type="string">
-  A human-readable explanation for rejecting the login.
-</ParamField>
-<ParamField body="options" type="object">
-  Optional.
-  <Expandable title="options properties">
-    <ParamField body="preserveRefreshTokens" type="boolean">
-      If true, ends the session but keeps refresh tokens. Defaults to `false`.
-    </ParamField>
-  </Expandable>
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.session.setExpiresAt(absolute)" type="void">
-
-[Enterprise] Sets a new absolute expiration time for the current session.
-
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  api.session.setExpiresAt(Date.now() + 8 * 60 * 60 * 1000); // 8 hours
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="absolute" type="number">
-  The new absolute expiration time in milliseconds since the unix epoch.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.session.setMetadata(key, value)" type="void">
-
-[Enterprise] Sets a key-value pair in the metadata object of the current session.
-
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  api.session.setMetadata('login_method', 'sso');
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The key to set in the metadata object.
-</ParamField>
-<ParamField body="value" type="string">
-  The value to set. Null values delete the key.
-</ParamField>
-</Expandable>
-
 </ParamField>
 
 ## `api.refreshToken`
@@ -546,12 +566,11 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="reason" type="string">
   A human-readable explanation for rejecting the refresh token exchange.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.refreshToken.setMetadata(key, value)" type="void">
@@ -566,7 +585,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="key" type="string">
   The key to set in the metadata object.
 </ParamField>
@@ -574,69 +593,6 @@ exports.onExecutePostLogin = async (event, api) => {
   The value to set. Null values delete the key.
 </ParamField>
 </Expandable>
-
-</ParamField>
-
-## `api.validation`
-
-Prevent user from logging in by signaling a validation error.
-
-<ParamField body="api.validation.error(errorCode, errorMessage)" type="void">
-
-Throw a validation error to prevent login.
-
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  api.validation.error('access_denied', 'User is not allowed to log in.');
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="errorCode" type="string">
-  A customer-defined error code for the validation error.
-</ParamField>
-<ParamField body="errorMessage" type="string">
-  A customer-defined message for the validation error.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-## `api.prompt`
-
-Render a custom prompt screen.
-
-<ParamField body="api.prompt.render(promptId, promptOptions)" type="void">
-
-Render a custom prompt during the login flow.
-
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  api.prompt.render('my-custom-prompt', { vars: { name: event.user.name } });
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="promptId" type="string">
-  The prompt ID.
-</ParamField>
-<ParamField body="promptOptions" type="object">
-  The render options. Optional.
-  <Expandable title="promptOptions properties">
-    <ParamField body="fields" type="object">
-      Key-value pairs to populate field values (client-side). Optional.
-    </ParamField>
-    <ParamField body="vars" type="object">
-      Key-value pairs to inject variables (server-side). Optional.
-    </ParamField>
-  </Expandable>
-</ParamField>
-</Expandable>
-
 </ParamField>
 
 ## `api.samlResponse`
@@ -655,11 +611,10 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="attribute" type="string">The SAML attribute to set.</ParamField>
 <ParamField body="value" type="unknown">The value of the SAML claim. Set to `null` or `undefined` to remove the claim.</ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.samlResponse.setAudience(audience)" type="void">
@@ -674,10 +629,9 @@ exports.onExecutePostLogin = async (event, api) => {
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="audience" type="string">The audience value.</ParamField>
 </Expandable>
-
 </ParamField>
 
 <ParamField body="api.samlResponse.setEncryptionAlgorithm(encryptionAlgorithm)" type="void">
@@ -690,139 +644,154 @@ api.samlResponse.setEncryptionAlgorithm('aes256-gcm');
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="encryptionAlgorithm" type="string">
   The algorithm to use. Allowed values: `aes256-gcm`.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
-## `api.groups`
+## `api.session`
 
-Get information about user group membership.
+Request changes to the current user's session.
 
-<ParamField body="api.groups.getUserGroups(params)" type="Promise<object>">
+<ParamField body="api.session.revoke(reason, options)" type="void">
 
-Get the paginated list of groups the user belongs to.
+[Enterprise] Revoke the current user session and mark the login attempt as denied.
 
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  const groups = await api.groups.getUserGroups({ take: 10 });
-};
+```js Revoke the session while preserving refresh tokens
+api.session.revoke('reason', { preserveRefreshTokens: true });
 ```
 
 **Parameters**
 
-<Expandable title="Parameters">
-<ParamField body="params" type="object">
-  Pagination options. Optional.
-  <Expandable title="params properties">
-    <ParamField body="take" type="number">Number of results to return. Optional.</ParamField>
-    <ParamField body="from" type="string">Cursor for pagination. Optional.</ParamField>
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="reason" type="string">
+  A human-readable explanation for rejecting the login.
+</ParamField>
+<ParamField body="options" type="object">
+  Optional.
+  <Expandable title="options properties">
+    <ParamField body="preserveRefreshTokens" type="boolean">
+      If true, ends the session but keeps refresh tokens. Defaults to `false`.
+    </ParamField>
   </Expandable>
 </ParamField>
 </Expandable>
-
 </ParamField>
 
-<ParamField body="api.groups.hasGroupMembership(groups)" type="Promise<object>">
+<ParamField body="api.session.setExpiresAt(absolute)" type="void">
 
-Check if the user is a member of any of the specified groups.
+[Enterprise] Sets a new absolute expiration time for the current session.
 
 ```js Example
 exports.onExecutePostLogin = async (event, api) => {
-  const result = await api.groups.hasGroupMembership(['admins', 'editors']);
+  api.session.setExpiresAt(Date.now() + 8 * 60 * 60 * 1000); // 8 hours
 };
 ```
 
 **Parameters**
 
-<Expandable title="Parameters">
-<ParamField body="groups" type="array of strings">
-  An array of group identifiers (IDs or names) to check membership against.
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="absolute" type="number">
+  The new absolute expiration time in milliseconds since the unix epoch.
 </ParamField>
 </Expandable>
-
 </ParamField>
 
-## `api.cache`
+<ParamField body="api.session.setMetadata(key, value)" type="void">
 
-Store and retrieve data that persists across executions.
-
-<ParamField body="api.cache.delete(key)" type="void">
-
-Delete a cached record at the supplied key if it exists.
+[Enterprise] Sets a key-value pair in the metadata object of the current session.
 
 ```js Example
 exports.onExecutePostLogin = async (event, api) => {
-  api.cache.delete('my-key');
+  api.session.setMetadata('login_method', 'sso');
 };
 ```
 
 **Parameters**
 
-<Expandable title="Parameters">
+<Expandable title="Parameters" defaultOpen>
 <ParamField body="key" type="string">
-  The key of the cache record to delete.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.cache.get(key)" type="object | undefined">
-
-Retrieve a cached record at the supplied key. If found, access the value via `record.value`.
-
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  const record = api.cache.get('my-key');
-  if (record) console.log(record.value);
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The key of the record stored in the cache.
-</ParamField>
-</Expandable>
-
-</ParamField>
-
-<ParamField body="api.cache.set(key, value, options)" type="void">
-
-Store or update a string value in the cache at the specified key. Values are scoped to the Trigger and subject to the [Actions Cache Limits](https://auth0.com/docs/customize/actions/limitations). If no lifetime is specified, a default lifetime of 15 minutes will be used.
-
-**Important**: This cache is designed for short-lived, ephemeral data. Items may not be available in later transactions even if they are within their supplied lifetime.
-
-```js Example
-exports.onExecutePostLogin = async (event, api) => {
-  api.cache.set('my-key', 'my-value', { ttl: 60000 });
-};
-```
-
-**Parameters**
-
-<Expandable title="Parameters">
-<ParamField body="key" type="string">
-  The key of the record to be stored.
+  The key to set in the metadata object.
 </ParamField>
 <ParamField body="value" type="string">
-  The value of the record to be stored.
-</ParamField>
-<ParamField body="options" type="CacheSetOptions">
-  Options for adjusting cache behavior. Optional.
-  <Expandable title="options properties">
-    <ParamField body="expires_at" type="number">
-      The absolute expiry time in milliseconds since the unix epoch. *Note*: Do not supply if `ttl` is also provided; the earlier expiry will be used.
-    </ParamField>
-    <ParamField body="ttl" type="number">
-      The time-to-live in milliseconds. *Note*: Do not supply if `expires_at` is also provided; the earlier expiry will be used.
-    </ParamField>
-  </Expandable>
+  The value to set. Null values delete the key.
 </ParamField>
 </Expandable>
-
 </ParamField>
+
+## `api.user`
+
+Make changes to the metadata of the user that is logging in.
+
+<ParamField body="api.user.setAppMetadata(key, value)" type="void">
+
+Set application-specific metadata for the user. This function works only with metadata in object format.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  api.user.setAppMetadata('plan', 'enterprise');
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The metadata property to be set.
+</ParamField>
+<ParamField body="value" type="unknown">
+  The value of the metadata property. Set to `null` to remove the property.
+</ParamField>
+</Expandable>
+</ParamField>
+
+<ParamField body="api.user.setUserMetadata(key, value)" type="void">
+
+Set general metadata for the user that is logging in. This function works only with metadata in object format.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  api.user.setUserMetadata('last_login_ip', event.request.ip);
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="key" type="string">
+  The metadata property to be set.
+</ParamField>
+<ParamField body="value" type="unknown">
+  The value of the metadata property. Set to `null` to remove the property.
+</ParamField>
+</Expandable>
+</ParamField>
+
+## `api.validation`
+
+Prevent user from logging in by signaling a validation error.
+
+<ParamField body="api.validation.error(errorCode, errorMessage)" type="void">
+
+Throw a validation error to prevent login.
+
+```js Example
+exports.onExecutePostLogin = async (event, api) => {
+  api.validation.error('access_denied', 'User is not allowed to log in.');
+};
+```
+
+**Parameters**
+
+<Expandable title="Parameters" defaultOpen>
+<ParamField body="errorCode" type="string">
+  A customer-defined error code for the validation error.
+</ParamField>
+<ParamField body="errorMessage" type="string">
+  A customer-defined message for the validation error.
+</ParamField>
+</Expandable>
+</ParamField>
+

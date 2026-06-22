@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0",
+  "tier": "tier-10000-rps",
+  "label": "Private Cloud Performance 10,000 RPS (100x)",
+  "lastVerified": "2026-06-12",
+  "apis": [
+    {
+      "name": "Authentication API",
+      "globalLimits": [
+        { "environment": "production", "burstRps": 10000, "sustainedRps": 10000 },
+        { "environment": "non-production", "burstRps": 10000, "sustainedRps": 10000 }
+      ],
+      "endpointPolicies": [
+        { "policyId": "auth-userinfo", "name": "User Info", "paths": ["/userinfo"], "methods": ["GET", "POST"], "burstLimit": 10, "sustainedLimit": 5, "sustainedWindow": "minute", "limitKey": "user_id" },
+        { "policyId": "auth-change-password", "name": "Change Password / Reset Password", "paths": ["/dbconnections/change_password", "/u/reset-password/request/:connection"], "methods": ["POST"], "burstLimit": 10, "sustainedLimit": 1, "sustainedWindow": "minute", "limitKey": "email" },
+        { "policyId": "auth-passwordless-start", "name": "Get Passwordless Code or Link", "paths": ["/passwordless/start"], "methods": ["GET", "POST"], "burstLimit": 50, "sustainedLimit": 50, "sustainedWindow": "hour", "limitKey": "ip" },
+        { "policyId": "auth-native-social", "name": "Native Social Login (Apple / Facebook)", "paths": ["/oauth/token"], "methods": ["POST"], "burstLimit": 50, "sustainedLimit": 500, "sustainedWindow": "minute", "limitKey": "any", "notes": "Only applies to Apple or Facebook Native Social Login requests" },
+        { "policyId": "auth-dcr", "name": "Dynamic Application (Client) Registration", "paths": ["/oidc/register"], "methods": ["POST"], "burstLimit": 5, "sustainedLimit": 5, "sustainedWindow": "second", "limitKey": "any" },
+        { "policyId": "auth-universal-logout", "name": "Universal Logout", "paths": ["/oauth/logout"], "methods": ["POST"], "burstLimit": 2500, "sustainedLimit": 2500, "sustainedWindow": "second", "limitKey": "any" },
+        { "policyId": "auth-par", "name": "Pushed Authorization Requests (PAR)", "paths": ["/oauth/par"], "methods": ["POST"], "burstLimit": 100, "sustainedLimit": 100, "sustainedWindow": "second", "limitKey": "ip" },
+        { "policyId": "auth-ciba", "name": "Back-Channel Authorize (CIBA)", "paths": ["/bc-authorize"], "methods": ["POST"], "burstLimit": 500, "sustainedLimit": 500, "sustainedWindow": "minute", "limitKey": "ip" },
+        { "policyId": "auth-device-code-activation", "name": "Device Code Activation (no prompt)", "paths": ["/oauth/device/code"], "methods": ["POST"], "burstLimit": 30, "sustainedLimit": 6, "sustainedWindow": "second", "limitKey": "ip" },
+        { "policyId": "auth-device-code-authorization", "name": "Device Code Authorization", "paths": ["/oauth/device/code"], "methods": ["POST"], "burstLimit": 5, "sustainedLimit": 5, "sustainedWindow": "second", "limitKey": "ip" },
+        { "policyId": "auth-mfa-oob-token-exchange", "name": "MFA OOB Token Exchange", "paths": ["/oauth/token"], "methods": ["POST"], "burstLimit": 12, "sustainedLimit": 12, "sustainedWindow": "minute", "limitKey": "session" },
+        { "policyId": "auth-custom-token-exchange", "name": "Custom Token Exchange", "paths": ["/oauth/token"], "methods": ["POST"], "burstLimit": 1500, "sustainedLimit": 1500, "sustainedWindow": "second", "limitKey": "any" },
+        { "policyId": "auth-token-vault", "name": "Token Vault", "paths": ["/oauth/token"], "methods": ["POST"], "burstLimit": 700, "sustainedLimit": 700, "sustainedWindow": "second", "limitKey": "any" },
+        { "policyId": "auth-obo-token-exchange", "name": "On-Behalf-Of Token Exchange", "paths": ["/oauth/token"], "methods": ["POST"], "burstLimit": 3000, "sustainedLimit": 3000, "sustainedWindow": "second", "limitKey": "any" }
+      ]
+    },
+    {
+      "name": "Management API",
+      "globalLimits": [
+        { "environment": "production", "burstRps": 5000, "sustainedRps": 5000 },
+        { "environment": "non-production", "burstRps": 5000, "sustainedRps": 5000 }
+      ],
+      "endpointPolicies": [
+        { "policyId": "mgmt-read-orgs", "name": "Read Organizations", "paths": ["/api/v2/organizations"], "methods": ["GET"], "burstLimit": 1000, "sustainedLimit": 10000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-read-orgs-by-id", "name": "Read Organizations by ID", "paths": ["/api/v2/organizations/{id}"], "methods": ["GET"], "burstLimit": 4000, "sustainedLimit": 50000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-read-orgs-by-name", "name": "Read Organizations by Name", "paths": ["/api/v2/organizations/name/{name}"], "methods": ["GET"], "burstLimit": 2000, "sustainedLimit": 20000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-write-orgs", "name": "Write Organizations", "paths": ["/api/v2/organizations", "/api/v2/organizations/{id}"], "methods": ["POST", "PATCH", "DELETE"], "burstLimit": 500, "sustainedLimit": 15000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-read-org-members", "name": "Read Organization Members", "paths": ["/api/v2/organizations/{id}/members"], "methods": ["GET"], "burstLimit": 4800, "sustainedLimit": 60000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-write-org-members", "name": "Write Organization Members", "paths": ["/api/v2/organizations/{id}/members"], "methods": ["POST", "DELETE"], "burstLimit": 2400, "sustainedLimit": 24000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-read-org-member-roles", "name": "Read Organization Member Roles", "paths": ["/api/v2/organizations/{id}/members/{user_id}/roles"], "methods": ["GET"], "burstLimit": 2400, "sustainedLimit": 24000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-write-org-member-roles", "name": "Write Organization Member Roles", "paths": ["/api/v2/organizations/{id}/members/{user_id}/roles"], "methods": ["POST", "DELETE"], "burstLimit": 2400, "sustainedLimit": 24000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-read-org-connections", "name": "Read Organization Connections", "paths": ["/api/v2/organizations/{id}/enabled_connections"], "methods": ["GET"], "burstLimit": 1200, "sustainedLimit": 12000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-write-org-connections", "name": "Write Organization Connections", "paths": ["/api/v2/organizations/{id}/enabled_connections"], "methods": ["POST", "PATCH", "DELETE"], "burstLimit": 600, "sustainedLimit": 18000, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-custom-domain-verify", "name": "Write Custom Domain", "paths": ["/api/v2/custom-domains/{id}/verify"], "methods": ["POST"], "burstLimit": 5, "sustainedLimit": 5, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-connection-status", "name": "Read Status Connection", "paths": ["/api/v2/connections/{id}/status"], "methods": ["GET"], "burstLimit": 100, "sustainedLimit": 15, "sustainedWindow": "second", "limitKey": "any" },
+        { "policyId": "mgmt-signing-keys-rotate", "name": "Write Signing Keys", "paths": ["/api/v2/keys/signing/rotate"], "methods": ["POST"], "burstLimit": 5, "sustainedLimit": 5, "sustainedWindow": "day", "limitKey": "any" },
+        { "policyId": "mgmt-write-token-exchange-profiles", "name": "Write Token Exchange Profiles", "paths": ["/api/v2/token-exchange-profiles"], "methods": ["POST", "PATCH", "DELETE"], "burstLimit": 15, "sustainedLimit": 300, "sustainedWindow": "minute", "limitKey": "any" },
+        { "policyId": "mgmt-read-token-exchange-profiles", "name": "Read Token Exchange Profiles", "paths": ["/api/v2/token-exchange-profiles"], "methods": ["GET"], "burstLimit": 2000, "sustainedLimit": 20000, "sustainedWindow": "minute", "limitKey": "any" }
+      ]
+    }
+  ]
+}

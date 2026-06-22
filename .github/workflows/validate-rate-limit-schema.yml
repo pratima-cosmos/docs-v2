@@ -1,0 +1,26 @@
+name: Validate Rate Limit Schema
+
+on:
+  pull_request:
+    paths:
+      - 'main/data/rate-limits/**'
+
+jobs:
+  validate:
+    name: Validate rate limit JSON files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate schema structure
+        run: node main/scripts/validate-rate-limits.js
+
+      - name: Check for stale lastVerified dates
+        run: node main/scripts/validate-rate-limits.js --check-stale
