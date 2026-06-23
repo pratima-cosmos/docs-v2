@@ -19,6 +19,16 @@ body {
 }
 
 /* Typography */
+/* Global 14px body text for all docs pages */
+.prose,
+.prose p,
+.prose li,
+.prose td,
+.prose th,
+[class*="prose"] {
+  font-size: 14px !important;
+}
+
 .mdx-content {
   font-size: 14px !important;
   line-height: 1.625;
