@@ -20,6 +20,7 @@ body {
 
 /* Typography */
 .mdx-content {
+  font-size: 14px;
   line-height: 1.625;
   margin-top: 0.5rem;
 
