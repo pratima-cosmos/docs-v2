@@ -267,17 +267,13 @@ img.icon.inline {
   color: lab(72.6029% 4.08953 -41.9669);
 }
 
-/* Get started cards: title and copy text */
+/* Card title 16px, card body 14px */
 [data-component-part="card-title"] {
-  font-size: 16px !important;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
-[data-component-part="card-body"] {
-  font-size: 14px !important;
-}
-
-/* Page body copy 14px */
-.mdx-content p {
+[data-component-part="card-description"] {
   font-size: 14px;
 }
 
