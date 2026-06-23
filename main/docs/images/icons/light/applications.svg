@@ -1,0 +1,14 @@
+<svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<style>
+.bg{fill:#191919}.dot{fill:#fff}
+@media(prefers-color-scheme:dark){.bg{fill:#fff}.dot{fill:#191919}}
+</style>
+<path class="bg" d="M33.3159 2.0929H14.6841C12.0968 2.0929 10 4.06116 10 6.48981V41.6031C10 44.0317 12.0968 46 14.6841 46H33.3159C35.9032 46 38 44.0317 38 41.6031V6.48981C38 4.06116 35.9032 2.0929 33.3159 2.0929Z"/>
+<circle class="bg" cx="24.0001" cy="40.0043" r="1.9957"/>
+<rect class="bg" x="18" y="14" width="24" height="12" rx="1.5"/>
+<path class="bg" d="M18 30.6924V24.1796C18 23.793 18.3134 23.4796 18.7 23.4796H25.2129C25.8365 23.4796 26.1488 24.2336 25.7079 24.6745L19.195 31.1874C18.754 31.6284 18 31.3161 18 30.6924Z"/>
+<circle class="dot" cx="22.7775" cy="20" r="1.27821"/>
+<circle class="dot" cx="27.5925" cy="20" r="1.27821"/>
+<circle class="dot" cx="32.4075" cy="20" r="1.27821"/>
+<circle class="dot" cx="37.2225" cy="20" r="1.27821"/>
+</svg>
