@@ -266,11 +266,21 @@ img.icon.inline {
   color: lab(72.6029% 4.08953 -41.9669);
 }
 
-/* Get started cards: 14px title and copy text */
+/* Get started cards: title and copy text */
 [data-component-part="card-title"] {
   font-size: 16px !important;
 }
 
 [data-component-part="card-body"] {
   font-size: 14px !important;
+}
+
+/* Page body copy 14px */
+.mdx-content p {
+  font-size: 14px;
+}
+
+/* Reduce spacing after intro paragraph before hr */
+.mdx-content > p + hr {
+  margin-top: 24px;
 }
