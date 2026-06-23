@@ -285,8 +285,8 @@ img.icon.inline {
 [data-component-part="card-icon"],
 [data-component-part="card-icon"] img,
 [data-component-part="card-icon"] svg {
-  width: 32px !important;
-  height: 32px !important;
+  width: 24px !important;
+  height: 24px !important;
 }
 
 /* Card title 16px, card content 14px */
