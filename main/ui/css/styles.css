@@ -265,3 +265,12 @@ img.icon.inline {
   background-color: lab(16.0426% 6.71726 -27.2409);
   color: lab(72.6029% 4.08953 -41.9669);
 }
+
+/* Get started cards: 14px title and copy text */
+[data-component-part="card-title"] {
+  font-size: 14px !important;
+}
+
+[data-component-part="card-body"] {
+  font-size: 14px !important;
+}
