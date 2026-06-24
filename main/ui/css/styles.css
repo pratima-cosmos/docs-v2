@@ -275,8 +275,40 @@ img.icon.inline {
   }
 }
 
-/* Remove stacked divider lines inside nested param/expandable blocks */
+/* Remove all stacked grey lines from param/expandable blocks */
 [data-component-part="expandable-content"] > hr,
 [data-component-part="param-field-body"] > hr {
   display: none !important;
+}
+
+/* Remove bottom borders on all closing param/expandable elements */
+[data-component-part="param-field"],
+[data-component-part="expandable"],
+[data-component-part="expandable-content"],
+[data-component-part="param-field-body"] {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Only show border between top-level param methods (## sections) */
+.mdx-content h2 + [data-component-part="param-field"],
+.mdx-content h2 + p + [data-component-part="param-field"] {
+  border-top: 1px solid var(--border-muted);
+}
+
+/* Event schema code block: cap height and add scroll */
+.mdx-content pre {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* 24px spacing after page description (replaces removed div spacer) */
+.mdx-content > :first-child {
+  margin-top: 24px;
+}
+
+/* Reduce gap between Info callout and following heading */
+.mdx-content [data-component-part="callout"] + h2,
+.mdx-content [class*="info"] + h2 {
+  margin-top: 12px !important;
 }

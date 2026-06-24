@@ -206,39 +206,9 @@
             "docs/customize/actions/actions-overview",
             "docs/customize/actions/write-your-first-action",
             {
-              "group": "Actions Modules",
+              "group": "Action Triggers",
+              "collapsed": true,
               "pages": [
-                "docs/customize/actions/modules/actions-modules-overview",
-                "docs/customize/actions/modules/write-your-first-action-module"
-              ]
-            },
-            "docs/customize/actions/action-coding-guidelines",
-            "docs/customize/actions/use-cases",
-            "docs/customize/actions/transaction-metadata",
-            "docs/customize/actions/limitations",
-            "docs/customize/actions/actions-real-time-logs",
-            "docs/customize/actions/actions-templates",
-            "docs/customize/actions/actions-npm",
-            "docs/customize/actions/actions-unit-test",
-            "docs/customize/actions/manage-dependencies",
-            "docs/customize/actions/manage-versions",
-            "docs/customize/actions/test-actions",
-            {
-              "group": "Migrate to Actions",
-              "pages": [
-                "docs/customize/actions/migrate",
-                "docs/customize/actions/migrate/migrate-from-rules-to-actions",
-                "docs/customize/actions/migrate/migrate-a-rule-to-an-action",
-                "docs/customize/actions/migrate/migrate-from-hooks-to-actions",
-                "docs/customize/actions/migrate/actions-migration-limitations"
-              ]
-            }
-          ]
-        },
-        {
-          "group": "Action Triggers",
-          "collapsed": true,
-          "pages": [
             {
               "group": "Pre-user Registration",
               "collapsed": true,
@@ -318,6 +288,36 @@
                 "docs/customize/actions/explore-triggers/event-stream-triggers",
                 "docs/customize/actions/explore-triggers/event-stream-triggers/event-stream-event-object",
                 "docs/customize/actions/explore-triggers/event-stream-triggers/event-stream-api-object"
+              ]
+            }
+          ]
+            },
+            {
+              "group": "Actions Modules",
+              "pages": [
+                "docs/customize/actions/modules/actions-modules-overview",
+                "docs/customize/actions/modules/write-your-first-action-module"
+              ]
+            },
+            "docs/customize/actions/action-coding-guidelines",
+            "docs/customize/actions/use-cases",
+            "docs/customize/actions/transaction-metadata",
+            "docs/customize/actions/limitations",
+            "docs/customize/actions/actions-real-time-logs",
+            "docs/customize/actions/actions-templates",
+            "docs/customize/actions/actions-npm",
+            "docs/customize/actions/actions-unit-test",
+            "docs/customize/actions/manage-dependencies",
+            "docs/customize/actions/manage-versions",
+            "docs/customize/actions/test-actions",
+            {
+              "group": "Migrate to Actions",
+              "pages": [
+                "docs/customize/actions/migrate",
+                "docs/customize/actions/migrate/migrate-from-rules-to-actions",
+                "docs/customize/actions/migrate/migrate-a-rule-to-an-action",
+                "docs/customize/actions/migrate/migrate-from-hooks-to-actions",
+                "docs/customize/actions/migrate/actions-migration-limitations"
               ]
             }
           ]
