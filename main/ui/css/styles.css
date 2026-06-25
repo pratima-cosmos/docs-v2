@@ -256,6 +256,30 @@ img.icon.inline {
   }
 }
 
+/* Right panel TOC — sticky */
+#table-of-contents,
+[data-component-part="toc"],
+.toc-container,
+nav[aria-label="Table of contents"] {
+  position: sticky !important;
+  top: 4rem !important;
+  max-height: calc(100vh - 5rem);
+  overflow-y: auto;
+}
+
+/* Hide ## headings above accordions — kept for right-side TOC only */
+.mdx-content h2:has(+ [data-component-part="expandable"]),
+.mdx-content h2:has(+ div > [data-component-part="expandable"]) {
+  position: absolute;
+  opacity: 0;
+  height: 0 !important;
+  overflow: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none;
+  font-size: 0 !important;
+}
+
 /* Fix table overflow/cutting edges inside tabs and accordions */
 .mdx-content table {
   display: block;

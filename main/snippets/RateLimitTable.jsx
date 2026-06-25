@@ -663,3 +663,44 @@ export function RateLimitTable({ tier, api, environment }) {
     </>
   );
 }
+
+const ENV_OPTIONS = ['Dev', 'Staging', 'Prod'];
+const ENV_MAP = { Dev: 'non-production', Staging: 'non-production', Prod: 'production' };
+const DEFAULT_APIS = ['Authentication API', 'Management API', 'SCIM API'];
+
+export function CapsuleEnvSelector({ tier, apis = DEFAULT_APIS }) {
+  const [selected, setSelected] = React.useState('Prod');
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '20px', flexWrap: 'wrap' }}>
+        {ENV_OPTIONS.map((env) => (
+          <button
+            key={env}
+            onClick={() => setSelected(env)}
+            style={{
+              padding: '4px 16px',
+              borderRadius: '999px',
+              border: selected === env ? 'none' : '1px solid var(--border)',
+              background: selected === env ? 'rgb(var(--primary))' : 'transparent',
+              color: selected === env ? '#fff' : 'var(--foreground)',
+              fontSize: '13px',
+              fontWeight: selected === env ? 600 : 400,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              lineHeight: '1.5',
+            }}
+          >
+            {env}
+          </button>
+        ))}
+      </div>
+      {apis.map((api) => (
+        <div key={api} style={{ marginBottom: '32px' }}>
+          <p style={{ fontSize: '15px', fontWeight: 600, marginBottom: '8px' }}>{api}</p>
+          <RateLimitTable tier={tier} api={api} environment={ENV_MAP[selected]} />
+        </div>
+      ))}
+    </div>
+  );
+}

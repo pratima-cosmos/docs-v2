@@ -1,31 +1,9 @@
 ---
 description: Rate limit policies for the Essentials and Professional subscription tier.
 title: Essentials and Professional
-sidebarTitle: Essentials & Professional
+sidebarTitle: Essentials \& Professional
 ---
 
-import { RateLimitTable } from '/snippets/RateLimitTable.jsx';
+import { CapsuleEnvSelector } from '/snippets/RateLimitTable.jsx';
 
-<Tabs>
-  <Tab title="Authentication API">
-    <Tabs>
-      <Tab title="Dev"><RateLimitTable tier="essentials-professional" api="Authentication API" environment="non-production" /></Tab>
-      <Tab title="Staging"><RateLimitTable tier="essentials-professional" api="Authentication API" environment="non-production" /></Tab>
-      <Tab title="Prod"><RateLimitTable tier="essentials-professional" api="Authentication API" environment="production" /></Tab>
-    </Tabs>
-  </Tab>
-  <Tab title="Management API">
-    <Tabs>
-      <Tab title="Dev"><RateLimitTable tier="essentials-professional" api="Management API" environment="non-production" /></Tab>
-      <Tab title="Staging"><RateLimitTable tier="essentials-professional" api="Management API" environment="non-production" /></Tab>
-      <Tab title="Prod"><RateLimitTable tier="essentials-professional" api="Management API" environment="production" /></Tab>
-    </Tabs>
-  </Tab>
-  <Tab title="SCIM API">
-    <Tabs>
-      <Tab title="Dev"><RateLimitTable tier="essentials-professional" api="SCIM API" environment="non-production" /></Tab>
-      <Tab title="Staging"><RateLimitTable tier="essentials-professional" api="SCIM API" environment="non-production" /></Tab>
-      <Tab title="Prod"><RateLimitTable tier="essentials-professional" api="SCIM API" environment="production" /></Tab>
-    </Tabs>
-  </Tab>
-</Tabs>
+<CapsuleEnvSelector tier="essentials-professional" />

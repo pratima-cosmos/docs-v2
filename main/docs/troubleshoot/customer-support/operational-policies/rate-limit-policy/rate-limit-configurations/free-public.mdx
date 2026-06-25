@@ -4,28 +4,6 @@ title: Free
 sidebarTitle: Free
 ---
 
-import { RateLimitTable } from '/snippets/RateLimitTable.jsx';
+import { CapsuleEnvSelector } from '/snippets/RateLimitTable.jsx';
 
-<Tabs>
-  <Tab title="Authentication API">
-    <Tabs>
-      <Tab title="Dev"><RateLimitTable tier="free-public" api="Authentication API" environment="non-production" /></Tab>
-      <Tab title="Staging"><RateLimitTable tier="free-public" api="Authentication API" environment="non-production" /></Tab>
-      <Tab title="Prod"><RateLimitTable tier="free-public" api="Authentication API" environment="production" /></Tab>
-    </Tabs>
-  </Tab>
-  <Tab title="Management API">
-    <Tabs>
-      <Tab title="Dev"><RateLimitTable tier="free-public" api="Management API" environment="non-production" /></Tab>
-      <Tab title="Staging"><RateLimitTable tier="free-public" api="Management API" environment="non-production" /></Tab>
-      <Tab title="Prod"><RateLimitTable tier="free-public" api="Management API" environment="production" /></Tab>
-    </Tabs>
-  </Tab>
-  <Tab title="SCIM API">
-    <Tabs>
-      <Tab title="Dev"><RateLimitTable tier="free-public" api="SCIM API" environment="non-production" /></Tab>
-      <Tab title="Staging"><RateLimitTable tier="free-public" api="SCIM API" environment="non-production" /></Tab>
-      <Tab title="Prod"><RateLimitTable tier="free-public" api="SCIM API" environment="production" /></Tab>
-    </Tabs>
-  </Tab>
-</Tabs>
+<CapsuleEnvSelector tier="free-public" />

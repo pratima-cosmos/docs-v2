@@ -4,28 +4,6 @@ title: Enterprise
 sidebarTitle: Enterprise
 ---
 
-import { RateLimitTable } from '/snippets/RateLimitTable.jsx';
+import { CapsuleEnvSelector } from '/snippets/RateLimitTable.jsx';
 
-<Tabs>
-  <Tab title="Authentication API">
-    <Tabs>
-      <Tab title="Dev"><RateLimitTable tier="enterprise-public" api="Authentication API" environment="non-production" /></Tab>
-      <Tab title="Staging"><RateLimitTable tier="enterprise-public" api="Authentication API" environment="non-production" /></Tab>
-      <Tab title="Prod"><RateLimitTable tier="enterprise-public" api="Authentication API" environment="production" /></Tab>
-    </Tabs>
-  </Tab>
-  <Tab title="Management API">
-    <Tabs>
-      <Tab title="Dev"><RateLimitTable tier="enterprise-public" api="Management API" environment="non-production" /></Tab>
-      <Tab title="Staging"><RateLimitTable tier="enterprise-public" api="Management API" environment="non-production" /></Tab>
-      <Tab title="Prod"><RateLimitTable tier="enterprise-public" api="Management API" environment="production" /></Tab>
-    </Tabs>
-  </Tab>
-  <Tab title="SCIM API">
-    <Tabs>
-      <Tab title="Dev"><RateLimitTable tier="enterprise-public" api="SCIM API" environment="non-production" /></Tab>
-      <Tab title="Staging"><RateLimitTable tier="enterprise-public" api="SCIM API" environment="non-production" /></Tab>
-      <Tab title="Prod"><RateLimitTable tier="enterprise-public" api="SCIM API" environment="production" /></Tab>
-    </Tabs>
-  </Tab>
-</Tabs>
+<CapsuleEnvSelector tier="enterprise-public" />
