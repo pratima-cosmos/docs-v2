@@ -1,147 +1,152 @@
 ---
-description: Tier 100 RPS Private Cloud rate limits
-title: Private Cloud Basic 100 RPS (1x)
+description: Rate limit policies for Private Cloud tenants.
+title: Private Cloud
+sidebarTitle: Private
 ---
 
-<Callout icon="file-lines" color="#0EA5E9" iconType="regular">
-Total sustained throughput to both the Authentication API and MyAccount API in an environment is generally supported up to 500 RPS; however, certain unique workloads, heavy combined usage of Authentication and Management APIs, or certain Auth Flows like ROPG to the Authentication API, may cause degraded performance at lower RPS.
+import { RateLimitTable } from '/snippets/RateLimitTable.jsx';
+
+<Callout icon="triangle-exclamation" color="#F59E0B" iconType="regular">
+  Total sustained throughput to both the Authentication API and My Account API in a Private Cloud environment is generally supported up to 500 RPS. Certain workloads — heavy combined usage of Authentication and Management APIs, or flows like ROPG — may cause degraded performance at lower RPS.
 </Callout>
 
-See below for the rate limits in the Private Cloud Basic 100 RPS (1x) subscription type. These limits apply to each tenant you create in the private cloud environment.
-
-Therefore, we recommend deploying one tenant per private cloud environment for risk mitigation.
+<Info>
+  Private Cloud rate limits apply to both production and non-production (Dev/Staging) environments unless otherwise noted.
+</Info>
 
 <AccordionGroup>
+  <Accordion title="Dev (20 RPS)">
+    <Tabs>
+      <Tab title="Authentication API">
+        | Endpoint | Method | Burst | Sustained | Limit Key |
+        | --- | --- | --- | --- | --- |
+        | **Global (all endpoints)** | All | 20 | 20/second | — |
+        | User Info | GET, POST | 10 | 5/min | Unique user ID |
+        | Change Password / Reset Password | POST | 10 | 1/min | IP → email |
+        | Get Passwordless Code or Link | GET, POST | 50 | 50/hour | IP address |
+        | Native Social Login (Apple / Facebook) | POST | 50 | 500/min | Any request |
+        | Dynamic Application (Client) Registration | POST | 5 | 5/sec | Any request |
+        | Universal Logout | POST | 35 | 35/sec | Any request |
+        | Pushed Authorization Requests (PAR) | POST | 100 | 100/sec | IP address |
+        | Back-Channel Authorize (CIBA) | POST | 500 | 500/min | IP address |
+        | Device Code Activation (no prompt) | POST | 30 | 6/sec | IP address |
+        | Device Code Authorization | POST | 5 | 5/sec | IP address |
+        | MFA OOB Token Exchange | POST | 12 | 12/min | Unique session |
+        | Token Vault | POST | 10 | 10/sec | Any request |
+      </Tab>
+      <Tab title="Management API">
+        | Endpoint | Method | Burst | Sustained | Limit Key |
+        | --- | --- | --- | --- | --- |
+        | **Global (all endpoints)** | All | 20 | 20/second | — |
+        | Read Organizations | GET | 10 | 100/min | Any request |
+        | Read Organizations by ID | GET | 40 | 500/min | Any request |
+        | Read Organizations by Name | GET | 20 | 200/min | Any request |
+        | Write an Organization | POST, PATCH, DELETE | 5 | 150/min | Any request |
+        | Read Organization Members | GET | 40 | 500/min | Any request |
+        | Write Organization Members | POST, DELETE | 20 | 200/min | Any request |
+        | Read Members of an Organization | GET | 20 | 200/min | Any request |
+        | Read Organization Member Roles | GET | 20 | 200/min | Any request |
+        | Write Organization Member Roles | POST, DELETE | 20 | 200/min | Any request |
+        | Read Organization Connections | GET | 10 | 100/min | Any request |
+        | Write Organization Connections | POST, PATCH, DELETE | 5 | 150/min | Any request |
+        | Write Custom Domain | POST | 5 | 5/min | Any request |
+        | Read Status Connection | GET | 100 | 15/sec | Any request |
+        | Write Signing Keys | POST | 5 | 5/day | Any request |
+        | Read Partials for a Prompt | GET | 5 | 5/min | Any request |
+        | Write Partials for a Prompt | PUT | 5 | 5/min | Any request |
+        | Read Clients (q parameter) | GET | 5 | 150/min | Any request |
+        | Read Organization Client Grants | GET | 10 | 100/min | Any request |
+        | Write Organization Client Grants | POST | 5 | 150/min | Any request |
+      </Tab>
+      <Tab title="SCIM API">
+        | Limit Type | Path | Method | Burst | Sustained |
+        | --- | --- | --- | --- | --- |
+        | Single SCIM connection | `/scim/v2/connections/{connection-id}` | Any | 25 | 25/sec |
+        | Global tenant (all SCIM connections) | `/scim/v2/connections/*` | Any | 100 | 100/sec |
+      </Tab>
+      <Tab title="Universal Login">
+        | Endpoint | Method | Burst | Sustained | Limit Key |
+        | --- | --- | --- | --- | --- |
+        | UL prompts (global) | GET, POST | 500 | 500/min | From an IP address |
+        | UL prompts (per prompt) | GET | 20 | 10/min | IP + state |
+        | UL prompts (per prompt) | POST | 10 | 5/min | From an IP address |
+        | Password reset prompt | GET | 500 | 500/min | From an IP address |
+        | MFA push enrollment | GET, POST | 500 | 500/min | From an IP address |
+        | MFA push challenge | GET, POST | 500 | 500/min | From an IP address |
+        | MFA SMS enrollment | GET | 20 | 10/min | From an IP address |
+        | MFA SMS enrollment | POST | 10 | 5/min | From an IP address |
+        | Passwordless SMS challenge | GET, POST | 5 | 5/min | From an IP address |
+        | Passwordless email challenge | GET, POST | 5 | 5/min | From an IP address |
+        | Device code prompt | GET, POST | 5 | 5/sec | From an IP address |
+      </Tab>
+      <Tab title="MFA">
+        | Endpoint | Burst | Sustained | Period | Limit Key |
+        | --- | --- | --- | --- | --- |
+        | OTP failures | 10 | 10 | per hour | Unique User ID |
+        | Recovery code failures | 10 | 10 | per hour | Unique User ID |
+        | Webauthn challenge failures | 15 | 15 | per minute | Unique User ID |
+        | Webauthn challenge generated | 15 | 15 | per minute | Unique User ID |
+        | Push notifications per user | 5 | 5 | per minute | Unique User ID |
+        | SMS sent per user | 10 | 1 | per hour | Unique User ID |
+        | Email sent per user | 20 | 1 | per minute | Unique User ID |
+      </Tab>
+      <Tab title="My Account API">
+        **Tenant level**
+        | Endpoint | Method | Burst | Sustained | Limit Key |
+        | --- | --- | --- | --- | --- |
+        | Read Authentication Methods | GET | 20 | 20/sec | Any request |
+        | Write Authentication Methods | POST, PUT, DELETE | 20 | 20/sec | Any request |
+        | Read Auth Methods (filtered) | GET | 40 | 40/sec | Any request |
 
-<Accordion title="Authentication API: Rate limits for the Authentication API and API endpoints n the Private Cloud Basic 100 RPS (1x) subscription tier.">
-
-| [API](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#api-rate-limits) | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) |
-| --- | --- | --- |
-| Authentication API | 100 | 100/second |
-
-| [Endpoint](https://auth0.com/docs/api/authentication#introduction) | Method | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Limit Type |
-| --- | --- | --- | --- | --- |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/minute | To a unique User ID |
-| [Change Password](https://auth0.com/docs/api/authentication#change-password)<br/><br/>[Reset Password with Universal Login](/docs/authenticate/database-connections/password-change#universal-login-page) | `POST` | 10 | 1/minute | From an IP Address to a unique Email Address |
-| [Get Passwordless Code or Link](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hour | From an IP Address |
-| [Native Social Login (Apple / Facebook Only)](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/minute | Any Request for Apple or Facebook Native Social Login |
-| [Dynamic Application (Client) Registration](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/second | Any request |
-| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/second | Any request |
-| Pushed Authorization Requests (PAR) | `POST` | 100 | 100/second | From an IP Address |
-| Back-Channel authorize (CIBA) | `POST` | 500 | 500/minute | From an IP Address |
-| Device code activation (no prompt) | `POST` | 30 | 6/second | From an IP Address |
-| Device code authorization | `POST` | 5 | 5/second | From an IP Address |
-| MFA OOB token exchange | `POST` | 12 | 12/minute | To a unique session |
-| [Custom Token Exchange](/docs/authenticate/custom-token-exchange) | `POST` | 15 | 15/second | Any request |
-| Token Vault ([Connected Accounts](/docs/secure/call-apis-on-users-behalf/token-vault) and [token exchange](/docs/secure/call-apis-on-users-behalf/token-vault#supported-token-exchanges) | `POST` | 50 | 50/second | Any request |
-| [On-Behalf-Of Token Exchange](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 30 | 30/second | Any Request |
-
-\*Represents the default limit. You can configure the Signup endpoint limit in Auth0 Dashboard. To learn more, read Suspicious IP Throttling.
-
-</Accordion>
-
-
-
-<Accordion title="Management API: Rate limits for the Management API, API endpoints, and API endpoint groups in the Private Cloud Basic 100 RPS (1x) subscription.">
-
-| [API](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#api-rate-limits) | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) |
-| --- | --- | --- |
-| Management API | 50 | 50/second |
-
-| [Endpoint](https://auth0.com/docs/api/management/v2) | Method | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Limit Type |
-| --- | --- | --- | --- | --- |
-| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | GET | 10 | 100/minute | Any request |
-| [Read Organizations by ID](https://auth0.com/docs/api/management/v2/organizations/get-organizations-by-id) | GET | 40 | 500/minute | Any request |
-| [Read Organizations by Name](https://auth0.com/docs/api/management/v2/organizations/get-name-by-name) | GET | 20 | 200/minute | Any request |
-| [Write an Organization](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | POST, PATCH, DELETE | 5 | 150/minute | Any request |
-| [Read Organization Members](https://auth0.com/docs/api/management/v2/organizations/get-members) | GET | 40 | 500/minute | Any request |
-| [Write Organization Members](https://auth0.com/docs/api/management/v2/organizations/post-members) | POST, DELETE | 20 | 200/minute | Any request |
-| [Read Members of an Organization](https://auth0.com/docs/api/management/v2/organizations/get-members) | GET | 20 | 200/minute | Any request |
-| [Read Organization Member Roles](https://auth0.com/docs/api/management/v2/organizations/get-organization-member-roles) | GET | 20 | 200/minute | Any request |
-| [Write Organization Member Roles](https://auth0.com/docs/api/management/v2/organizations/post-organization-member-roles) | POST, DELETE | 20 | 200/minute | Any request |
-| [Write Organization Connections](https://auth0.com/docs/api/management/v2/organizations/post-enabled-connections) | POST, PATCH, DELETE | 5 | 150/minute | Any request |
-| [Write Custom Domain](https://auth0.com/docs/api/management/v2/custom-domains/post-verify) | POST | 5 | 5/minute | Any request |
-| [Read Status Connection](https://auth0.com/docs/api/management/v2/connections/get-status) | GET | 100 | 15/second | Any request |
-| [Write Signing Keys](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | POST | 5 | 5/day | Any request |
-| [Read Partials for a Prompt](https://auth0.com/docs/api/management/v2/prompts/get-partials) | GET | 5 | 5/minute | Any request |
-| [Write Partials for a Prompt](https://auth0.com/docs/api/management/v2/prompts/put-partials) | PUT | 5 | 5/minute | Any request |
-| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients)<br/>Only applies to the usage of the `q` parameter. | `GET` | 5 | 150/minute | Any request |
-| [Read Organization Client Grants](https://auth0.com/docs/api/management/v2/organizations/get-organization-client-grants) | `GET` | 10 | 100/minute | Any request |
-| [Write Organization Client Grants](https://auth0.com/docs/api/management/v2/organizations/create-organization-client-grants) | `POST` | 5 | 150/minute | Any request |
-| [Write Token Exchange Profiles](/docs/authenticate/custom-token-exchange/configure-custom-token-exchange#create-custom-token-exchange-profile) | `POST`, `PATCH`, `DELETE` | 5 | 100/minute | Any request |
-| [Read Token Exchange Profiles](/docs/authenticate/custom-token-exchange/configure-custom-token-exchange#manage-custom-token-exchange-profile) | `GET` | 20 | 200/minute | Any request |
-
-</Accordion>
-
-
-
-<Accordion title="SCIM API: Rate limits for the inbound SCIM API endpoints in the Private Cloud Basic 100 RPS (1x) subscription type.">
-
-| Limit Type | Endpoint Path | Operation | Limit |
-| --- | --- | --- | --- |
-| Single SCIM connection endpoint | `/scim/v2/connections/{connection-id}` | Any request | 25 requests per second |
-| Global tenant limit for all SCIM connections | `/scim/v2/connections/*` | Any request | 100 requests per second |
-
-</Accordion>
-
-
-
-<Accordion title="Universal Login Flow Endpoints: Rate limits for the endpoints utilized for the Universal Login Authentication Flow for all subscription types.">
-
-| Endpoint | Method | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Limit Type |
-| --- | --- | --- | --- | --- |
-| Universal login prompts (global) | `GET`, `POST` | 500 | 500/minute | From an IP Address |
-| Universal login prompts (per prompt) | `GET` | 20 | 10/minute | From an IP Address and state value. |
-| Universal login prompts (per prompt) | `POST` | 10 | 5/minute | From an IP Address |
-| Password reset prompt | `GET` | 500 | 500/minute | From an IP Address |
-| MFA push enrollment prompt | `GET`, `POST` | 500 | 500/minute | From an IP Address |
-| MFA push challenge prompt | `GET`, `POST` | 500 | 500/minute | From an IP Address |
-| MFA SMS enrollment prompt | `GET` | 20 | 10/minute | From an IP Address |
-| MFA SMS enrollment prompt | `POST` | 10 | 5/minute | From an IP Address |
-| MFA SMS enrollment verify prompt | `GET` | 20 | 10/minute | From an IP Address |
-| MFA SMS enrollment verify prompt | `POST` | 10 | 5/minute | From an IP Address |
-| Passwordless SMS challenge prompt | `GET`, `POST` | 5 | 5/minute | From an IP Address |
-| Passwordless email challenge prompt | `GET`, `POST` | 5 | 5/minute | From an IP Address |
-| Phone verification enrollment prompt | `GET`, `POST` | 5 | 5/minute | From an IP Address |
-| Phone verification challenge prompt | `GET`, `POST` | 5 | 5/minute | From an IP Address |
-| Device code prompt | `GET`, `POST` | 5 | 5/second | From an IP Address |
-
-</Accordion>
-
-
-
-<Accordion title="Additional MFA rate limits: Additional MFA rate limits.">
-
-| Endpoint | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Limit Type | Limit |
-| --- | --- | --- | --- | --- |
-| OTP (6 numeric digits) failures | 10 | 10 | per hour | To a unique User ID |
-| Recovery code failures | 10 | 10 | per hour | To a unique User ID |
-| Webauthn challenge failures | 15 | 15 | per minute | To a unique User ID |
-| Webauthn challenge generated | 15 | 15 | per minute | To a unique User ID |
-| Push notifications sent per user | 5 | 5 | per minute | To a unique User ID |
-| SMS sent per user | 10 | 1 | per hour | To a unique User ID |
-| Email sent per user | 20 | 1 | per minute | To a unique User ID |
-
-</Accordion>
-
-
-<Accordion title="My Account API: Rate limits for the My Account API endpoints in the Private Cloud Basic 100 RPS (1x) subscription type.">
-
-Tenant Level:
-
-| Endpoint | Method | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Limit Type |
-| --- | --- | --- | --- | --- |
-| Read Authentication Methods | `GET` | 20 | 20/second | Any request |
-| Write Authentication Methods | `POST`, `PUT`, `DELETE` | 20 | 20/second | Any request |
-| Read Authentication Methods (filtered) | `GET` | 40 | 40/second | Any request |
-
-User Level:
-
-| Endpoint | Method | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Limit Type |
-| --- | --- | --- | --- | --- |
-| Read Authentication Methods | `GET` | 5 | 5/minute | To a unique User ID |
-| Write Authentication Methods | `POST`, `PUT`, `DELETE` | 5 | 5/minute | To a unique User ID |
-| Read Authentication Methods (filtered) | `GET` | 20 | 20/minute | To a unique User ID |
-
-</Accordion>
+        **User level**
+        | Endpoint | Method | Burst | Sustained | Limit Key |
+        | --- | --- | --- | --- | --- |
+        | Read Authentication Methods | GET | 5 | 5/min | Unique User ID |
+        | Write Authentication Methods | POST, PUT, DELETE | 5 | 5/min | Unique User ID |
+        | Read Auth Methods (filtered) | GET | 20 | 20/min | Unique User ID |
+      </Tab>
+    </Tabs>
+  </Accordion>
+  <Accordion title="100 RPS (1x)">
+    <Tabs>
+      <Tab title="Authentication API"><RateLimitTable tier="tier-100-rps" api="Authentication API" /></Tab>
+      <Tab title="Management API"><RateLimitTable tier="tier-100-rps" api="Management API" /></Tab>
+      <Tab title="SCIM API"><RateLimitTable tier="tier-100-rps" api="SCIM API" /></Tab>
+    </Tabs>
+  </Accordion>
+  <Accordion title="500 RPS (5x)">
+    <Tabs>
+      <Tab title="Authentication API"><RateLimitTable tier="tier-500-rps" api="Authentication API" /></Tab>
+      <Tab title="Management API"><RateLimitTable tier="tier-500-rps" api="Management API" /></Tab>
+      <Tab title="SCIM API"><RateLimitTable tier="tier-500-rps" api="SCIM API" /></Tab>
+    </Tabs>
+  </Accordion>
+  <Accordion title="1,500 RPS (15x)">
+    <Tabs>
+      <Tab title="Authentication API"><RateLimitTable tier="tier-1500-rps" api="Authentication API" /></Tab>
+      <Tab title="Management API"><RateLimitTable tier="tier-1500-rps" api="Management API" /></Tab>
+      <Tab title="SCIM API"><RateLimitTable tier="tier-1500-rps" api="SCIM API" /></Tab>
+    </Tabs>
+  </Accordion>
+  <Accordion title="3,000 RPS (30x)">
+    <Tabs>
+      <Tab title="Authentication API"><RateLimitTable tier="tier-3000-rps" api="Authentication API" /></Tab>
+      <Tab title="Management API"><RateLimitTable tier="tier-3000-rps" api="Management API" /></Tab>
+      <Tab title="SCIM API"><RateLimitTable tier="tier-3000-rps" api="SCIM API" /></Tab>
+    </Tabs>
+  </Accordion>
+  <Accordion title="6,000 RPS (60x)">
+    <Tabs>
+      <Tab title="Authentication API"><RateLimitTable tier="tier-6000-rps" api="Authentication API" /></Tab>
+      <Tab title="Management API"><RateLimitTable tier="tier-6000-rps" api="Management API" /></Tab>
+      <Tab title="SCIM API"><RateLimitTable tier="tier-6000-rps" api="SCIM API" /></Tab>
+    </Tabs>
+  </Accordion>
+  <Accordion title="10,000 RPS (100x)">
+    <Tabs>
+      <Tab title="Authentication API"><RateLimitTable tier="tier-10000-rps" api="Authentication API" /></Tab>
+      <Tab title="Management API"><RateLimitTable tier="tier-10000-rps" api="Management API" /></Tab>
+      <Tab title="SCIM API"><RateLimitTable tier="tier-10000-rps" api="SCIM API" /></Tab>
+    </Tabs>
+  </Accordion>
 </AccordionGroup>

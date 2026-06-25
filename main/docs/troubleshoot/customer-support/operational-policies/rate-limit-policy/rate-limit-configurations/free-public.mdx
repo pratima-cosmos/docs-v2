@@ -1,79 +1,31 @@
 ---
-description: Rate limit policies for the Free Public subscription type.
+description: Rate limit policies for the Free subscription tier.
 title: Free
+sidebarTitle: Free
 ---
-See below for the rate limit policies for the Free subscription type.
 
-<AccordionGroup>
-<Accordion title="Authentication API: Rate limits for the Authentication API and API endpoints in the Free subscription type.">
+import { RateLimitTable } from '/snippets/RateLimitTable.jsx';
 
-| [API](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#api-rate-limits) | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) |
-| --- | --- | --- |
-| Authentication API | 300 | 300/minute |
-
-| Endpoint | Method | Path | Burst Request Limit | Sustained Request Limit | Limit Type |
-| --- | --- | --- | --- | --- | --- |
-| User Info | GET, POST | `/userinfo` | 10 | 5 per/min | To a unique user ID |
-| Change Password | POST | `/dbconnections/change_password` &amp; `u/reset-password/request/:connection` | 10 | 1 per/min | From an IP address to a unique email address |
-| Get Passwordless Code or Link | GET, POST | `/passwordless/start` | 50 | 50 per/hr | From an IP address |
-| Get Token | POST | `/oauth/token` | 30 | 30 per/sec | Any request |
-| Cross Origin Authentication | POST | `co/authenticate` | 5 | 5 per/sec | Any request |
-| Authentication | POST | `/usernamepassword/login` | 5 | 5 per/sec | Any request |
-| JSON Web Token Keys | GET | `/.well-known/jwks.json` | 20 | 20 per/sec | Any request |
-| Native Social Login | POST | `/oauth/token` | 50 | 50 per/min | Any Request for Apple or Facebook Native Social Login |
-| [Dynamic Application (Client) Registration](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | POST | `/oidc/register` | 5 | 5 per/sec | Any request |
-| [On-Behalf-Of Token Exchange](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 2 | 2/second | Any Request |
-
-\*Represents the default limit. You can configure the Signup endpoint limit in Auth0 Dashboard. To learn more, read [Suspicious IP Throttling](/docs/secure/attack-protection/suspicious-ip-throttling).
-
-</Accordion>
-
-<Accordion title="Management API: Rate limits for the Management API on the Free subscription tier.">
-
-| API | Burst Request Limit | Sustained Request Limit |
-| --- | --- | --- |
-| Management | 2 | 2/second |
-
-| Endpoint | Method | Path | Burst Request Limit | Sustained Request Limit | Limit Type |
-| --- | --- | --- | --- | --- | --- |
-| Register Dynamic Client | POST | `/oidc/register` | 5 | 5/second | Any request |
-| Verify Custom Domain | POST | `/api/v2/custom-domains{id}/verify` | 5 | 5/minute | Any request |
-| Read Status Connection | POST | `/api/v2/connections/{id}/status` | 100 | 15/second | Any request |
-| Rotate Signing Keys | POST | `/api/v2/keys/signing/rotate` | 5 | 5/day | Any request |
-| Configure email templates | POST, PATCH, DELETE | `/api/v2/email-templates` | 5 | 25/minute | Any request |
-| Read email templates | GET | `/api/v2/email-templates` | 10 | 50/minute | Any request |
-| Configure email provider | POST, PATCH, DELETE | `/api/v2/emails/provider` | 5 | 25/minute | Any request |
-| Read email provider | GET | `/api/v2/emails/provider` | 5 | 25/minute | Any request |
-
-</Accordion>
-
-
-<Accordion title="My Account API: Rate limits for the My Account API endpoints in the Free subscription type.">
-
-Tenant Level:
-
-| Endpoint | Method | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Limit Type |
-| --- | --- | --- | --- | --- |
-| Read Authentication Methods | `GET` | 2 | 2/second | Any request |
-| Write Authentication Methods | `POST`, `PUT`, `DELETE` | 2 | 2/second | Any request |
-| Read Authentication Methods (filtered) | `GET` | 5 | 5/second | Any request |
-
-User Level:
-
-| Endpoint | Method | [Burst Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained Request Limit](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Limit Type |
-| --- | --- | --- | --- | --- |
-| Read Authentication Methods | `GET` | 2 | 2/minute | To a unique User ID |
-| Write Authentication Methods | `POST`, `PUT`, `DELETE` | 2 | 2/minute | To a unique User ID |
-| Read Authentication Methods (filtered) | `GET` | 5 | 5/minute | To a unique User ID |
-
-</Accordion>
-
-<Accordion title="SCIM API: Rate limits for the inbound SCIM API endpoints in Public cloud subscriptions that include Enterprise connections.">
-
-| Limit Type | Endpoint Path | Operation | Limit |
-| --- | --- | --- | --- |
-| Single SCIM connection endpoint | `/scim/v2/connections/{connection-id}` | Any request | 5 requests per second |
-| Global tenant limit for all SCIM connections | `/scim/v2/connections/*` | Any request | 5 requests per second |
-
-</Accordion>
-</AccordionGroup>
+<Tabs>
+  <Tab title="Authentication API">
+    <Tabs>
+      <Tab title="Dev"><RateLimitTable tier="free-public" api="Authentication API" environment="non-production" /></Tab>
+      <Tab title="Staging"><RateLimitTable tier="free-public" api="Authentication API" environment="non-production" /></Tab>
+      <Tab title="Prod"><RateLimitTable tier="free-public" api="Authentication API" environment="production" /></Tab>
+    </Tabs>
+  </Tab>
+  <Tab title="Management API">
+    <Tabs>
+      <Tab title="Dev"><RateLimitTable tier="free-public" api="Management API" environment="non-production" /></Tab>
+      <Tab title="Staging"><RateLimitTable tier="free-public" api="Management API" environment="non-production" /></Tab>
+      <Tab title="Prod"><RateLimitTable tier="free-public" api="Management API" environment="production" /></Tab>
+    </Tabs>
+  </Tab>
+  <Tab title="SCIM API">
+    <Tabs>
+      <Tab title="Dev"><RateLimitTable tier="free-public" api="SCIM API" environment="non-production" /></Tab>
+      <Tab title="Staging"><RateLimitTable tier="free-public" api="SCIM API" environment="non-production" /></Tab>
+      <Tab title="Prod"><RateLimitTable tier="free-public" api="SCIM API" environment="production" /></Tab>
+    </Tabs>
+  </Tab>
+</Tabs>

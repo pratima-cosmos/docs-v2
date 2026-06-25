@@ -255,3 +255,16 @@ img.icon.inline {
     right: 0;
   }
 }
+
+/* Fix table overflow/cutting edges inside tabs and accordions */
+.mdx-content table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: nowrap;
+}
+.mdx-content table td,
+.mdx-content table th {
+  white-space: normal;
+  min-width: 80px;
+}
