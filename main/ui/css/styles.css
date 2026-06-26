@@ -186,6 +186,77 @@ img.icon.inline {
   border-radius: 0.75rem;
 }
 
+/* Dev/Staging/Prod (outer) tabs — top nav bar style, 32px height, 8px corners, no bottom line */
+.mdx-content [role="tablist"]:not([role="tabpanel"] [role="tablist"]) {
+  border-bottom: none !important;
+  gap: 4px;
+  margin-bottom: 8px;
+  flex-wrap: nowrap;
+}
+
+.mdx-content [role="tablist"]:not([role="tabpanel"] [role="tablist"]) [role="tab"] {
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  padding: 0 14px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  font-size: 13px;
+  font-weight: 400;
+  text-shadow: none;
+  transition: all 0.15s ease-out;
+  white-space: nowrap;
+  display: inline-flex !important;
+  align-items: center !important;
+  box-shadow: none !important;
+}
+
+.mdx-content [role="tablist"]:not([role="tabpanel"] [role="tablist"]) [role="tab"]::after,
+.mdx-content [role="tablist"]:not([role="tabpanel"] [role="tablist"]) [role="tab"] div.bottom-0 {
+  display: none !important;
+}
+
+.mdx-content [role="tablist"]:not([role="tabpanel"] [role="tablist"]) [role="tab"]:hover {
+  color: rgb(var(--primary)) !important;
+  background-color: rgba(117, 73, 242, 0.12) !important;
+}
+
+.mdx-content [role="tablist"]:not([role="tabpanel"] [role="tablist"]) [role="tab"][data-state="active"],
+.mdx-content [role="tablist"]:not([role="tabpanel"] [role="tablist"]) [role="tab"][aria-selected="true"],
+.mdx-content [role="tablist"]:not([role="tabpanel"] [role="tablist"]) [role="tab"].font-semibold,
+.mdx-content [role="tablist"]:not([role="tabpanel"] [role="tablist"]) [role="tab"][data-active="true"] {
+  color: rgb(var(--primary)) !important;
+  background-color: rgba(117, 73, 242, 0.12) !important;
+  font-weight: 600 !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Spacing inside env tab panels for Free/Essentials/Enterprise */
+.mdx-content [role="tabpanel"] > p {
+  margin-top: 16px !important;
+  margin-bottom: 8px !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mdx-content [role="tabpanel"] > p + table,
+.mdx-content [role="tabpanel"] > p + div > table {
+  margin-top: 0 !important;
+}
+
+.mdx-content [role="tabpanel"] table {
+  margin-top: 4px !important;
+  margin-bottom: 16px !important;
+}
+
+/* First API section — add space after env tabs */
+.mdx-content [role="tabpanel"] > p:first-child {
+  margin-top: 12px !important;
+}
+
+/* API inner tabs (inside tabpanel) — keep Mintlify default line style */
+
 /* Left nav: remove right border */
 #sidebar-content {
   border-color: transparent;
@@ -270,14 +341,14 @@ nav[aria-label="Table of contents"] {
 /* Hide ## headings above accordions — kept for right-side TOC only */
 .mdx-content h2:has(+ [data-component-part="expandable"]),
 .mdx-content h2:has(+ div > [data-component-part="expandable"]) {
-  position: absolute;
-  opacity: 0;
   height: 0 !important;
-  overflow: hidden;
+  overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
-  pointer-events: none;
+  opacity: 0 !important;
   font-size: 0 !important;
+  line-height: 0 !important;
+  pointer-events: none;
 }
 
 /* Fix table overflow/cutting edges inside tabs and accordions */

@@ -625,7 +625,8 @@ export function RateLimitTable({ tier, api, environment }) {
         const globalLimits = environment
           ? (apiData.globalLimits || []).filter((l) =>
               l.environment === environment ||
-              l.environment.startsWith(environment)
+              l.environment.startsWith(environment) ||
+              l.environment.includes('/ ' + environment)
             )
           : (apiData.globalLimits || []);
 
@@ -666,6 +667,50 @@ export function RateLimitTable({ tier, api, environment }) {
 
 const ENV_OPTIONS = ['Dev', 'Staging', 'Prod'];
 const ENV_MAP = { Dev: 'non-production', Staging: 'non-production', Prod: 'production' };
+
+export function RateLimitDropdownSelector({ tier, apis = DEFAULT_APIS }) {
+  const [env, setEnv] = React.useState('Prod');
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+          <select
+            value={env}
+            onChange={(e) => setEnv(e.target.value)}
+            style={{
+              appearance: 'none', WebkitAppearance: 'none',
+              padding: '5px 28px 5px 10px',
+              borderRadius: '6px',
+              border: '1px solid var(--border)',
+              background: 'var(--background)',
+              color: 'var(--foreground)',
+              fontSize: '13px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            <option value="Dev">Dev</option>
+            <option value="Staging">Staging</option>
+            <option value="Prod">Prod</option>
+          </select>
+          <span style={{
+            position: 'absolute', right: '8px', top: '50%',
+            transform: 'translateY(-50%)', fontSize: '10px',
+            color: 'var(--muted)', pointerEvents: 'none',
+          }}>▾</span>
+        </div>
+      </div>
+      {apis.map((api) => (
+        <div key={api} style={{ marginBottom: '28px' }}>
+          <p style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>{api}</p>
+          <RateLimitTable tier={tier} api={api} environment={ENV_MAP[env]} />
+        </div>
+      ))}
+    </div>
+  );
+}
 const DEFAULT_APIS = ['Authentication API', 'Management API', 'SCIM API'];
 
 export function CapsuleEnvSelector({ tier, apis = DEFAULT_APIS }) {
