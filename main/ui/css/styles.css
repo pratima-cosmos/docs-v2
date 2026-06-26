@@ -255,6 +255,13 @@ img.icon.inline {
   margin-top: 12px !important;
 }
 
+/* rps schema section — reduce gap from above content */
+.mdx-content h2:last-of-type,
+.mdx-content h2:has(+ pre),
+.mdx-content h2:has(+ div > pre) {
+  margin-top: 32px !important;
+}
+
 /* API inner tabs (inside tabpanel) — keep Mintlify default line style */
 
 /* Left nav: remove right border */
