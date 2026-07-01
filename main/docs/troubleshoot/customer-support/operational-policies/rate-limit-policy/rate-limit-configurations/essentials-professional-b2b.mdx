@@ -10,136 +10,118 @@ sidebarTitle: Essentials and Professional
   <Tab title="Dev">
     <Tabs>
       <Tab title="Authentication API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 25 | 25/second | — |
-| **Global (all endpoints)** | `All` | 10 | 150/minute | — |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/minute | To a unique user ID |
-| [Change Password / Reset Password](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/minute | From an IP address to a unique email address |
-| [Get Passwordless Code or Link](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hour | From an IP address |
-| [Native Social Login (Apple / Facebook)](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/minute | Any request |
-| [Dynamic Application (Client) Registration](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/second | Any request |
-| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/second | Any request |
-| [Pushed Authorization Requests (PAR)](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | 100 | 100/second | From an IP address |
-| [Back-Channel Authorize (CIBA)](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | 500 | 500/minute | From an IP address |
-| [Device Code Activation (no prompt)](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 30 | 6/second | From an IP address |
-| [Device Code Authorization](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 5 | 5/second | From an IP address |
-| [MFA OOB Token Exchange](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | 12 | 12/minute | To a unique session |
-| [Custom Token Exchange](/docs/authenticate/custom-token-exchange) | `POST` | 4 | 4/second | Any request |
-| [On-Behalf-Of Token Exchange](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 8 | 8/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 25 | 25/sec | — | — |
+| **Global (all...** | `All` | 10 | 150/min | — | — |
+| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/min | — | To a unique user ID |
+| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/min | — | From an IP address to a unique email address |
+| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hr | — | From an IP address |
+| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/min | — | Any request |
+| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/sec | — | Any request |
+| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/sec | — | Any request |
+| [Pushed Authorization...](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | 100 | 100/sec | — | From an IP address |
+| [Back-Channel Authorize...](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | 500 | 500/min | — | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 30 | 6/sec | — | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 5 | 5/sec | — | From an IP address |
+| [MFA OOB...](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | 12 | 12/min | — | To a unique session |
+| [Custom Token...](/docs/authenticate/custom-token-exchange) | `POST` | 4 | 4/sec | — | Any request |
+| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 8 | 8/sec | — | Any request |
       </Tab>
       <Tab title="Management API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 10 | 150/minute | — |
-| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | 5 | 50/minute | Any request |
-| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | 40 | 500/minute | Any request |
-| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`, `PATCH` | 20 | 200/minute | Any request |
-| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | 10 | 100/minute | Any request |
-| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | 5 | 100/minute | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 10 | 150/min | — | — |
+| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | 5 | 50/min | — | Any request |
+| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | 40 | 500/min | — | Any request |
+| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`, `PATCH` | 20 | 200/min | — | Any request |
+| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | 10 | 100/min | — | Any request |
+| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | 5 | 100/min | — | Any request |
       </Tab>
       <Tab title="SCIM API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| Global tenant limit (all SCIM connections) | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 100 | 100/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 100 | 100/sec | — | Any request |
       </Tab>
     </Tabs>
   </Tab>
   <Tab title="Staging">
     <Tabs>
       <Tab title="Authentication API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 25 | 25/second | — |
-| **Global (all endpoints)** | `All` | 10 | 150/minute | — |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/minute | To a unique user ID |
-| [Change Password / Reset Password](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/minute | From an IP address to a unique email address |
-| [Get Passwordless Code or Link](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hour | From an IP address |
-| [Native Social Login (Apple / Facebook)](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/minute | Any request |
-| [Dynamic Application (Client) Registration](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/second | Any request |
-| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/second | Any request |
-| [Pushed Authorization Requests (PAR)](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | 100 | 100/second | From an IP address |
-| [Back-Channel Authorize (CIBA)](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | 500 | 500/minute | From an IP address |
-| [Device Code Activation (no prompt)](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 30 | 6/second | From an IP address |
-| [Device Code Authorization](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 5 | 5/second | From an IP address |
-| [MFA OOB Token Exchange](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | 12 | 12/minute | To a unique session |
-| [Custom Token Exchange](/docs/authenticate/custom-token-exchange) | `POST` | 4 | 4/second | Any request |
-| [On-Behalf-Of Token Exchange](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 8 | 8/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 25 | 25/sec | — | — |
+| **Global (all...** | `All` | 10 | 150/min | — | — |
+| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/min | — | To a unique user ID |
+| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/min | — | From an IP address to a unique email address |
+| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hr | — | From an IP address |
+| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/min | — | Any request |
+| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/sec | — | Any request |
+| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/sec | — | Any request |
+| [Pushed Authorization...](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | 100 | 100/sec | — | From an IP address |
+| [Back-Channel Authorize...](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | 500 | 500/min | — | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 30 | 6/sec | — | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 5 | 5/sec | — | From an IP address |
+| [MFA OOB...](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | 12 | 12/min | — | To a unique session |
+| [Custom Token...](/docs/authenticate/custom-token-exchange) | `POST` | 4 | 4/sec | — | Any request |
+| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 8 | 8/sec | — | Any request |
       </Tab>
       <Tab title="Management API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 10 | 150/minute | — |
-| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | 5 | 50/minute | Any request |
-| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | 40 | 500/minute | Any request |
-| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`, `PATCH` | 20 | 200/minute | Any request |
-| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | 10 | 100/minute | Any request |
-| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | 5 | 100/minute | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 10 | 150/min | — | — |
+| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | 5 | 50/min | — | Any request |
+| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | 40 | 500/min | — | Any request |
+| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`, `PATCH` | 20 | 200/min | — | Any request |
+| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | 10 | 100/min | — | Any request |
+| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | 5 | 100/min | — | Any request |
       </Tab>
       <Tab title="SCIM API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| Global tenant limit (all SCIM connections) | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 100 | 100/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 100 | 100/sec | — | Any request |
       </Tab>
     </Tabs>
   </Tab>
   <Tab title="Prod">
     <Tabs>
       <Tab title="Authentication API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 25 | 25/second | — |
-| **Global (all endpoints)** | `All` | 10 | 150/minute | — |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/minute | To a unique user ID |
-| [Change Password / Reset Password](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/minute | From an IP address to a unique email address |
-| [Get Passwordless Code or Link](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hour | From an IP address |
-| [Native Social Login (Apple / Facebook)](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/minute | Any request |
-| [Dynamic Application (Client) Registration](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/second | Any request |
-| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/second | Any request |
-| [Pushed Authorization Requests (PAR)](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | 100 | 100/second | From an IP address |
-| [Back-Channel Authorize (CIBA)](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | 500 | 500/minute | From an IP address |
-| [Device Code Activation (no prompt)](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 30 | 6/second | From an IP address |
-| [Device Code Authorization](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 5 | 5/second | From an IP address |
-| [MFA OOB Token Exchange](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | 12 | 12/minute | To a unique session |
-| [Custom Token Exchange](/docs/authenticate/custom-token-exchange) | `POST` | 4 | 4/second | Any request |
-| [On-Behalf-Of Token Exchange](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 8 | 8/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 25 | 25/sec | — | — |
+| **Global (all...** | `All` | 10 | 150/min | — | — |
+| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/min | — | To a unique user ID |
+| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/min | — | From an IP address to a unique email address |
+| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hr | — | From an IP address |
+| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/min | — | Any request |
+| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/sec | — | Any request |
+| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/sec | — | Any request |
+| [Pushed Authorization...](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | 100 | 100/sec | — | From an IP address |
+| [Back-Channel Authorize...](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | 500 | 500/min | — | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 30 | 6/sec | — | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 5 | 5/sec | — | From an IP address |
+| [MFA OOB...](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | 12 | 12/min | — | To a unique session |
+| [Custom Token...](/docs/authenticate/custom-token-exchange) | `POST` | 4 | 4/sec | — | Any request |
+| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 8 | 8/sec | — | Any request |
       </Tab>
       <Tab title="Management API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 10 | 150/minute | — |
-| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | 5 | 50/minute | Any request |
-| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | 40 | 500/minute | Any request |
-| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`, `PATCH` | 20 | 200/minute | Any request |
-| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | 10 | 100/minute | Any request |
-| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | 5 | 100/minute | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 10 | 150/min | — | — |
+| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | 5 | 50/min | — | Any request |
+| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | 40 | 500/min | — | Any request |
+| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`, `PATCH` | 20 | 200/min | — | Any request |
+| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | 10 | 100/min | — | Any request |
+| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | 5 | 100/min | — | Any request |
       </Tab>
       <Tab title="SCIM API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| Global tenant limit (all SCIM connections) | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 100 | 100/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 100 | 100/sec | — | Any request |
       </Tab>
     </Tabs>
   </Tab>
 </Tabs>
-
-
-## `rps schema`
-
-```json
-{
-  "api": "Authentication API",
-  "global_limit": { "burst": 100, "sustained": "100/second" },
-  "endpoint_override": {
-    "path": "/userinfo",
-    "method": "GET",
-    "burst": 10,
-    "sustained": "5/minute",
-    "limit_key": "unique user ID"
-  }
-}
-```
-

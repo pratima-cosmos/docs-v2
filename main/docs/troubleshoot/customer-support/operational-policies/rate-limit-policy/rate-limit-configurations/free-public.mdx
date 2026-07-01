@@ -10,131 +10,113 @@ sidebarTitle: Free
   <Tab title="Dev">
     <Tabs>
       <Tab title="Authentication API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 300 | 5/minute | — |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/minute | To a unique user ID |
-| [Change Password / Reset Password](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/minute | From an IP address to a unique email address |
-| [Get Passwordless Code or Link](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hour | From an IP address |
-| [Get Token](https://auth0.com/docs/api/authentication#get-token) | `POST` | 30 | 30/second | Any request |
-| [Cross-Origin Authentication](https://auth0.com/docs/api/authentication#cross-origin-authentication) | `POST` | 5 | 5/second | Any request |
-| [JSON Web Token Keys](https://auth0.com/docs/api/authentication#get-json-web-key-sets) | `GET` | 20 | 20/second | Any request |
-| [Native Social Login (Apple / Facebook)](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 50/minute | Any request |
-| [Dynamic Application (Client) Registration](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/second | Any request |
-| [On-Behalf-Of Token Exchange](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 2 | 2/second | Any request |
-| [Rotate Signing Keys](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | Any request |
-| [Write Email Templates](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Email Templates](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/minute | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 300 | 5/min | — | — |
+| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/min | — | To a unique user ID |
+| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/min | — | From an IP address to a unique email address |
+| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hr | — | From an IP address |
+| [Get Token](https://auth0.com/docs/api/authentication#get-token) | `POST` | 30 | 30/sec | — | Any request |
+| [Cross-Origin Authentication](https://auth0.com/docs/api/authentication#cross-origin-authentication) | `POST` | 5 | 5/sec | — | Any request |
+| [JSON Web...](https://auth0.com/docs/api/authentication#get-json-web-key-sets) | `GET` | 20 | 20/sec | — | Any request |
+| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 50/min | — | Any request |
+| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/sec | — | Any request |
+| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 2 | 2/sec | — | Any request |
+| [Rotate Signing...](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | — | Any request |
+| [Write Email...](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Email...](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/min | — | Any request |
       </Tab>
       <Tab title="Management API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 2 | 2/second | — |
-| [Rotate Signing Keys](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | Any request |
-| [Write Email Templates](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Email Templates](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/minute | Any request |
-| [Write Email Provider](https://auth0.com/docs/api/management/v2/emails/patch-provider) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Email Provider](https://auth0.com/docs/api/management/v2/emails/get-provider) | `GET` | 5 | 25/minute | Any request |
-| Global tenant limit (all SCIM connections) | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 2 | 2/sec | — | — |
+| [Rotate Signing...](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | — | Any request |
+| [Write Email...](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Email...](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/min | — | Any request |
+| [Write Email...](https://auth0.com/docs/api/management/v2/emails/patch-provider) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Email...](https://auth0.com/docs/api/management/v2/emails/get-provider) | `GET` | 5 | 25/min | — | Any request |
+| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/sec | — | Any request |
       </Tab>
       <Tab title="SCIM API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| Global tenant limit (all SCIM connections) | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/sec | — | Any request |
       </Tab>
     </Tabs>
   </Tab>
   <Tab title="Staging">
     <Tabs>
       <Tab title="Authentication API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 300 | 5/minute | — |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/minute | To a unique user ID |
-| [Change Password / Reset Password](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/minute | From an IP address to a unique email address |
-| [Get Passwordless Code or Link](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hour | From an IP address |
-| [Get Token](https://auth0.com/docs/api/authentication#get-token) | `POST` | 30 | 30/second | Any request |
-| [Cross-Origin Authentication](https://auth0.com/docs/api/authentication#cross-origin-authentication) | `POST` | 5 | 5/second | Any request |
-| [JSON Web Token Keys](https://auth0.com/docs/api/authentication#get-json-web-key-sets) | `GET` | 20 | 20/second | Any request |
-| [Native Social Login (Apple / Facebook)](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 50/minute | Any request |
-| [Dynamic Application (Client) Registration](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/second | Any request |
-| [On-Behalf-Of Token Exchange](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 2 | 2/second | Any request |
-| [Rotate Signing Keys](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | Any request |
-| [Write Email Templates](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Email Templates](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/minute | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 300 | 5/min | — | — |
+| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/min | — | To a unique user ID |
+| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/min | — | From an IP address to a unique email address |
+| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hr | — | From an IP address |
+| [Get Token](https://auth0.com/docs/api/authentication#get-token) | `POST` | 30 | 30/sec | — | Any request |
+| [Cross-Origin Authentication](https://auth0.com/docs/api/authentication#cross-origin-authentication) | `POST` | 5 | 5/sec | — | Any request |
+| [JSON Web...](https://auth0.com/docs/api/authentication#get-json-web-key-sets) | `GET` | 20 | 20/sec | — | Any request |
+| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 50/min | — | Any request |
+| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/sec | — | Any request |
+| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 2 | 2/sec | — | Any request |
+| [Rotate Signing...](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | — | Any request |
+| [Write Email...](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Email...](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/min | — | Any request |
       </Tab>
       <Tab title="Management API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 2 | 2/second | — |
-| [Rotate Signing Keys](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | Any request |
-| [Write Email Templates](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Email Templates](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/minute | Any request |
-| [Write Email Provider](https://auth0.com/docs/api/management/v2/emails/patch-provider) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Email Provider](https://auth0.com/docs/api/management/v2/emails/get-provider) | `GET` | 5 | 25/minute | Any request |
-| Global tenant limit (all SCIM connections) | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 2 | 2/sec | — | — |
+| [Rotate Signing...](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | — | Any request |
+| [Write Email...](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Email...](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/min | — | Any request |
+| [Write Email...](https://auth0.com/docs/api/management/v2/emails/patch-provider) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Email...](https://auth0.com/docs/api/management/v2/emails/get-provider) | `GET` | 5 | 25/min | — | Any request |
+| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/sec | — | Any request |
       </Tab>
       <Tab title="SCIM API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| Global tenant limit (all SCIM connections) | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/sec | — | Any request |
       </Tab>
     </Tabs>
   </Tab>
   <Tab title="Prod">
     <Tabs>
       <Tab title="Authentication API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 300 | 5/minute | — |
-| **Global (all endpoints)** | `All` | 2 | 2/second | — |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/minute | To a unique user ID |
-| [Change Password / Reset Password](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/minute | From an IP address to a unique email address |
-| [Get Passwordless Code or Link](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hour | From an IP address |
-| [Get Token](https://auth0.com/docs/api/authentication#get-token) | `POST` | 30 | 30/second | Any request |
-| [Cross-Origin Authentication](https://auth0.com/docs/api/authentication#cross-origin-authentication) | `POST` | 5 | 5/second | Any request |
-| [JSON Web Token Keys](https://auth0.com/docs/api/authentication#get-json-web-key-sets) | `GET` | 20 | 20/second | Any request |
-| [Native Social Login (Apple / Facebook)](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 50/minute | Any request |
-| [Dynamic Application (Client) Registration](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/second | Any request |
-| [On-Behalf-Of Token Exchange](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 2 | 2/second | Any request |
-| [Rotate Signing Keys](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | Any request |
-| [Write Email Templates](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Email Templates](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/minute | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 300 | 5/min | — | — |
+| **Global (all...** | `All` | 2 | 2/sec | — | — |
+| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/min | — | To a unique user ID |
+| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/min | — | From an IP address to a unique email address |
+| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hr | — | From an IP address |
+| [Get Token](https://auth0.com/docs/api/authentication#get-token) | `POST` | 30 | 30/sec | — | Any request |
+| [Cross-Origin Authentication](https://auth0.com/docs/api/authentication#cross-origin-authentication) | `POST` | 5 | 5/sec | — | Any request |
+| [JSON Web...](https://auth0.com/docs/api/authentication#get-json-web-key-sets) | `GET` | 20 | 20/sec | — | Any request |
+| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 50/min | — | Any request |
+| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/sec | — | Any request |
+| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 2 | 2/sec | — | Any request |
+| [Rotate Signing...](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | — | Any request |
+| [Write Email...](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Email...](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/min | — | Any request |
       </Tab>
       <Tab title="Management API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| **Global (all endpoints)** | `All` | 2 | 2/second | — |
-| [Rotate Signing Keys](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | Any request |
-| [Write Email Templates](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Email Templates](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/minute | Any request |
-| [Write Email Provider](https://auth0.com/docs/api/management/v2/emails/patch-provider) | `POST`, `PATCH`, `DELETE` | 5 | 25/minute | Any request |
-| [Read Email Provider](https://auth0.com/docs/api/management/v2/emails/get-provider) | `GET` | 5 | 25/minute | Any request |
-| Global tenant limit (all SCIM connections) | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | 2 | 2/sec | — | — |
+| [Rotate Signing...](https://auth0.com/docs/api/management/v2/keys/post-signing-keys) | `POST` | 5 | 5/day | — | Any request |
+| [Write Email...](https://auth0.com/docs/api/management/v2/email-templates/post-email-templates) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Email...](https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name) | `GET` | 10 | 50/min | — | Any request |
+| [Write Email...](https://auth0.com/docs/api/management/v2/emails/patch-provider) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
+| [Read Email...](https://auth0.com/docs/api/management/v2/emails/get-provider) | `GET` | 5 | 25/min | — | Any request |
+| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/sec | — | Any request |
       </Tab>
       <Tab title="SCIM API">
-| Endpoint | Method | Burst | Sustained | Limit Key |
-| --- | --- | --- | --- | --- |
-| Global tenant limit (all SCIM connections) | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/second | Any request |
+| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- |
+| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 5 | 5/sec | — | Any request |
       </Tab>
     </Tabs>
   </Tab>
 </Tabs>
-
-
-## `rps schema`
-
-```json
-{
-  "api": "Authentication API",
-  "global_limit": { "burst": 100, "sustained": "100/second" },
-  "endpoint_override": {
-    "path": "/userinfo",
-    "method": "GET",
-    "burst": 10,
-    "sustained": "5/minute",
-    "limit_key": "unique user ID"
-  }
-}
-```
-
