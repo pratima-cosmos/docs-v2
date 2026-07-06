@@ -2,6 +2,7 @@
 description: Rate limit policies for the Essentials and Professional subscription tier.
 title: Essentials and Professional
 sidebarTitle: Essentials and Professional
+mode: wide
 ---
 
 <div style={{marginTop: "24px"}} />
@@ -10,118 +11,244 @@ sidebarTitle: Essentials and Professional
   <Tab title="Dev">
     <Tabs>
       <Tab title="Authentication API">
-| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
-| --- | --- | --- | --- | --- | --- |
-| **Global (all...** | `All` | 25 | 25/sec | — | — |
-| **Global (all...** | `All` | 10 | 150/min | — | — |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/min | — | To a unique user ID |
-| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/min | — | From an IP address to a unique email address |
-| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hr | — | From an IP address |
-| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/min | — | Any request |
-| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/sec | — | Any request |
-| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/sec | — | Any request |
-| [Pushed Authorization...](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | 100 | 100/sec | — | From an IP address |
-| [Back-Channel Authorize...](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | 500 | 500/min | — | From an IP address |
-| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 30 | 6/sec | — | From an IP address |
-| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 5 | 5/sec | — | From an IP address |
-| [MFA OOB...](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | 12 | 12/min | — | To a unique session |
-| [Custom Token...](/docs/authenticate/custom-token-exchange) | `POST` | 4 | 4/sec | — | Any request |
-| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 8 | 8/sec | — | Any request |
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | auth-global | — | 25 | 25/sec | 25/sec | — |
+| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`<br/>`POST` | auth-userinfo | User Profile | 10 | 5/min | 5/min | To a unique user ID |
+| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | auth-change-passwo… | Password | 10 | 1/min | 1/min | IP address + email |
+| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`<br/>`POST` | auth-passwordless-… | Passwordless | 50 | 50/hr | 50/hr | From an IP address |
+| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | auth-native-social… | Social Login | 50 | 500/min | 500/min | Any request |
+| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | auth-dynamic-clien… | Client Registration | 5 | 5/sec | 5/sec | Any request |
+| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | auth-universal-log… | Logout | 35 | 35/sec | 35/sec | Any request |
+| [Pushed Authorization...](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | auth-par | PAR | 100 | 100/sec | 100/sec | From an IP address |
+| [Back-Channel Authorize...](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | auth-ciba | CIBA | 500 | 500/min | 500/min | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | auth-device-code-a… | Device Code | 30 | 6/sec | 6/sec | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | auth-device-code-a… | Device Code | 5 | 5/sec | 5/sec | From an IP address |
+| [MFA OOB...](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | auth-mfa-oob | MFA | 12 | 12/min | 12/min | To a unique session |
+| [Custom Token...](/docs/authenticate/custom-token-exchange) | `POST` | auth-custom-token-… | Token Exchange | 4 | 4/sec | 4/sec | Any request |
+| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | auth-on-behalf-of-… | Token Exchange | 8 | 8/sec | 8/sec | Any request |
       </Tab>
       <Tab title="Management API">
-| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
-| --- | --- | --- | --- | --- | --- |
-| **Global (all...** | `All` | 10 | 150/min | — | — |
-| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | 5 | 50/min | — | Any request |
-| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
-| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | 40 | 500/min | — | Any request |
-| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`, `PATCH` | 20 | 200/min | — | Any request |
-| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | 10 | 100/min | — | Any request |
-| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | 5 | 100/min | — | Any request |
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | mgmt-global | — | 10 | 150/min | 150/min | — |
+| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | mgmt-read-orgs | Organizations | 5 | 50/min | 50/min | Any request |
+| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`<br/>`PATCH`<br/>`DELETE` | mgmt-write-orgs | Organizations | 5 | 25/min | 25/min | Any request |
+| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | mgmt-read-users | Users | 40 | 500/min | 500/min | Any request |
+| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`<br/>`PATCH` | mgmt-write-users | Users | 20 | 200/min | 200/min | Any request |
+| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | mgmt-read-logs | Logs | 10 | 100/min | 100/min | Any request |
+| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | mgmt-read-clients | Clients | 5 | 100/min | 100/min | Any request |
       </Tab>
       <Tab title="SCIM API">
-| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
-| --- | --- | --- | --- | --- | --- |
-| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 100 | 100/sec | — | Any request |
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Global tenant... | `GET`<br/>`POST`<br/>`PUT`<br/>`PATCH`<br/>`DELETE` | scim-global | — | 100 | 100/sec | 100/sec | Any request |
+      </Tab>
+      <Tab title="My Account API">
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Read Authentication Methods (Tenant) | `GET` | ma-tenant-read | Authentication Methods | 5 | 5/sec | 5/sec | Any request |
+| Write Authentication Methods (Tenant) | `POST`<br/>`PUT`<br/>`DELETE` | ma-tenant-write | Authentication Methods | 5 | 5/sec | 5/sec | Any request |
+| Read Authentication Methods (Filtered, Tenant) | `GET` | ma-tenant-filtered | Authentication Methods | 20 | 20/sec | 20/sec | Any request |
+| Read Authentication Methods (User) | `GET` | ma-user-read | Authentication Methods | 5 | 5/min | 5/min | To a unique user ID |
+| Write Authentication Methods (User) | `POST`<br/>`PUT`<br/>`DELETE` | ma-user-write | Authentication Methods | 5 | 5/min | 5/min | To a unique user ID |
+| Read Authentication Methods (Filtered, User) | `GET` | ma-user-filtered | Authentication Methods | 10 | 10/min | 10/min | To a unique user ID |
+      </Tab>
+      <Tab title="Universal Login Flow">
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Universal login prompts (global) | `GET`<br/>`POST` | ul-global | Universal Login | 500 | 500/min | 500/min | From an IP Address |
+| Universal login prompts (per prompt) | `GET` | ul-per-prompt-get | Universal Login | 20 | 10/min | 10/min | From an IP Address and state value. |
+| Universal login prompts (per prompt) | `POST` | ul-per-prompt-post | Universal Login | 10 | 5/min | 5/min | From an IP Address |
+| Password reset prompt | `GET` | ul-password-reset | Universal Login | 500 | 500/min | 500/min | From an IP Address |
+| MFA push enrollment prompt | `GET`<br/>`POST` | ul-mfa-push-enroll | MFA Push | 500 | 500/min | 500/min | From an IP Address |
+| MFA push challenge prompt | `GET`<br/>`POST` | ul-mfa-push-chal | MFA Push | 500 | 500/min | 500/min | From an IP Address |
+| MFA SMS enrollment prompt | `GET` | ul-mfa-sms-enr-get | MFA SMS | 20 | 10/min | 10/min | From an IP Address |
+| MFA SMS enrollment prompt | `POST` | ul-mfa-sms-enr-pst | MFA SMS | 10 | 5/min | 5/min | From an IP Address |
+| MFA SMS enrollment verify prompt | `GET` | ul-mfa-sms-ver-get | MFA SMS | 20 | 10/min | 10/min | From an IP Address |
+| MFA SMS enrollment verify prompt | `POST` | ul-mfa-sms-ver-pst | MFA SMS | 10 | 5/min | 5/min | From an IP Address |
+| Passwordless SMS challenge prompt | `GET`<br/>`POST` | ul-pwless-sms | Passwordless | 5 | 5/min | 5/min | From an IP Address |
+| Passwordless email challenge prompt | `GET`<br/>`POST` | ul-pwless-email | Passwordless | 5 | 5/min | 5/min | From an IP Address |
+| Phone verification enrollment prompt | `GET`<br/>`POST` | ul-phone-enroll | Phone Verification | 5 | 5/min | 5/min | From an IP Address |
+| Phone verification challenge prompt | `GET`<br/>`POST` | ul-phone-challenge | Phone Verification | 5 | 5/min | 5/min | From an IP Address |
+| Device code prompt | `GET`<br/>`POST` | ul-device-code | Device Code | 5 | 5/sec | 5/sec | From an IP Address |
       </Tab>
     </Tabs>
   </Tab>
   <Tab title="Staging">
     <Tabs>
       <Tab title="Authentication API">
-| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
-| --- | --- | --- | --- | --- | --- |
-| **Global (all...** | `All` | 25 | 25/sec | — | — |
-| **Global (all...** | `All` | 10 | 150/min | — | — |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/min | — | To a unique user ID |
-| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/min | — | From an IP address to a unique email address |
-| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hr | — | From an IP address |
-| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/min | — | Any request |
-| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/sec | — | Any request |
-| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/sec | — | Any request |
-| [Pushed Authorization...](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | 100 | 100/sec | — | From an IP address |
-| [Back-Channel Authorize...](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | 500 | 500/min | — | From an IP address |
-| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 30 | 6/sec | — | From an IP address |
-| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 5 | 5/sec | — | From an IP address |
-| [MFA OOB...](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | 12 | 12/min | — | To a unique session |
-| [Custom Token...](/docs/authenticate/custom-token-exchange) | `POST` | 4 | 4/sec | — | Any request |
-| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 8 | 8/sec | — | Any request |
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | auth-global-3 | — | 25 | 25/sec | 25/sec | — |
+| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`<br/>`POST` | auth-userinfo | User Profile | 10 | 5/min | 5/min | To a unique user ID |
+| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | auth-change-passwo… | Password | 10 | 1/min | 1/min | IP address + email |
+| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`<br/>`POST` | auth-passwordless-… | Passwordless | 50 | 50/hr | 50/hr | From an IP address |
+| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | auth-native-social… | Social Login | 50 | 500/min | 500/min | Any request |
+| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | auth-dynamic-clien… | Client Registration | 5 | 5/sec | 5/sec | Any request |
+| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | auth-universal-log… | Logout | 35 | 35/sec | 35/sec | Any request |
+| [Pushed Authorization...](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | auth-par | PAR | 100 | 100/sec | 100/sec | From an IP address |
+| [Back-Channel Authorize...](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | auth-ciba | CIBA | 500 | 500/min | 500/min | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | auth-device-code-a… | Device Code | 30 | 6/sec | 6/sec | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | auth-device-code-a… | Device Code | 5 | 5/sec | 5/sec | From an IP address |
+| [MFA OOB...](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | auth-mfa-oob | MFA | 12 | 12/min | 12/min | To a unique session |
+| [Custom Token...](/docs/authenticate/custom-token-exchange) | `POST` | auth-custom-token-… | Token Exchange | 4 | 4/sec | 4/sec | Any request |
+| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | auth-on-behalf-of-… | Token Exchange | 8 | 8/sec | 8/sec | Any request |
       </Tab>
       <Tab title="Management API">
-| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
-| --- | --- | --- | --- | --- | --- |
-| **Global (all...** | `All` | 10 | 150/min | — | — |
-| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | 5 | 50/min | — | Any request |
-| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
-| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | 40 | 500/min | — | Any request |
-| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`, `PATCH` | 20 | 200/min | — | Any request |
-| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | 10 | 100/min | — | Any request |
-| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | 5 | 100/min | — | Any request |
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | mgmt-global-2 | — | 10 | 150/min | 150/min | — |
+| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | mgmt-read-orgs | Organizations | 5 | 50/min | 50/min | Any request |
+| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`<br/>`PATCH`<br/>`DELETE` | mgmt-write-orgs | Organizations | 5 | 25/min | 25/min | Any request |
+| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | mgmt-read-users | Users | 40 | 500/min | 500/min | Any request |
+| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`<br/>`PATCH` | mgmt-write-users | Users | 20 | 200/min | 200/min | Any request |
+| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | mgmt-read-logs | Logs | 10 | 100/min | 100/min | Any request |
+| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | mgmt-read-clients | Clients | 5 | 100/min | 100/min | Any request |
       </Tab>
       <Tab title="SCIM API">
-| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
-| --- | --- | --- | --- | --- | --- |
-| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 100 | 100/sec | — | Any request |
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Global tenant... | `GET`<br/>`POST`<br/>`PUT`<br/>`PATCH`<br/>`DELETE` | scim-global-2 | — | 100 | 100/sec | 100/sec | Any request |
+      </Tab>
+      <Tab title="My Account API">
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Read Authentication Methods (Tenant) | `GET` | ma-tenant-read | Authentication Methods | 5 | 5/sec | 5/sec | Any request |
+| Write Authentication Methods (Tenant) | `POST`<br/>`PUT`<br/>`DELETE` | ma-tenant-write | Authentication Methods | 5 | 5/sec | 5/sec | Any request |
+| Read Authentication Methods (Filtered, Tenant) | `GET` | ma-tenant-filtered | Authentication Methods | 20 | 20/sec | 20/sec | Any request |
+| Read Authentication Methods (User) | `GET` | ma-user-read | Authentication Methods | 5 | 5/min | 5/min | To a unique user ID |
+| Write Authentication Methods (User) | `POST`<br/>`PUT`<br/>`DELETE` | ma-user-write | Authentication Methods | 5 | 5/min | 5/min | To a unique user ID |
+| Read Authentication Methods (Filtered, User) | `GET` | ma-user-filtered | Authentication Methods | 10 | 10/min | 10/min | To a unique user ID |
+      </Tab>
+      <Tab title="Universal Login Flow">
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Universal login prompts (global) | `GET`<br/>`POST` | ul-global | Universal Login | 500 | 500/min | 500/min | From an IP Address |
+| Universal login prompts (per prompt) | `GET` | ul-per-prompt-get | Universal Login | 20 | 10/min | 10/min | From an IP Address and state value. |
+| Universal login prompts (per prompt) | `POST` | ul-per-prompt-post | Universal Login | 10 | 5/min | 5/min | From an IP Address |
+| Password reset prompt | `GET` | ul-password-reset | Universal Login | 500 | 500/min | 500/min | From an IP Address |
+| MFA push enrollment prompt | `GET`<br/>`POST` | ul-mfa-push-enroll | MFA Push | 500 | 500/min | 500/min | From an IP Address |
+| MFA push challenge prompt | `GET`<br/>`POST` | ul-mfa-push-chal | MFA Push | 500 | 500/min | 500/min | From an IP Address |
+| MFA SMS enrollment prompt | `GET` | ul-mfa-sms-enr-get | MFA SMS | 20 | 10/min | 10/min | From an IP Address |
+| MFA SMS enrollment prompt | `POST` | ul-mfa-sms-enr-pst | MFA SMS | 10 | 5/min | 5/min | From an IP Address |
+| MFA SMS enrollment verify prompt | `GET` | ul-mfa-sms-ver-get | MFA SMS | 20 | 10/min | 10/min | From an IP Address |
+| MFA SMS enrollment verify prompt | `POST` | ul-mfa-sms-ver-pst | MFA SMS | 10 | 5/min | 5/min | From an IP Address |
+| Passwordless SMS challenge prompt | `GET`<br/>`POST` | ul-pwless-sms | Passwordless | 5 | 5/min | 5/min | From an IP Address |
+| Passwordless email challenge prompt | `GET`<br/>`POST` | ul-pwless-email | Passwordless | 5 | 5/min | 5/min | From an IP Address |
+| Phone verification enrollment prompt | `GET`<br/>`POST` | ul-phone-enroll | Phone Verification | 5 | 5/min | 5/min | From an IP Address |
+| Phone verification challenge prompt | `GET`<br/>`POST` | ul-phone-challenge | Phone Verification | 5 | 5/min | 5/min | From an IP Address |
+| Device code prompt | `GET`<br/>`POST` | ul-device-code | Device Code | 5 | 5/sec | 5/sec | From an IP Address |
       </Tab>
     </Tabs>
   </Tab>
   <Tab title="Prod">
     <Tabs>
       <Tab title="Authentication API">
-| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
-| --- | --- | --- | --- | --- | --- |
-| **Global (all...** | `All` | 25 | 25/sec | — | — |
-| **Global (all...** | `All` | 10 | 150/min | — | — |
-| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`, `POST` | 10 | 5/min | — | To a unique user ID |
-| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | 10 | 1/min | — | From an IP address to a unique email address |
-| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`, `POST` | 50 | 50/hr | — | From an IP address |
-| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | 50 | 500/min | — | Any request |
-| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | 5 | 5/sec | — | Any request |
-| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | 35 | 35/sec | — | Any request |
-| [Pushed Authorization...](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | 100 | 100/sec | — | From an IP address |
-| [Back-Channel Authorize...](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | 500 | 500/min | — | From an IP address |
-| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 30 | 6/sec | — | From an IP address |
-| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | 5 | 5/sec | — | From an IP address |
-| [MFA OOB...](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | 12 | 12/min | — | To a unique session |
-| [Custom Token...](/docs/authenticate/custom-token-exchange) | `POST` | 4 | 4/sec | — | Any request |
-| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | 8 | 8/sec | — | Any request |
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | auth-global-5 | — | 25 | 25/sec | 25/sec | — |
+| [User Info](https://auth0.com/docs/api/authentication#get-user-info) | `GET`<br/>`POST` | auth-userinfo | User Profile | 10 | 5/min | 5/min | To a unique user ID |
+| [Change Password...](https://auth0.com/docs/api/authentication#change-password) | `POST` | auth-change-passwo… | Password | 10 | 1/min | 1/min | IP address + email |
+| [Get Passwordless...](https://auth0.com/docs/api/authentication#passwordless) | `GET`<br/>`POST` | auth-passwordless-… | Passwordless | 50 | 50/hr | 50/hr | From an IP address |
+| [Native Social...](https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-) | `POST` | auth-native-social… | Social Login | 50 | 500/min | 500/min | Any request |
+| [Dynamic Application...](https://auth0.com/docs/api/authentication#dynamic-application-client-registration) | `POST` | auth-dynamic-clien… | Client Registration | 5 | 5/sec | 5/sec | Any request |
+| [Universal Logout](https://auth0.com/docs/api/authentication#global-token-revocation) | `POST` | auth-universal-log… | Logout | 35 | 35/sec | 35/sec | Any request |
+| [Pushed Authorization...](https://auth0.com/docs/api/authentication#pushed-authorization-requests) | `POST` | auth-par | PAR | 100 | 100/sec | 100/sec | From an IP address |
+| [Back-Channel Authorize...](https://auth0.com/docs/api/authentication#back-channel-authentication) | `POST` | auth-ciba | CIBA | 500 | 500/min | 500/min | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | auth-device-code-a… | Device Code | 30 | 6/sec | 6/sec | From an IP address |
+| [Device Code...](https://auth0.com/docs/api/authentication#get-device-code) | `POST` | auth-device-code-a… | Device Code | 5 | 5/sec | 5/sec | From an IP address |
+| [MFA OOB...](https://auth0.com/docs/api/authentication#multifactor-authentication) | `POST` | auth-mfa-oob | MFA | 12 | 12/min | 12/min | To a unique session |
+| [Custom Token...](/docs/authenticate/custom-token-exchange) | `POST` | auth-custom-token-… | Token Exchange | 4 | 4/sec | 4/sec | Any request |
+| [On-Behalf-Of Token...](/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange) | `POST` | auth-on-behalf-of-… | Token Exchange | 8 | 8/sec | 8/sec | Any request |
       </Tab>
       <Tab title="Management API">
-| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
-| --- | --- | --- | --- | --- | --- |
-| **Global (all...** | `All` | 10 | 150/min | — | — |
-| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | 5 | 50/min | — | Any request |
-| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`, `PATCH`, `DELETE` | 5 | 25/min | — | Any request |
-| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | 40 | 500/min | — | Any request |
-| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`, `PATCH` | 20 | 200/min | — | Any request |
-| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | 10 | 100/min | — | Any request |
-| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | 5 | 100/min | — | Any request |
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Global (all...** | `All` | mgmt-global-3 | — | 10 | 150/min | 150/min | — |
+| [Read Organizations](https://auth0.com/docs/api/management/v2/organizations/get-organizations) | `GET` | mgmt-read-orgs | Organizations | 5 | 50/min | 50/min | Any request |
+| [Write Organizations](https://auth0.com/docs/api/management/v2/organizations/post-organizations) | `POST`<br/>`PATCH`<br/>`DELETE` | mgmt-write-orgs | Organizations | 5 | 25/min | 25/min | Any request |
+| [Read Users](https://auth0.com/docs/api/management/v2/users/get-users) | `GET` | mgmt-read-users | Users | 40 | 500/min | 500/min | Any request |
+| [Write Users](https://auth0.com/docs/api/management/v2/users/post-users) | `POST`<br/>`PATCH` | mgmt-write-users | Users | 20 | 200/min | 200/min | Any request |
+| [Read Logs](https://auth0.com/docs/api/management/v2/logs/get-logs) | `GET` | mgmt-read-logs | Logs | 10 | 100/min | 100/min | Any request |
+| [Read Clients](https://auth0.com/docs/api/management/v2/clients/get-clients) | `GET` | mgmt-read-clients | Clients | 5 | 100/min | 100/min | Any request |
       </Tab>
       <Tab title="SCIM API">
-| Endpoints |  | Burst | Sustained | Refresh Rate | Scope |
-| --- | --- | --- | --- | --- | --- |
-| Global tenant... | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` | 100 | 100/sec | — | Any request |
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Global tenant... | `GET`<br/>`POST`<br/>`PUT`<br/>`PATCH`<br/>`DELETE` | scim-global-3 | — | 100 | 100/sec | 100/sec | Any request |
+      </Tab>
+      <Tab title="My Account API">
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Read Authentication Methods (Tenant) | `GET` | ma-tenant-read | Authentication Methods | 5 | 5/sec | 5/sec | Any request |
+| Write Authentication Methods (Tenant) | `POST`<br/>`PUT`<br/>`DELETE` | ma-tenant-write | Authentication Methods | 5 | 5/sec | 5/sec | Any request |
+| Read Authentication Methods (Filtered, Tenant) | `GET` | ma-tenant-filtered | Authentication Methods | 20 | 20/sec | 20/sec | Any request |
+| Read Authentication Methods (User) | `GET` | ma-user-read | Authentication Methods | 5 | 5/min | 5/min | To a unique user ID |
+| Write Authentication Methods (User) | `POST`<br/>`PUT`<br/>`DELETE` | ma-user-write | Authentication Methods | 5 | 5/min | 5/min | To a unique user ID |
+| Read Authentication Methods (Filtered, User) | `GET` | ma-user-filtered | Authentication Methods | 10 | 10/min | 10/min | To a unique user ID |
+      </Tab>
+      <Tab title="Universal Login Flow">
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Universal login prompts (global) | `GET`<br/>`POST` | ul-global | Universal Login | 500 | 500/min | 500/min | From an IP Address |
+| Universal login prompts (per prompt) | `GET` | ul-per-prompt-get | Universal Login | 20 | 10/min | 10/min | From an IP Address and state value. |
+| Universal login prompts (per prompt) | `POST` | ul-per-prompt-post | Universal Login | 10 | 5/min | 5/min | From an IP Address |
+| Password reset prompt | `GET` | ul-password-reset | Universal Login | 500 | 500/min | 500/min | From an IP Address |
+| MFA push enrollment prompt | `GET`<br/>`POST` | ul-mfa-push-enroll | MFA Push | 500 | 500/min | 500/min | From an IP Address |
+| MFA push challenge prompt | `GET`<br/>`POST` | ul-mfa-push-chal | MFA Push | 500 | 500/min | 500/min | From an IP Address |
+| MFA SMS enrollment prompt | `GET` | ul-mfa-sms-enr-get | MFA SMS | 20 | 10/min | 10/min | From an IP Address |
+| MFA SMS enrollment prompt | `POST` | ul-mfa-sms-enr-pst | MFA SMS | 10 | 5/min | 5/min | From an IP Address |
+| MFA SMS enrollment verify prompt | `GET` | ul-mfa-sms-ver-get | MFA SMS | 20 | 10/min | 10/min | From an IP Address |
+| MFA SMS enrollment verify prompt | `POST` | ul-mfa-sms-ver-pst | MFA SMS | 10 | 5/min | 5/min | From an IP Address |
+| Passwordless SMS challenge prompt | `GET`<br/>`POST` | ul-pwless-sms | Passwordless | 5 | 5/min | 5/min | From an IP Address |
+| Passwordless email challenge prompt | `GET`<br/>`POST` | ul-pwless-email | Passwordless | 5 | 5/min | 5/min | From an IP Address |
+| Phone verification enrollment prompt | `GET`<br/>`POST` | ul-phone-enroll | Phone Verification | 5 | 5/min | 5/min | From an IP Address |
+| Phone verification challenge prompt | `GET`<br/>`POST` | ul-phone-challenge | Phone Verification | 5 | 5/min | 5/min | From an IP Address |
+| Device code prompt | `GET`<br/>`POST` | ul-device-code | Device Code | 5 | 5/sec | 5/sec | From an IP Address |
       </Tab>
     </Tabs>
   </Tab>
 </Tabs>
+
+<div style={{marginTop: "32px"}} />
+
+## Additional MFA rate limits
+
+<Accordion title="Show details">
+<Tabs>
+  <Tab title="Dev">
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| OTP (6 numeric digits) failures | — | mfa-otp-fail | OTP | 10 | 10/hr | 10/hr | To a unique User ID |
+| Recovery code failures | — | mfa-recovery-fail | Recovery Code | 10 | 10/hr | 10/hr | To a unique User ID |
+| Webauthn challenge failures | — | mfa-webauthn-fail | WebAuthn | 15 | 15/min | 15/min | To a unique User ID |
+| Webauthn challenge generated | — | mfa-webauthn-gen | WebAuthn | 15 | 15/min | 15/min | To a unique User ID |
+| Push notifications sent per user | — | mfa-push-sent | Push Notification | 5 | 5/min | 5/min | To a unique User ID |
+| SMS sent per user | — | mfa-sms-sent | SMS | 10 | 1/hr | 1/hr | To a unique User ID |
+| Email sent per user | — | mfa-email-sent | Email | 20 | 1/min | 1/min | To a unique User ID |
+  </Tab>
+  <Tab title="Staging">
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| OTP (6 numeric digits) failures | — | mfa-otp-fail | OTP | 10 | 10/hr | 10/hr | To a unique User ID |
+| Recovery code failures | — | mfa-recovery-fail | Recovery Code | 10 | 10/hr | 10/hr | To a unique User ID |
+| Webauthn challenge failures | — | mfa-webauthn-fail | WebAuthn | 15 | 15/min | 15/min | To a unique User ID |
+| Webauthn challenge generated | — | mfa-webauthn-gen | WebAuthn | 15 | 15/min | 15/min | To a unique User ID |
+| Push notifications sent per user | — | mfa-push-sent | Push Notification | 5 | 5/min | 5/min | To a unique User ID |
+| SMS sent per user | — | mfa-sms-sent | SMS | 10 | 1/hr | 1/hr | To a unique User ID |
+| Email sent per user | — | mfa-email-sent | Email | 20 | 1/min | 1/min | To a unique User ID |
+  </Tab>
+  <Tab title="Prod">
+| Endpoints | Methods | ID | Resource | [Burst RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | [Sustained RPS](/docs/troubleshoot/customer-support/operational-policies/rate-limit-policy#rate-limit-algorithm) | Refresh Rate | Scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| OTP (6 numeric digits) failures | — | mfa-otp-fail | OTP | 10 | 10/hr | 10/hr | To a unique User ID |
+| Recovery code failures | — | mfa-recovery-fail | Recovery Code | 10 | 10/hr | 10/hr | To a unique User ID |
+| Webauthn challenge failures | — | mfa-webauthn-fail | WebAuthn | 15 | 15/min | 15/min | To a unique User ID |
+| Webauthn challenge generated | — | mfa-webauthn-gen | WebAuthn | 15 | 15/min | 15/min | To a unique User ID |
+| Push notifications sent per user | — | mfa-push-sent | Push Notification | 5 | 5/min | 5/min | To a unique User ID |
+| SMS sent per user | — | mfa-sms-sent | SMS | 10 | 1/hr | 1/hr | To a unique User ID |
+| Email sent per user | — | mfa-email-sent | Email | 20 | 1/min | 1/min | To a unique User ID |
+  </Tab>
+</Tabs>
+</Accordion>

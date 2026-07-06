@@ -1,0 +1,253 @@
+{
+  "schemaVersion": "1.0",
+  "tier": "free-public",
+  "label": "Free",
+  "lastVerified": "2026-07-06",
+  "apis": [
+    {
+      "name": "Authentication API",
+      "globalLimits": [
+        {
+          "environment": "production",
+          "burstRps": 300,
+          "sustainedRps": 5
+        }
+      ],
+      "endpointPolicies": [
+        {
+          "policyId": "auth-userinfo",
+          "name": "User Info",
+          "resource": "User Profile",
+          "paths": ["/userinfo"],
+          "methods": ["GET", "POST"],
+          "burstLimit": 10,
+          "sustainedLimit": 5,
+          "sustainedWindow": "minute",
+          "limitKey": "user_id",
+          "docsLink": "https://auth0.com/docs/api/authentication#get-user-info"
+        },
+        {
+          "policyId": "auth-change-password",
+          "name": "Change Password / Reset Password",
+          "resource": "Password",
+          "paths": ["/dbconnections/change_password"],
+          "methods": ["POST"],
+          "burstLimit": 10,
+          "sustainedLimit": 1,
+          "sustainedWindow": "minute",
+          "limitKey": "email",
+          "docsLink": "https://auth0.com/docs/api/authentication#change-password"
+        },
+        {
+          "policyId": "auth-passwordless-start",
+          "name": "Get Passwordless Code or Link",
+          "resource": "Passwordless",
+          "paths": ["/passwordless/start"],
+          "methods": ["GET", "POST"],
+          "burstLimit": 50,
+          "sustainedLimit": 50,
+          "sustainedWindow": "hour",
+          "limitKey": "ip",
+          "docsLink": "https://auth0.com/docs/api/authentication#passwordless"
+        },
+        {
+          "policyId": "auth-get-token",
+          "name": "Get Token",
+          "resource": "Tokens",
+          "paths": ["/oauth/token"],
+          "methods": ["POST"],
+          "burstLimit": 30,
+          "sustainedLimit": 30,
+          "sustainedWindow": "second",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/authentication#get-token"
+        },
+        {
+          "policyId": "auth-cross-origin",
+          "name": "Cross-Origin Authentication",
+          "resource": "Cross-Origin Auth",
+          "paths": ["/co/authenticate"],
+          "methods": ["POST"],
+          "burstLimit": 5,
+          "sustainedLimit": 5,
+          "sustainedWindow": "second",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/authentication#cross-origin-authentication"
+        },
+        {
+          "policyId": "auth-jwks",
+          "name": "JSON Web Token Keys",
+          "resource": "JWKS",
+          "paths": ["/.well-known/jwks.json"],
+          "methods": ["GET"],
+          "burstLimit": 20,
+          "sustainedLimit": 20,
+          "sustainedWindow": "second",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/authentication#get-json-web-key-sets"
+        },
+        {
+          "policyId": "auth-native-social-login",
+          "name": "Native Social Login (Apple / Facebook)",
+          "resource": "Social Login",
+          "paths": ["/oauth/token"],
+          "methods": ["POST"],
+          "burstLimit": 50,
+          "sustainedLimit": 50,
+          "sustainedWindow": "minute",
+          "limitKey": "any",
+          "notes": "Apple or Facebook Native Social Login only",
+          "docsLink": "https://auth0.com/docs/api/authentication#verify-with-one-time-password-otp-"
+        },
+        {
+          "policyId": "auth-dynamic-client-registration",
+          "name": "Dynamic Application (Client) Registration",
+          "resource": "Client Registration",
+          "paths": ["/oidc/register"],
+          "methods": ["POST"],
+          "burstLimit": 5,
+          "sustainedLimit": 5,
+          "sustainedWindow": "second",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/authentication#dynamic-application-client-registration"
+        },
+        {
+          "policyId": "auth-on-behalf-of-token-exchange",
+          "name": "On-Behalf-Of Token Exchange",
+          "resource": "Token Exchange",
+          "paths": ["/oauth/token"],
+          "methods": ["POST"],
+          "burstLimit": 2,
+          "sustainedLimit": 2,
+          "sustainedWindow": "second",
+          "limitKey": "any",
+          "docsLink": "/docs/secure/call-apis-on-users-behalf/on-behalf-of-token-exchange"
+        }
+      ]
+    },
+    {
+      "name": "Management API",
+      "globalLimits": [
+        {
+          "environment": "production",
+          "burstRps": 2,
+          "sustainedRps": 2
+        }
+      ],
+      "endpointPolicies": [
+        {
+          "policyId": "mgmt-verify-custom-domain",
+          "name": "Verify Custom Domain",
+          "resource": "Custom Domains",
+          "paths": ["/api/v2/custom-domains/{id}/verify"],
+          "methods": ["POST"],
+          "burstLimit": 5,
+          "sustainedLimit": 5,
+          "sustainedWindow": "minute",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/management/v2/custom-domains/post-verify"
+        },
+        {
+          "policyId": "mgmt-read-connection-status",
+          "name": "Read Status Connection",
+          "resource": "Connections",
+          "paths": ["/api/v2/connections/{id}/status"],
+          "methods": ["GET"],
+          "burstLimit": 100,
+          "sustainedLimit": 15,
+          "sustainedWindow": "second",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/management/v2/connections/get-status"
+        },
+        {
+          "policyId": "mgmt-rotate-signing-keys",
+          "name": "Rotate Signing Keys",
+          "resource": "Signing Keys",
+          "paths": ["/api/v2/keys/signing/rotate"],
+          "methods": ["POST"],
+          "burstLimit": 5,
+          "sustainedLimit": 5,
+          "sustainedWindow": "day",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/management/v2/keys/post-signing-keys"
+        },
+        {
+          "policyId": "mgmt-write-email-templates",
+          "name": "Write Email Templates",
+          "resource": "Email Templates",
+          "paths": ["/api/v2/email-templates"],
+          "methods": ["POST", "PATCH", "DELETE"],
+          "burstLimit": 5,
+          "sustainedLimit": 25,
+          "sustainedWindow": "minute",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/management/v2/email-templates/post-email-templates"
+        },
+        {
+          "policyId": "mgmt-read-email-templates",
+          "name": "Read Email Templates",
+          "resource": "Email Templates",
+          "paths": ["/api/v2/email-templates"],
+          "methods": ["GET"],
+          "burstLimit": 10,
+          "sustainedLimit": 50,
+          "sustainedWindow": "minute",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/management/v2/email-templates/get-email-templates-by-template-name"
+        },
+        {
+          "policyId": "mgmt-write-email-provider",
+          "name": "Write Email Provider",
+          "resource": "Email Provider",
+          "paths": ["/api/v2/emails/provider"],
+          "methods": ["POST", "PATCH", "DELETE"],
+          "burstLimit": 5,
+          "sustainedLimit": 25,
+          "sustainedWindow": "minute",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/management/v2/emails/patch-provider"
+        },
+        {
+          "policyId": "mgmt-read-email-provider",
+          "name": "Read Email Provider",
+          "resource": "Email Provider",
+          "paths": ["/api/v2/emails/provider"],
+          "methods": ["GET"],
+          "burstLimit": 5,
+          "sustainedLimit": 25,
+          "sustainedWindow": "minute",
+          "limitKey": "any",
+          "docsLink": "https://auth0.com/docs/api/management/v2/emails/get-provider"
+        }
+      ]
+    },
+    {
+      "name": "SCIM API",
+      "globalLimits": [],
+      "endpointPolicies": [
+        {
+          "policyId": "scim-connection",
+          "name": "Single SCIM connection endpoint",
+          "resource": "SCIM Connections",
+          "paths": ["/scim/v2/connections/{connection-id}"],
+          "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+          "burstLimit": 5,
+          "sustainedLimit": 5,
+          "sustainedWindow": "second",
+          "limitKey": "any"
+        },
+        {
+          "policyId": "scim-tenant-global",
+          "name": "Global tenant limit (all SCIM connections)",
+          "resource": "SCIM Connections",
+          "paths": ["/scim/v2/connections/*"],
+          "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+          "burstLimit": 5,
+          "sustainedLimit": 5,
+          "sustainedWindow": "second",
+          "limitKey": "any"
+        }
+      ]
+    }
+  ]
+}
