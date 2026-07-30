@@ -137,16 +137,42 @@
 
     var clone = bar.cloneNode(true);
     clone.className += " adu-shadow-request-bar";
-    // Match the code-sample card's width instead of whatever width the bar
-    // had in its original (wider) column.
-    clone.style.setProperty("width", "100%", "important");
-    clone.style.setProperty("max-width", "100%", "important");
     clone.style.setProperty("box-sizing", "border-box", "important");
+    clone.style.setProperty("margin-left", "0", "important");
+    clone.style.setProperty("margin-right", "0", "important");
     bar.dataset.aduShadowed = "1";
     bar.style.display = "none";
 
+    // Keep the clone's width in sync with the card's ACTUAL rendered width
+    // on an ongoing basis (not a one-time snapshot) - the card may have its
+    // own width constraint independent of the shared parent, and this needs
+    // to keep matching across window resizes / sidebar toggles.
+    function syncWidth() {
+      var cardWidth = card.getBoundingClientRect().width;
+      clone.style.setProperty("width", cardWidth + "px", "important");
+      clone.style.setProperty("max-width", cardWidth + "px", "important");
+    }
+    syncWidth();
+    if (typeof ResizeObserver !== "undefined") {
+      new ResizeObserver(syncWidth).observe(card);
+    } else {
+      window.addEventListener("resize", syncWidth);
+    }
+
+    // The clone has no event listeners (cloneNode doesn't copy them), so
+    // wire its "Try it" button to trigger the real hidden one instead of
+    // trying to reimplement the playground's open/submit behavior.
+    var cloneTryIt = findTryItAnchor(clone);
+    if (cloneTryIt) {
+      cloneTryIt.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        tryIt.click();
+      });
+    }
+
     card.parentElement.insertBefore(clone, card);
-    return "ok";
+    return cloneTryIt ? "ok" : "ok-no-tryit-wiring";
   }
 
   function enhance() {
