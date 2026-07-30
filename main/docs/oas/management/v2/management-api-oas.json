@@ -70237,7 +70237,6 @@
         "properties": {
           "users": {
             "type": "string",
-            "format": "binary",
             "contentMediaType": "application/octet-stream"
           },
           "connection_id": {
