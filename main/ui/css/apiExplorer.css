@@ -92,12 +92,3 @@
     font-size: 0.875rem;
   }
 }
-
-.adu-autofill-toggle {
-  color: #57606a;
-}
-
-:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
-  .adu-autofill-toggle {
-  color: #a0a8b4;
-}
