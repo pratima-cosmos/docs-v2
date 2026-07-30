@@ -143,6 +143,23 @@
     bar.dataset.aduShadowed = "1";
     bar.style.display = "none";
 
+    // The visual card chrome (rounded border/background) may live on a
+    // wrapper ABOVE `bar`, not on `bar` itself - hiding just `bar` can leave
+    // an empty styled shell behind. Climb up and hide any ancestor whose
+    // only element child is the thing we just hid (safe: never touches an
+    // ancestor with other visible content, and capped at 3 levels).
+    var wrapper = bar.parentElement;
+    var wrapDepth = 0;
+    while (wrapper && wrapper !== card.parentElement && wrapDepth < 3) {
+      var visibleChildren = Array.prototype.filter.call(wrapper.children, function (child) {
+        return child.style.display !== "none";
+      });
+      if (visibleChildren.length > 0) break;
+      wrapper.style.display = "none";
+      wrapper = wrapper.parentElement;
+      wrapDepth++;
+    }
+
     // Keep the clone's width in sync with the card's ACTUAL rendered width
     // on an ongoing basis (not a one-time snapshot) - the card may have its
     // own width constraint independent of the shared parent, and this needs
