@@ -52927,46 +52927,6 @@
           }
         }
       },
-      "NotFoundSchema": {
-        "description": "Not Found",
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "statusCode": {
-            "const": 404
-          },
-          "error": {
-            "const": "Not Found"
-          }
-        },
-        "required": [
-          "message",
-          "statusCode",
-          "error"
-        ]
-      },
-      "TooManyRequestsSchema": {
-        "description": "Too Many Requests",
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "statusCode": {
-            "const": 429
-          },
-          "error": {
-            "const": "Too Many Requests"
-          }
-        },
-        "required": [
-          "message",
-          "statusCode",
-          "error"
-        ]
-      },
       "BadRequestSchema": {
         "description": "Bad Request",
         "type": "object",
