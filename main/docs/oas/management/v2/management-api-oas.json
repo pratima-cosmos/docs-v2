@@ -26317,12 +26317,16 @@
           },
           "400": {
             "description": "Invalid request body. The message will vary depending on the cause.",
-            "x-description-1": "The connection does not exist."
-          ,
+            "x-description-1": "The connection does not exist.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BadRequestSchema"
+                },
+                "example": {
+                  "message": "Invalid request body. The message will vary depending on the cause.",
+                  "statusCode": 400,
+                  "error": "Bad Request"
                 }
               }
             }
@@ -26330,34 +26334,46 @@
           "401": {
             "description": "Invalid token.",
             "x-description-1": "Client is not global.",
-            "x-description-2": "Invalid signature received for JSON Web Token validation."
-          ,
+            "x-description-2": "Invalid signature received for JSON Web Token validation.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnauthorizedSchema"
+                },
+                "example": {
+                  "message": "Invalid token.",
+                  "statusCode": 401,
+                  "error": "Unauthorized"
                 }
               }
             }
           },
           "403": {
-            "description": "Insufficient scope; expected any of: read:users."
-          ,
+            "description": "Insufficient scope; expected any of: read:users.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForbiddenSchema"
+                },
+                "example": {
+                  "message": "Insufficient scope; expected any of: read:users.",
+                  "statusCode": 403,
+                  "error": "Forbidden"
                 }
               }
             }
           },
           "429": {
-            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers."
-          ,
+            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TooManyRequestsSchema"
+                },
+                "example": {
+                  "message": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
+                  "statusCode": 429,
+                  "error": "Too Many Requests"
                 }
               }
             }
@@ -26461,12 +26477,16 @@
             "x-description-6": "Connection must be enabled.",
             "x-description-7": "Payload validation error: 'String does not match pattern ^con_[A-Za-z0-9]{16}$' on property connection_id.",
             "x-description-8": "The connection does not exist.",
-            "x-description-9": "Custom Database Connections without import mode are not allowed."
-          ,
+            "x-description-9": "Custom Database Connections without import mode are not allowed.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BadRequestSchema"
+                },
+                "example": {
+                  "message": "Invalid request body. The message will vary depending on the cause.",
+                  "statusCode": 400,
+                  "error": "Bad Request"
                 }
               }
             }
@@ -26474,23 +26494,31 @@
           "401": {
             "description": "Invalid token.",
             "x-description-1": "Client is not global.",
-            "x-description-2": "Invalid signature received for JSON Web Token validation."
-          ,
+            "x-description-2": "Invalid signature received for JSON Web Token validation.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnauthorizedSchema"
+                },
+                "example": {
+                  "message": "Invalid token.",
+                  "statusCode": 401,
+                  "error": "Unauthorized"
                 }
               }
             }
           },
           "403": {
-            "description": "Insufficient scope; expected any of: create:users."
-          ,
+            "description": "Insufficient scope; expected any of: create:users.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForbiddenSchema"
+                },
+                "example": {
+                  "message": "Insufficient scope; expected any of: create:users.",
+                  "statusCode": 403,
+                  "error": "Forbidden"
                 }
               }
             }
@@ -26499,12 +26527,16 @@
             "description": "Payload content length greater than maximum allowed: 512000."
           },
           "429": {
-            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers."
-          ,
+            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TooManyRequestsSchema"
+                },
+                "example": {
+                  "message": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
+                  "statusCode": 429,
+                  "error": "Too Many Requests"
                 }
               }
             }
@@ -26732,12 +26764,16 @@
             }
           },
           "400": {
-            "description": "Invalid request URI. The message will vary depending on the cause."
-          ,
+            "description": "Invalid request URI. The message will vary depending on the cause.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BadRequestSchema"
+                },
+                "example": {
+                  "message": "Invalid request URI. The message will vary depending on the cause.",
+                  "statusCode": 400,
+                  "error": "Bad Request"
                 }
               }
             }
@@ -26745,45 +26781,61 @@
           "401": {
             "description": "Invalid token.",
             "x-description-1": "Client is not global.",
-            "x-description-2": "Invalid signature received for JSON Web Token validation."
-          ,
+            "x-description-2": "Invalid signature received for JSON Web Token validation.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnauthorizedSchema"
+                },
+                "example": {
+                  "message": "Invalid token.",
+                  "statusCode": 401,
+                  "error": "Unauthorized"
                 }
               }
             }
           },
           "403": {
-            "description": "Insufficient scope; expected any of: create:users."
-          ,
+            "description": "Insufficient scope; expected any of: create:users.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForbiddenSchema"
+                },
+                "example": {
+                  "message": "Insufficient scope; expected any of: create:users.",
+                  "statusCode": 403,
+                  "error": "Forbidden"
                 }
               }
             }
           },
           "404": {
-            "description": "Job not found."
-          ,
+            "description": "Job not found.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundSchema"
+                },
+                "example": {
+                  "message": "Job not found.",
+                  "statusCode": 404,
+                  "error": "Not Found"
                 }
               }
             }
           },
           "429": {
-            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers."
-          ,
+            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TooManyRequestsSchema"
+                },
+                "example": {
+                  "message": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
+                  "statusCode": 429,
+                  "error": "Too Many Requests"
                 }
               }
             }
@@ -45049,12 +45101,16 @@
             "x-description-2": "You are not allowed to use search_engine=v1.",
             "x-description-3": "You are not allowed to use search_engine=v2. Use search_engine=v3 instead.",
             "x-description-4": "You are not allowed to use search_engine=v3.",
-            "x-description-5": "You can only page through the first 1000 records. See https://auth0.com/docs/users/search/v3/view-search-results-by-page#limitation."
-          ,
+            "x-description-5": "You can only page through the first 1000 records. See https://auth0.com/docs/users/search/v3/view-search-results-by-page#limitation.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BadRequestSchema"
+                },
+                "example": {
+                  "message": "Invalid request query string. The message will vary depending on the cause.",
+                  "statusCode": 400,
+                  "error": "Bad Request"
                 }
               }
             }
@@ -45062,34 +45118,46 @@
           "401": {
             "description": "Client is not global.",
             "x-description-1": "Invalid signature received for JSON Web Token validation.",
-            "x-description-2": "Invalid token."
-          ,
+            "x-description-2": "Invalid token.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnauthorizedSchema"
+                },
+                "example": {
+                  "message": "Client is not global.",
+                  "statusCode": 401,
+                  "error": "Unauthorized"
                 }
               }
             }
           },
           "403": {
-            "description": "Insufficient scope, expected any of: read:users."
-          ,
+            "description": "Insufficient scope, expected any of: read:users.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForbiddenSchema"
+                },
+                "example": {
+                  "message": "Insufficient scope, expected any of: read:users.",
+                  "statusCode": 403,
+                  "error": "Forbidden"
                 }
               }
             }
           },
           "429": {
-            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers."
-          ,
+            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TooManyRequestsSchema"
+                },
+                "example": {
+                  "message": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
+                  "statusCode": 429,
+                  "error": "Too Many Requests"
                 }
               }
             }
@@ -45206,12 +45274,16 @@
             "x-description-1": "Connection does not support user creation through the API. It must either be a database or passwordless connection.",
             "x-description-2": "Cannot set username for connection without requires_username.",
             "x-description-3": "Connection does not exist.",
-            "x-description-4": "Connection is disabled."
-          ,
+            "x-description-4": "Connection is disabled.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BadRequestSchema"
+                },
+                "example": {
+                  "message": "Invalid request body. The message will vary depending on the cause.",
+                  "statusCode": 400,
+                  "error": "Bad Request"
                 }
               }
             }
@@ -45219,23 +45291,31 @@
           "401": {
             "description": "Invalid token.",
             "x-description-1": "Client is not global.",
-            "x-description-2": "Invalid signature received for JSON Web Token validation."
-          ,
+            "x-description-2": "Invalid signature received for JSON Web Token validation.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnauthorizedSchema"
+                },
+                "example": {
+                  "message": "Invalid token.",
+                  "statusCode": 401,
+                  "error": "Unauthorized"
                 }
               }
             }
           },
           "403": {
-            "description": "Insufficient scope, expected any of: create:users."
-          ,
+            "description": "Insufficient scope, expected any of: create:users.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForbiddenSchema"
+                },
+                "example": {
+                  "message": "Insufficient scope, expected any of: create:users.",
+                  "statusCode": 403,
+                  "error": "Forbidden"
                 }
               }
             }
@@ -45244,12 +45324,16 @@
             "description": "User already exists."
           },
           "429": {
-            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers."
-          ,
+            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TooManyRequestsSchema"
+                },
+                "example": {
+                  "message": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
+                  "statusCode": 429,
+                  "error": "Too Many Requests"
                 }
               }
             }
@@ -45484,12 +45568,16 @@
           },
           "400": {
             "description": "Invalid request URI. The message will vary depending on the cause.",
-            "x-description-1": "Invalid request query string. The message will vary depending on the cause."
-          ,
+            "x-description-1": "Invalid request query string. The message will vary depending on the cause.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BadRequestSchema"
+                },
+                "example": {
+                  "message": "Invalid request URI. The message will vary depending on the cause.",
+                  "statusCode": 400,
+                  "error": "Bad Request"
                 }
               }
             }
@@ -45497,46 +45585,62 @@
           "401": {
             "description": "Invalid token.",
             "x-description-1": "Client is not global.",
-            "x-description-2": "Invalid signature received for JSON Web Token validation."
-          ,
+            "x-description-2": "Invalid signature received for JSON Web Token validation.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnauthorizedSchema"
+                },
+                "example": {
+                  "message": "Invalid token.",
+                  "statusCode": 401,
+                  "error": "Unauthorized"
                 }
               }
             }
           },
           "403": {
             "description": "User to be acted on does not match subject in bearer token.",
-            "x-description-1": "Insufficient scope; expected any of: read:users, read:user_idp_tokens, read:current_user."
-          ,
+            "x-description-1": "Insufficient scope; expected any of: read:users, read:user_idp_tokens, read:current_user.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForbiddenSchema"
+                },
+                "example": {
+                  "message": "User to be acted on does not match subject in bearer token.",
+                  "statusCode": 403,
+                  "error": "Forbidden"
                 }
               }
             }
           },
           "404": {
-            "description": "User not found."
-          ,
+            "description": "User not found.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundSchema"
+                },
+                "example": {
+                  "message": "User not found.",
+                  "statusCode": 404,
+                  "error": "Not Found"
                 }
               }
             }
           },
           "429": {
-            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers."
-          ,
+            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TooManyRequestsSchema"
+                },
+                "example": {
+                  "message": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
+                  "statusCode": 429,
+                  "error": "Too Many Requests"
                 }
               }
             }
@@ -45624,12 +45728,16 @@
             "description": "User successfully deleted."
           },
           "400": {
-            "description": "Invalid request URI. The message will vary depending on the cause."
-          ,
+            "description": "Invalid request URI. The message will vary depending on the cause.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BadRequestSchema"
+                },
+                "example": {
+                  "message": "Invalid request URI. The message will vary depending on the cause.",
+                  "statusCode": 400,
+                  "error": "Bad Request"
                 }
               }
             }
@@ -45637,35 +45745,47 @@
           "401": {
             "description": "Invalid token.",
             "x-description-1": "Client is not global.",
-            "x-description-2": "Invalid signature received for JSON Web Token validation."
-          ,
+            "x-description-2": "Invalid signature received for JSON Web Token validation.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnauthorizedSchema"
+                },
+                "example": {
+                  "message": "Invalid token.",
+                  "statusCode": 401,
+                  "error": "Unauthorized"
                 }
               }
             }
           },
           "403": {
             "description": "User to be acted on does not match subject in bearer token.",
-            "x-description-1": "Insufficient scope; expected any of: delete:users,delete:current_user."
-          ,
+            "x-description-1": "Insufficient scope; expected any of: delete:users,delete:current_user.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForbiddenSchema"
+                },
+                "example": {
+                  "message": "User to be acted on does not match subject in bearer token.",
+                  "statusCode": 403,
+                  "error": "Forbidden"
                 }
               }
             }
           },
           "429": {
-            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers."
-          ,
+            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TooManyRequestsSchema"
+                },
+                "example": {
+                  "message": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
+                  "statusCode": 429,
+                  "error": "Too Many Requests"
                 }
               }
             }
@@ -45799,12 +45919,16 @@
             "x-description-13": "The following user attributes cannot be updated: family_name, given_name, name, nickname, picture. The connection must either be a database connection (using the Auth0 store), a passwordless connection (email or sms) or has disabled 'Sync user profile attributes at each login'.",
             "x-description-14": "The following user attributes cannot be updated: family_name, given_name, name, nickname, picture. The specified connection belongs to a secondary identity.",
             "x-description-15": "The following user attributes cannot be removed: family_name, given_name, name, nickname, picture. The connection (non-federated-conn) must either be a custom database connection with import mode disabled, a social or enterprise connection.",
-            "x-description-16": "The following user attributes cannot be removed: foo, bar. The connection (some-connection) should have disabled 'Sync user profile attributes at each login' (see <a href='https://auth0.com/docs/users/configure-connection-sync-with-auth0'>Configuring Connection Sync with Auth0</a>) or defined these attributes in 'options.non_persistent_attrs' array (see <a href='https://auth0.com/docs/security/denylist-user-attributes'>Add User Attributes to DenyList</a>)."
-          ,
+            "x-description-16": "The following user attributes cannot be removed: foo, bar. The connection (some-connection) should have disabled 'Sync user profile attributes at each login' (see <a href='https://auth0.com/docs/users/configure-connection-sync-with-auth0'>Configuring Connection Sync with Auth0</a>) or defined these attributes in 'options.non_persistent_attrs' array (see <a href='https://auth0.com/docs/security/denylist-user-attributes'>Add User Attributes to DenyList</a>).",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BadRequestSchema"
+                },
+                "example": {
+                  "message": "Invalid request URI. The message will vary depending on the cause.",
+                  "statusCode": 400,
+                  "error": "Bad Request"
                 }
               }
             }
@@ -45812,12 +45936,16 @@
           "401": {
             "description": "Invalid token.",
             "x-description-1": "Client is not global.",
-            "x-description-2": "Invalid signature received for JSON Web Token validation."
-          ,
+            "x-description-2": "Invalid signature received for JSON Web Token validation.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnauthorizedSchema"
+                },
+                "example": {
+                  "message": "Invalid token.",
+                  "statusCode": 401,
+                  "error": "Unauthorized"
                 }
               }
             }
@@ -45825,34 +45953,46 @@
           "403": {
             "description": "User to be acted on does not match subject in bearer token.",
             "x-description-1": "Some fields cannot be read with the permissions granted by the bearer token scopes. The message will vary depending on the fields and the scopes.",
-            "x-description-2": "Insufficient scope; expected any of: update:users,update:users_app_metadata,update:current_user_metadata."
-          ,
+            "x-description-2": "Insufficient scope; expected any of: update:users,update:users_app_metadata,update:current_user_metadata.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ForbiddenSchema"
+                },
+                "example": {
+                  "message": "User to be acted on does not match subject in bearer token.",
+                  "statusCode": 403,
+                  "error": "Forbidden"
                 }
               }
             }
           },
           "404": {
-            "description": "User not found."
-          ,
+            "description": "User not found.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundSchema"
+                },
+                "example": {
+                  "message": "User not found.",
+                  "statusCode": 404,
+                  "error": "Not Found"
                 }
               }
             }
           },
           "429": {
-            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers."
-          ,
+            "description": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TooManyRequestsSchema"
+                },
+                "example": {
+                  "message": "Too many requests. Check the X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers.",
+                  "statusCode": 429,
+                  "error": "Too Many Requests"
                 }
               }
             }
