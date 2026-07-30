@@ -9,3 +9,15 @@ import { Scopes } from "/snippets/ApiScopes.jsx";
 
 <ApiReleaseLifecycle releaseLifecycle="GA" />
 <Scopes scopes={["create:users"]} />
+
+<Tip>
+The interactive "Try it" panel above only accepts one field at a time — if you're duplicating an existing user's profile into a new user, pasting a full JSON object isn't practical there. Use `curl` for that instead:
+
+```bash
+curl --request POST \
+  --url 'https://{yourDomain}/api/v2/users' \
+  --header 'Authorization: Bearer {yourMgmtApiAccessToken}' \
+  --header 'Content-Type: application/json' \
+  --data @new-user.json
+```
+</Tip>

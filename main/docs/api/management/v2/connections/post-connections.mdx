@@ -9,3 +9,23 @@ import { Scopes } from "/snippets/ApiScopes.jsx";
 
 <ApiReleaseLifecycle releaseLifecycle="GA" />
 <Scopes scopes={["create:connections"]} />
+
+<Tip>
+The interactive "Try it" panel above only accepts one field at a time, so it isn't practical for pasting a full JSON object — for example, when you want to copy an existing connection's settings into a new connection. Use `curl` for that instead:
+
+```bash
+# 1. Get the existing connection's settings
+curl --request GET \
+  --url 'https://{yourDomain}/api/v2/connections/{id}' \
+  --header 'Authorization: Bearer {yourMgmtApiAccessToken}' \
+  > connection.json
+
+# 2. Edit connection.json: remove "id", and change "name" to something unique,
+#    then create the new connection from that file
+curl --request POST \
+  --url 'https://{yourDomain}/api/v2/connections' \
+  --header 'Authorization: Bearer {yourMgmtApiAccessToken}' \
+  --header 'Content-Type: application/json' \
+  --data @connection.json
+```
+</Tip>

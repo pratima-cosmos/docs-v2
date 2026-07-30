@@ -9,3 +9,15 @@ import { Scopes } from "/snippets/ApiScopes.jsx";
 
 <ApiReleaseLifecycle releaseLifecycle="GA" />
 <Scopes scopes={["update:connections"]} />
+
+<Tip>
+The interactive "Try it" panel above only accepts one field at a time, so pasting a full JSON object (e.g. an object copied from a [GET connection](/docs/api/management/v2/connections/get-connections-by-id) response) isn't practical there. Use `curl` for that instead:
+
+```bash
+curl --request PATCH \
+  --url 'https://{yourDomain}/api/v2/connections/{id}' \
+  --header 'Authorization: Bearer {yourMgmtApiAccessToken}' \
+  --header 'Content-Type: application/json' \
+  --data @connection-update.json
+```
+</Tip>
