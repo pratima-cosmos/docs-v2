@@ -92,3 +92,19 @@
     font-size: 0.875rem;
   }
 }
+
+.adu-autofill-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  color: #57606a;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-autofill-toggle {
+  color: #a0a8b4;
+}
