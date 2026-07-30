@@ -353,6 +353,19 @@
       showDiagnosticBanner("adu toggle error: " + e.message, "#c0392b");
       return;
     }
+    // Extra diagnostics: how many inputs are reachable from the main
+    // document at all (0 would suggest the form lives in an iframe), and
+    // whether "Server"/"Body" text exists loosely (contains, not exact -
+    // would reveal a leading icon character breaking the exact match).
+    var inputCount = document.querySelectorAll("input, select, textarea").length;
+    var iframeCount = document.querySelectorAll("iframe").length;
+    var looseLeaves = leafTextElements(document.body).filter(function (l) {
+      return /server|body|authorization/i.test(l.text);
+    });
+    results.push("inputs:" + inputCount, "iframes:" + iframeCount, "looseMatches:" + looseLeaves.length);
+    if (looseLeaves.length) {
+      results.push("sample:\"" + looseLeaves[0].text + "\"");
+    }
     showDiagnosticBanner("adu " + results.join(" "), "#2e7d32");
   }
 
