@@ -192,17 +192,168 @@
     return cloneTryIt ? "ok" : "ok-no-tryit-wiring";
   }
 
+  var SENSITIVE_LABEL_KEYWORDS = ["authorization", "bearer", "token", "password", "secret"];
+
+  function setNativeValue(el, value) {
+    var proto = Object.getPrototypeOf(el);
+    var setter = Object.getOwnPropertyDescriptor(proto, "value");
+    if (setter && setter.set) {
+      setter.set.call(el, value);
+    } else {
+      el.value = value;
+    }
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  // Climbs from an input to the smallest ancestor that looks like "a field
+  // row" - a handful of children (label block + input block, maybe an icon)
+  // and a reasonable width. Capped so it can never grab an entire section
+  // card (which would have many more children/descendants).
+  function findFieldRow(input) {
+    var row = input;
+    var depth = 0;
+    while (row && depth < 6) {
+      row = row.parentElement;
+      if (!row) break;
+      if (row.children.length >= 2 && row.children.length <= 4) {
+        var rect = row.getBoundingClientRect();
+        if (rect.width > 250 && row.querySelectorAll("*").length <= 60) return row;
+      }
+      depth++;
+    }
+    return null;
+  }
+
+  // Pure CSS change (flex-direction) on each field row - no DOM moves, so
+  // this can't conflict with React's tree the way reparenting would.
+  function restyleFieldRowsToVertical(root) {
+    var inputs = root.querySelectorAll("input, select, textarea");
+    var count = 0;
+    for (var i = 0; i < inputs.length; i++) {
+      var input = inputs[i];
+      if (input.dataset.aduRestyled === "1") continue;
+      var row = findFieldRow(input);
+      if (!row) continue;
+      row.style.setProperty("flex-direction", "column", "important");
+      row.style.setProperty("align-items", "stretch", "important");
+      row.style.setProperty("gap", "6px", "important");
+      input.dataset.aduRestyled = "1";
+      count++;
+    }
+    return count;
+  }
+
+  function findFirstSectionCard(root) {
+    var leaves = leafTextElements(root);
+    var sectionNames = ["Server", "Authorization", "Body"];
+    for (var i = 0; i < leaves.length; i++) {
+      if (sectionNames.indexOf(leaves[i].text) !== -1) {
+        return climbToRow(leaves[i].el, 2, 5);
+      }
+    }
+    return null;
+  }
+
+  function rowLabelText(row, input) {
+    var leaves = leafTextElements(row);
+    var texts = [];
+    for (var i = 0; i < leaves.length; i++) {
+      if (input.contains(leaves[i].el)) continue;
+      texts.push(leaves[i].text);
+    }
+    return texts.join(" ").toLowerCase();
+  }
+
+  // Fills empty fields: real tenant domain where we have it, otherwise
+  // promotes each field's own placeholder/example text into a real value.
+  // Never touches anything whose label suggests a credential.
+  function applyFormAutofill(root) {
+    var inputs = root.querySelectorAll("input, textarea");
+    var filled = 0;
+    for (var i = 0; i < inputs.length; i++) {
+      var input = inputs[i];
+      if (input.type === "checkbox" || input.type === "radio") continue;
+      if (input.value) continue;
+
+      var row = findFieldRow(input);
+      var label = row ? rowLabelText(row, input) : "";
+      var isSensitive = SENSITIVE_LABEL_KEYWORDS.some(function (k) {
+        return label.indexOf(k) !== -1;
+      });
+      if (isSensitive) continue;
+
+      var value = null;
+      if ((label.indexOf("domain") !== -1 || label.indexOf("tenant") !== -1) && window.rootStore && window.rootStore.variableStore) {
+        var v = window.rootStore.variableStore.values.get("{yourDomain}");
+        if (v && v !== "{yourDomain}") value = v;
+      }
+      if (!value && input.placeholder) value = input.placeholder;
+      if (value) {
+        setNativeValue(input, value);
+        filled++;
+      }
+    }
+    return filled;
+  }
+
+  function mountFormAutofillToggle(root) {
+    if (document.querySelector(".adu-form-autofill-toggle")) return "already-mounted";
+    var card = findFirstSectionCard(root);
+    if (!card || !card.parentElement) return "card-not-found";
+
+    var wrap = document.createElement("label");
+    wrap.className = "adu-form-autofill-toggle";
+
+    var checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.setAttribute("aria-label", "Auto-fill all fields");
+
+    var text = document.createElement("span");
+    text.textContent = "Auto-fill from your tenant";
+
+    wrap.appendChild(checkbox);
+    wrap.appendChild(text);
+
+    checkbox.addEventListener("change", function () {
+      if (!checkbox.checked) return;
+      var filled = applyFormAutofill(card.parentElement);
+      text.textContent = filled > 0 ? "Auto-filled " + filled + " field(s)" : "No empty fields to fill";
+      setTimeout(function () {
+        text.textContent = "Auto-fill from your tenant";
+      }, 2500);
+    });
+
+    card.parentElement.insertBefore(wrap, card);
+    return "ok";
+  }
+
   function enhance() {
     if (!isTargetPage()) {
       showDiagnosticBanner("adu script loaded, wrong page: " + window.location.pathname, "#888");
       return;
     }
+    var results = [];
     try {
-      var result = moveRequestLineAboveCodeSample();
-      showDiagnosticBanner("adu request-line move: " + result, result === "ok" ? "#2e7d32" : "#b8860b");
+      results.push("move:" + moveRequestLineAboveCodeSample());
     } catch (e) {
-      showDiagnosticBanner("adu error: " + e.message, "#c0392b");
+      showDiagnosticBanner("adu move error: " + e.message, "#c0392b");
+      return;
     }
+    try {
+      var restyled = restyleFieldRowsToVertical(document.body);
+      results.push("restyled:" + restyled);
+    } catch (e) {
+      showDiagnosticBanner("adu restyle error: " + e.message, "#c0392b");
+      return;
+    }
+    try {
+      results.push("toggle:" + mountFormAutofillToggle(document.body));
+    } catch (e) {
+      showDiagnosticBanner("adu toggle error: " + e.message, "#c0392b");
+      return;
+    }
+    showDiagnosticBanner("adu " + results.join(" "), "#2e7d32");
   }
 
   var scheduled = false;
