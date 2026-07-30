@@ -9,7 +9,9 @@
   //   2. insert a brand-new node (never seen by React) next to an existing one
   // See ~/.claude/projects/-Users-pratima-rajput/memory/feedback_mintlify_dom_manipulation.md
 
-  var MGMT_API_PATH_PREFIX = "/docs/api/management";
+  // TEMPORARY: scoped to a single page while we confirm the script actually
+  // loads/runs at all. Widen back to /docs/api/management once confirmed.
+  var TARGET_PATH = "/docs/api/management/v2/jobs/post-users-imports";
   var LANGUAGE_LABELS = ["cURL", "Curl", "JavaScript", "Python", "Node", "Node.js", "PHP", "Java", "Go", "Ruby", "C#"];
   var AUTOFILL_MAP = {
     domain: "{yourDomain}",
@@ -21,8 +23,32 @@
     clientid: "{yourClientId}",
   };
 
-  function isManagementApiPage() {
-    return window.location.pathname.indexOf(MGMT_API_PATH_PREFIX) === 0;
+  function isTargetPage() {
+    return window.location.pathname.indexOf(TARGET_PATH) === 0;
+  }
+
+  // TEMPORARY diagnostic: an unmistakable on-page marker so we can tell at a
+  // glance whether this script executed at all, independent of whether the
+  // badge/toggle logic below finds the right elements. Remove once confirmed.
+  function showDiagnosticBanner(message, color) {
+    var id = "adu-diagnostic-banner";
+    var el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement("div");
+      el.id = id;
+      el.style.position = "fixed";
+      el.style.top = "8px";
+      el.style.right = "8px";
+      el.style.zIndex = "999999";
+      el.style.padding = "6px 10px";
+      el.style.borderRadius = "6px";
+      el.style.fontFamily = "monospace";
+      el.style.fontSize = "12px";
+      el.style.color = "#fff";
+      document.body.appendChild(el);
+    }
+    el.style.background = color;
+    el.textContent = message;
   }
 
   function setNativeValue(el, value) {
@@ -54,30 +80,24 @@
   // the CSS `order` property — this only touches style, never the DOM tree,
   // so it can't conflict with how Mintlify's own React tree is structured.
   function repositionLanguageBadge() {
-    var containers = document.querySelectorAll(
-      '[class*="api-playground"], [class*="playground"], main, article'
-    );
-    for (var c = 0; c < containers.length; c++) {
-      var badge = findLanguageBadge(containers[c]);
-      if (!badge) continue;
+    var badge = findLanguageBadge(document.body);
+    if (!badge) return false;
 
-      var item = badge.closest("button, [role='tab'], [role='button']") || badge;
-      var row = item.parentElement;
-      var depth = 0;
-      while (row && row.children.length < 2 && depth < 4) {
-        row = row.parentElement;
-        depth++;
-      }
-      if (!row || row.dataset.aduBadgeReordered === "1") continue;
-      row.dataset.aduBadgeReordered = "1";
-
-      // give every existing sibling its natural order, then push the badge last
-      Array.prototype.forEach.call(row.children, function (child, i) {
-        if (child === item) return;
-        if (!child.style.order) child.style.order = String(i + 1);
-      });
-      item.style.order = "9999";
+    var item = badge.closest("button, [role='tab'], [role='button']") || badge;
+    var row = item.parentElement;
+    var depth = 0;
+    while (row && row.children.length < 2 && depth < 4) {
+      row = row.parentElement;
+      depth++;
     }
+    if (!row) return false;
+
+    Array.prototype.forEach.call(row.children, function (child, i) {
+      if (child === item) return;
+      if (!child.style.order) child.style.setProperty("order", String(i + 1), "important");
+    });
+    item.style.setProperty("order", "9999", "important");
+    return true;
   }
 
   function labelText(el) {
@@ -135,10 +155,10 @@
   // new node was never part of React's tree, so there's nothing for React to
   // lose track of. It's the mirror-image of the forbidden "move an existing
   // node" operation above.
-  function mountAutofillToggle(root) {
-    if (root.querySelector(".adu-autofill-toggle")) return;
-    var anchor = findTryItAnchor(root);
-    if (!anchor || !anchor.parentElement) return;
+  function mountAutofillToggle() {
+    if (document.querySelector(".adu-autofill-toggle")) return true;
+    var anchor = findTryItAnchor(document.body);
+    if (!anchor || !anchor.parentElement) return false;
 
     var wrap = document.createElement("label");
     wrap.className = "adu-autofill-toggle";
@@ -155,7 +175,7 @@
 
     checkbox.addEventListener("change", function () {
       if (!checkbox.checked) return;
-      var scope = anchor.closest("form") || anchor.closest("section") || root;
+      var scope = anchor.closest("form") || anchor.closest("section") || document.body;
       var filled = applyAutofill(scope);
       if (filled === 0) {
         text.textContent = "No matching fields found";
@@ -166,25 +186,32 @@
     });
 
     anchor.parentElement.insertBefore(wrap, anchor);
+    return true;
   }
 
   function enhance() {
-    if (!isManagementApiPage()) return;
+    if (!isTargetPage()) {
+      showDiagnosticBanner("adu script loaded, wrong page: " + window.location.pathname, "#888");
+      return;
+    }
+    var badgeMoved = false;
+    var toggleMounted = false;
     try {
-      repositionLanguageBadge();
+      badgeMoved = repositionLanguageBadge();
     } catch (e) {
-      /* non-fatal: theme internals may have changed */
+      showDiagnosticBanner("adu badge error: " + e.message, "#c0392b");
+      return;
     }
     try {
-      var containers = document.querySelectorAll(
-        '[class*="api-playground"], [class*="playground"], main, article'
-      );
-      for (var i = 0; i < containers.length; i++) {
-        mountAutofillToggle(containers[i]);
-      }
+      toggleMounted = mountAutofillToggle();
     } catch (e) {
-      /* non-fatal */
+      showDiagnosticBanner("adu toggle error: " + e.message, "#c0392b");
+      return;
     }
+    showDiagnosticBanner(
+      "adu script running — badge:" + badgeMoved + " toggle:" + toggleMounted,
+      badgeMoved && toggleMounted ? "#2e7d32" : "#b8860b"
+    );
   }
 
   var scheduled = false;
