@@ -137,6 +137,11 @@
 
     var clone = bar.cloneNode(true);
     clone.className += " adu-shadow-request-bar";
+    // Match the code-sample card's width instead of whatever width the bar
+    // had in its original (wider) column.
+    clone.style.setProperty("width", "100%", "important");
+    clone.style.setProperty("max-width", "100%", "important");
+    clone.style.setProperty("box-sizing", "border-box", "important");
     bar.dataset.aduShadowed = "1";
     bar.style.display = "none";
 
