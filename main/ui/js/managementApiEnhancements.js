@@ -240,6 +240,196 @@
     el.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
+  // One-time "Authorize" flow, matching the old Management API Explorer UX
+  // described in customer feedback (2026-07-31 call transcript): paste a
+  // bearer token once, tenant domain gets derived from the token itself
+  // (Auth0 access tokens are JWTs whose `iss` claim is the tenant domain),
+  // and both auto-fill into every endpoint's form from then on - no
+  // per-endpoint re-entry. Stored in localStorage (survives tab close,
+  // an improvement over the old session-only behavior).
+  var CREDENTIALS_STORAGE_KEY = "adu_api_credentials";
+
+  function getStoredCredentials() {
+    try {
+      var raw = localStorage.getItem(CREDENTIALS_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveStoredCredentials(domain, token) {
+    try {
+      localStorage.setItem(CREDENTIALS_STORAGE_KEY, JSON.stringify({ domain: domain, token: token }));
+    } catch (e) {
+      /* private browsing / storage quota - setup just won't persist, non-fatal */
+    }
+  }
+
+  // Decodes the `iss` (issuer) claim out of a JWT's payload without
+  // verifying its signature - we only need the tenant domain for
+  // convenience auto-fill, this is never used for actual auth decisions.
+  function decodeJwtDomain(token) {
+    try {
+      var clean = (token || "").replace(/^Bearer\s+/i, "").trim();
+      var parts = clean.split(".");
+      if (parts.length < 2) return null;
+      var payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+      while (payload.length % 4) payload += "=";
+      var json = JSON.parse(atob(payload));
+      if (json.iss) return json.iss.replace(/^https?:\/\//, "").replace(/\/$/, "");
+    } catch (e) {
+      /* not a decodable JWT, or no iss claim - fine, domain stays manual */
+    }
+    return null;
+  }
+
+  // Fills the tenant-domain and Authorization/Bearer fields directly from
+  // stored credentials - unlike applyFormAutofill, this intentionally
+  // DOES touch credential-labeled fields, since this is explicit,
+  // user-provided data being reused with consent, not a guessed value.
+  function applyStoredCredentials(root) {
+    var creds = getStoredCredentials();
+    if (!creds || !creds.token) return "no-stored-credentials";
+    var inputs = queryAllDeep(root, "input, textarea");
+    var filled = 0;
+    for (var i = 0; i < inputs.length; i++) {
+      var input = inputs[i];
+      if (input.value) continue;
+      var row = findFieldRow(input);
+      var label = row ? rowLabelText(row, input) : "";
+      if ((label.indexOf("domain") !== -1 || label.indexOf("tenant") !== -1) && creds.domain) {
+        setNativeValue(input, creds.domain);
+        filled++;
+      } else if (label.indexOf("authorization") !== -1 || label.indexOf("bearer") !== -1) {
+        setNativeValue(input, "Bearer " + creds.token.replace(/^Bearer\s+/i, ""));
+        filled++;
+      }
+    }
+    return filled;
+  }
+
+  function openAuthorizeModal(root, onSaved) {
+    var doc = root.ownerDocument || document;
+    if (queryDeep(doc, ".adu-authorize-modal")) return;
+
+    var overlay = doc.createElement("div");
+    overlay.className = "adu-authorize-overlay";
+
+    var modal = doc.createElement("div");
+    modal.className = "adu-authorize-modal";
+
+    var title = doc.createElement("h3");
+    title.textContent = "Authorize";
+
+    var note = doc.createElement("p");
+    note.className = "adu-authorize-note";
+    note.textContent = "One-time setup - this applies to every Management API endpoint in this browser, so you won't need to re-enter it each time.";
+
+    var tokenLabel = doc.createElement("label");
+    tokenLabel.textContent = "Bearer Token";
+    var tokenInput = doc.createElement("textarea");
+    tokenInput.className = "adu-authorize-token-input";
+    tokenInput.rows = 3;
+    tokenInput.placeholder = "Paste your Management API access token";
+
+    var domainLabel = doc.createElement("label");
+    domainLabel.textContent = "Tenant Domain (auto-detected from the token if left blank)";
+    var domainInput = doc.createElement("input");
+    domainInput.type = "text";
+    domainInput.placeholder = "{yourTenant}.auth0.com";
+
+    var existing = getStoredCredentials();
+    if (existing) {
+      tokenInput.value = existing.token || "";
+      domainInput.value = existing.domain || "";
+    }
+
+    tokenInput.addEventListener("input", function () {
+      if (domainInput.value) return; // don't clobber a manually-entered domain
+      var detected = decodeJwtDomain(tokenInput.value);
+      if (detected) domainInput.value = detected;
+    });
+
+    var saveBtn = doc.createElement("button");
+    saveBtn.type = "button";
+    saveBtn.className = "adu-authorize-save";
+    saveBtn.textContent = "Authorize";
+
+    var cancelBtn = doc.createElement("button");
+    cancelBtn.type = "button";
+    cancelBtn.className = "adu-authorize-cancel";
+    cancelBtn.textContent = "Cancel";
+
+    saveBtn.addEventListener("click", function () {
+      var token = tokenInput.value.trim();
+      if (!token) return;
+      var domain = domainInput.value.trim() || decodeJwtDomain(token) || "";
+      saveStoredCredentials(domain, token);
+      overlay.remove();
+      if (onSaved) onSaved();
+    });
+    cancelBtn.addEventListener("click", function () {
+      overlay.remove();
+    });
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) overlay.remove();
+    });
+
+    var actions = doc.createElement("div");
+    actions.className = "adu-authorize-actions";
+    actions.appendChild(cancelBtn);
+    actions.appendChild(saveBtn);
+
+    modal.appendChild(title);
+    modal.appendChild(note);
+    modal.appendChild(tokenLabel);
+    modal.appendChild(tokenInput);
+    modal.appendChild(domainLabel);
+    modal.appendChild(domainInput);
+    modal.appendChild(actions);
+    overlay.appendChild(modal);
+    doc.body.appendChild(overlay);
+  }
+
+  // Mounts a persistent "Authorize" button near the page title - visible
+  // before the user even opens "Try it", matching the old landing-page
+  // Authorize button described in customer feedback. Re-applies stored
+  // credentials on every call (not just when first mounted) so a
+  // freshly-reopened Try It form still gets auto-filled.
+  function mountAuthorizeButton(root) {
+    var doc = root.ownerDocument || document;
+    var creds = getStoredCredentials();
+    var btn = queryDeep(doc, ".adu-authorize-button");
+
+    if (!btn) {
+      var h1 = queryDeep(root, "h1");
+      if (!h1 || !h1.parentElement) return "h1-not-found";
+      btn = doc.createElement("button");
+      btn.type = "button";
+      btn.className = "adu-authorize-button";
+      btn.addEventListener("click", function () {
+        openAuthorizeModal(root, function () {
+          btn.textContent = "Authorized ✓";
+          applyStoredCredentials(root);
+        });
+      });
+      h1.parentElement.insertBefore(btn, h1);
+
+      if (!creds && !window.__aduAuthorizeShown) {
+        window.__aduAuthorizeShown = true;
+        openAuthorizeModal(root, function () {
+          btn.textContent = "Authorized ✓";
+          applyStoredCredentials(root);
+        });
+      }
+    }
+
+    btn.textContent = creds ? "Authorized ✓" : "Authorize";
+    if (creds) applyStoredCredentials(root);
+    return "ok";
+  }
+
   // Climbs from an input to the smallest ancestor that looks like "a field
   // row" - a handful of children and a reasonable width. Capped so it can
   // never grab an entire section card.
@@ -311,6 +501,78 @@
       count++;
     }
     return count;
+  }
+
+  // Adds a "Custom" tab into the code-sample's language row (cURL/C#/etc.),
+  // toggling between the native rendered code and a blank editable
+  // textarea for pasting ad-hoc JSON to test with. We don't control
+  // Mintlify's own tab/dropdown state, so this only *hides* the native
+  // code body (CSS display, not removal) and shows a new panel instead -
+  // clicking back on any of the original language controls restores it.
+  function addCustomBodyTab(root) {
+    var badge = findLanguageBadge(root);
+    if (!badge) return "badge-not-found";
+    var item = badge.closest("button, [role='tab'], [role='button']") || badge;
+    var headerRow = climbToRow(item, 2, 4);
+    if (!headerRow) return "header-row-not-found";
+    if (headerRow.dataset.aduCustomTab === "1") return "already-done";
+    var card = headerRow.parentElement;
+    if (!card) return "card-not-found";
+
+    var codeBody = null;
+    for (var i = 0; i < card.children.length; i++) {
+      if (card.children[i] !== headerRow) {
+        codeBody = card.children[i];
+        break;
+      }
+    }
+    if (!codeBody) return "code-body-not-found";
+    headerRow.dataset.aduCustomTab = "1";
+
+    var doc = root.ownerDocument || document;
+
+    var customTabBtn = doc.createElement("button");
+    customTabBtn.type = "button";
+    customTabBtn.className = "adu-custom-tab-button";
+    customTabBtn.textContent = "Custom";
+
+    var customPanel = doc.createElement("div");
+    customPanel.className = "adu-custom-body-panel";
+    customPanel.style.display = "none";
+
+    var label = doc.createElement("div");
+    label.className = "adu-custom-body-label";
+    label.textContent = "Paste your own JSON here to test with (not sent automatically)";
+
+    var textarea = doc.createElement("textarea");
+    textarea.className = "adu-custom-body-textarea";
+    textarea.placeholder = '{\n  "your": "json here"\n}';
+    textarea.spellcheck = false;
+    textarea.rows = 10;
+
+    customPanel.appendChild(label);
+    customPanel.appendChild(textarea);
+
+    function showCustom() {
+      codeBody.style.display = "none";
+      customPanel.style.display = "block";
+      customTabBtn.classList.add("adu-tab-active");
+    }
+    function showNative() {
+      customPanel.style.display = "none";
+      codeBody.style.display = "";
+      customTabBtn.classList.remove("adu-tab-active");
+    }
+
+    customTabBtn.addEventListener("click", showCustom);
+    Array.prototype.forEach.call(headerRow.children, function (child) {
+      if (child === customTabBtn) return;
+      child.addEventListener("click", showNative);
+    });
+
+    headerRow.appendChild(customTabBtn);
+    card.insertBefore(customPanel, codeBody.nextSibling);
+    return "ok";
   }
 
   // Clamps the endpoint description paragraph (the long text right after the
@@ -462,6 +724,12 @@
     button.className = "adu-file-upload-button";
     button.textContent = "Upload";
 
+    var hint = doc.createElement("span");
+    hint.className = "adu-file-upload-hint";
+    // 512000 bytes is the actual documented limit for this endpoint (see
+    // the 413 response in the OAS spec), not a made-up number.
+    hint.textContent = "JSON, CSV, TXT · up to 500 KB";
+
     var chip = doc.createElement("div");
     chip.className = "adu-file-chip";
     chip.style.display = "none";
@@ -499,8 +767,21 @@
       setNativeValue(target, "");
     });
 
-    wrap.appendChild(button);
-    wrap.appendChild(chip);
+    var sampleLink = doc.createElement("a");
+    sampleLink.className = "adu-file-sample-link";
+    sampleLink.href = "https://auth0.com/docs/users/references/bulk-import-database-schema-examples";
+    sampleLink.target = "_blank";
+    sampleLink.rel = "noopener noreferrer";
+    sampleLink.textContent = "View sample file format";
+
+    var row = doc.createElement("div");
+    row.className = "adu-file-upload-row";
+    row.appendChild(button);
+    row.appendChild(hint);
+    row.appendChild(chip);
+
+    wrap.appendChild(row);
+    wrap.appendChild(sampleLink);
     wrap.appendChild(fileInput);
 
     target.style.display = "none";
@@ -549,6 +830,9 @@
         results.push(name + "-ERR:" + e.message);
       }
     }
+    safe("authorize", function () {
+      return mountAuthorizeButton(root);
+    });
     safe("desc", function () {
       return truncateDescription(root);
     });
@@ -566,6 +850,9 @@
     });
     safe("upload", function () {
       return addUsersFileUploadUI(root);
+    });
+    safe("customTab", function () {
+      return addCustomBodyTab(root);
     });
     return label + " " + results.join(" ");
   }

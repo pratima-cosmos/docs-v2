@@ -134,6 +134,13 @@
 
 .adu-file-upload-wrap {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.adu-file-upload-row {
+  display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
@@ -141,6 +148,12 @@
 
 .adu-file-upload-input {
   display: none;
+}
+
+.adu-file-sample-link {
+  font-size: 0.75rem;
+  color: #4f46e5;
+  text-decoration: underline;
 }
 
 .adu-file-upload-button {
@@ -156,6 +169,11 @@
 
 .adu-file-upload-button:hover {
   background: #eceff2;
+}
+
+.adu-file-upload-hint {
+  font-size: 0.75rem;
+  color: #57606a;
 }
 
 .adu-file-chip {
@@ -189,6 +207,180 @@
 
 :is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
   .adu-file-chip {
+  border-color: #2d2f3e;
+  background: #13141a;
+  color: #e6e6e6;
+}
+
+.adu-custom-tab-button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #57606a;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.adu-custom-tab-button.adu-tab-active {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.adu-custom-body-panel {
+  padding: 12px;
+}
+
+.adu-custom-body-label {
+  font-size: 0.75rem;
+  color: #57606a;
+  margin-bottom: 6px;
+}
+
+.adu-custom-body-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  padding: 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  background: #f6f8fa;
+  color: #24292f;
+  resize: vertical;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-custom-tab-button.adu-tab-active {
+  background: #2d2a4a;
+  color: #b3a7ff;
+}
+
+.adu-authorize-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  margin-bottom: 10px;
+  border: 1px solid #4f46e5;
+  border-radius: 6px;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.adu-authorize-button:hover {
+  background: #4338ca;
+}
+
+.adu-authorize-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000000;
+}
+
+.adu-authorize-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 420px;
+  max-width: 90vw;
+  padding: 20px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.adu-authorize-modal h3 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.adu-authorize-note {
+  margin: 0 0 6px;
+  font-size: 0.8125rem;
+  color: #57606a;
+}
+
+.adu-authorize-modal label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #24292f;
+  margin-bottom: -4px;
+}
+
+.adu-authorize-token-input,
+.adu-authorize-modal input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  padding: 8px 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.adu-authorize-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.adu-authorize-save {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.adu-authorize-cancel {
+  padding: 6px 16px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #fff;
+  color: #24292f;
+  cursor: pointer;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-authorize-modal {
+  background: #1e1f2b;
+  color: #e6e6e6;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-authorize-modal label {
+  color: #e6e6e6;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-authorize-token-input,
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-authorize-modal input[type="text"] {
+  border-color: #2d2f3e;
+  background: #13141a;
+  color: #e6e6e6;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-authorize-cancel {
+  border-color: #2d2f3e;
+  background: #13141a;
+  color: #e6e6e6;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-custom-body-textarea {
   border-color: #2d2f3e;
   background: #13141a;
   color: #e6e6e6;
