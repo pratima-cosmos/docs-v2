@@ -457,44 +457,50 @@
   // is legal. Uses POLLING rather than the `load` event, which can fire
   // before our listener attaches (race condition) and silently no-op
   // everything - this was the actual bug behind several failed attempts.
-  var wiredIframes = new WeakSet();
+  var iframeObservers = new WeakMap(); // iframe -> the contentDocument it last observed
 
-  function wireIframe(iframe) {
-    if (wiredIframes.has(iframe)) return;
-    var attempts = 0;
-
-    function tryAttach() {
-      if (wiredIframes.has(iframe)) return;
-      var doc;
-      try {
-        doc = iframe.contentDocument;
-      } catch (e) {
-        return; // genuinely cross-origin, nothing we can do
-      }
-      if (!doc || !doc.body || doc.body.children.length === 0) {
-        attempts++;
-        console.log("[adu] iframe not ready yet, attempt " + attempts + ", doc=" + !!doc + " bodyChildren=" + (doc && doc.body ? doc.body.children.length : "n/a"));
-        if (attempts < 40) setTimeout(tryAttach, 250); // poll up to ~10s
-        return;
-      }
-      console.log("[adu] iframe ready after " + attempts + " attempts, bodyChildren=" + doc.body.children.length);
-      wiredIframes.add(iframe);
-
-      var scheduled = false;
-      function scheduleIframeEnhance() {
-        if (scheduled) return;
-        scheduled = true;
-        setTimeout(function () {
-          scheduled = false;
-          showDiagnosticBanner(runFormEnhancements(doc.body, "adu[iframe]"), "#2e7d32");
-        }, 150);
-      }
-
-      new MutationObserver(scheduleIframeEnhance).observe(doc.body, { childList: true, subtree: true });
-      scheduleIframeEnhance();
+  // Recursively collects every iframe reachable from `doc`, including
+  // iframes nested inside other iframes - a modal's outer iframe could
+  // itself contain a further iframe for the actual form content.
+  function collectAllIframes(doc, depth, out) {
+    if (depth > 3) return out;
+    var iframes;
+    try {
+      iframes = doc.querySelectorAll("iframe");
+    } catch (e) {
+      return out;
     }
+    for (var i = 0; i < iframes.length; i++) {
+      out.push(iframes[i]);
+      var inner;
+      try {
+        inner = iframes[i].contentDocument;
+      } catch (e) {
+        inner = null;
+      }
+      if (inner) collectAllIframes(inner, depth + 1, out);
+    }
+    return out;
+  }
 
-    tryAttach();
+  function attachObserverIfNeeded(iframe, doc) {
+    if (iframeObservers.get(iframe) === doc) return; // already observing this exact document
+    var scheduled = false;
+    function scheduleIframeEnhance() {
+      if (scheduled) return;
+      scheduled = true;
+      setTimeout(function () {
+        scheduled = false;
+        try {
+          runFormEnhancements(doc.body, "adu[iframe]");
+        } catch (e) {
+          console.error("[adu] iframe enhance error:", e);
+        }
+      }, 150);
+    }
+    new MutationObserver(scheduleIframeEnhance).observe(doc.body, { childList: true, subtree: true });
+    iframeObservers.set(iframe, doc);
+    scheduleIframeEnhance();
   }
 
   function enhance() {
@@ -502,22 +508,46 @@
       showDiagnosticBanner("adu script loaded, wrong page: " + window.location.pathname, "#888");
       return;
     }
+
+    var moveResult;
     try {
-      var moveResult = moveRequestLineAboveCodeSample();
-      showDiagnosticBanner("adu move:" + moveResult, "#2e7d32");
+      moveResult = moveRequestLineAboveCodeSample();
     } catch (e) {
-      showDiagnosticBanner("adu move error: " + e.message, "#c0392b");
+      moveResult = "ERR:" + e.message;
     }
 
-    var iframes = document.querySelectorAll("iframe");
-    console.log("[adu] iframe count on page: " + iframes.length);
-    for (var i = 0; i < iframes.length; i++) {
+    var allIframes = collectAllIframes(document, 0, []);
+    var iframeReport = [];
+    var formResults = [];
+    for (var i = 0; i < allIframes.length; i++) {
+      var iframe = allIframes[i];
+      var doc;
       try {
-        wireIframe(iframes[i]);
+        doc = iframe.contentDocument;
       } catch (e) {
-        console.error("[adu] wireIframe threw:", e);
+        iframeReport.push("#" + i + ":cross-origin");
+        continue;
+      }
+      if (!doc || !doc.body) {
+        iframeReport.push("#" + i + ":no-doc");
+        continue;
+      }
+      var childCount = doc.body.children.length;
+      iframeReport.push("#" + i + ":children=" + childCount);
+      if (childCount > 0) {
+        attachObserverIfNeeded(iframe, doc);
+        try {
+          formResults.push(runFormEnhancements(doc.body, "f" + i));
+        } catch (e) {
+          formResults.push("f" + i + "-ERR:" + e.message);
+        }
       }
     }
+
+    var summary = "adu move:" + moveResult + " iframes:" + allIframes.length;
+    if (iframeReport.length) summary += " [" + iframeReport.join(",") + "]";
+    if (formResults.length) summary += " || " + formResults.join(" || ");
+    showDiagnosticBanner(summary, "#2e7d32");
   }
 
   var scheduled = false;
