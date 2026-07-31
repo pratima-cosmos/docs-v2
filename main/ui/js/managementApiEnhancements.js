@@ -17,14 +17,18 @@
   //    ancestor with the real "Try it" button can land on a huge wrapper
   //    (e.g. the whole page layout) - hiding it blanks the entire page.
   //    This happened on 2026-07-30; see feedback_mintlify_dom_manipulation.md
-  // Search outward from a specific known anchor (like the "Try it" button)
-  // instead, and hard-check the candidate container is actually small
-  // before ever touching its visibility.
+  //
+  // Confirmed 2026-07-30: the "Try it" panel's parameter form (Server/
+  // Authorization/Body sections) renders inside a SAME-ORIGIN <iframe>, not
+  // the main document. All DOM helpers below take a `root` and use
+  // `root.ownerDocument` (not the global `document`) so they work correctly
+  // against either the main page or an iframe's contentDocument.
 
   var TARGET_PATH = "/docs/api/management/v2/jobs/post-users-imports";
   var LANGUAGE_LABELS = ["cURL", "Curl", "JavaScript", "Python", "Node", "Node.js", "PHP", "Java", "Go", "Ruby", "C#"];
   var HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
   var MAX_BAR_DESCENDANTS = 40; // safety cap - the real request-line bar is a handful of elements
+  var SENSITIVE_LABEL_KEYWORDS = ["authorization", "bearer", "token", "password", "secret"];
 
   function isTargetPage() {
     return window.location.pathname.indexOf(TARGET_PATH) === 0;
@@ -54,7 +58,8 @@
 
   function leafTextElements(root) {
     var out = [];
-    var walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+    var doc = root.ownerDocument || document;
+    var walker = doc.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
     var node;
     while ((node = walker.nextNode())) {
       if (node.children.length > 0) continue;
@@ -130,7 +135,6 @@
     var card = headerRow ? headerRow.parentElement : null;
     if (!card || !card.parentElement) return "card-not-found";
 
-    // Hard safety checks before touching anything's visibility.
     if (bar.contains(card) || bar.contains(badge)) return "bar-too-large-contains-card";
     var descendantCount = bar.querySelectorAll("*").length;
     if (descendantCount > MAX_BAR_DESCENDANTS) return "bar-too-large-" + descendantCount + "-descendants";
@@ -143,11 +147,6 @@
     bar.dataset.aduShadowed = "1";
     bar.style.display = "none";
 
-    // The visual card chrome (rounded border/background) may live on a
-    // wrapper ABOVE `bar`, not on `bar` itself - hiding just `bar` can leave
-    // an empty styled shell behind. Climb up and hide any ancestor whose
-    // only element child is the thing we just hid (safe: never touches an
-    // ancestor with other visible content, and capped at 3 levels).
     var wrapper = bar.parentElement;
     var wrapDepth = 0;
     while (wrapper && wrapper !== card.parentElement && wrapDepth < 3) {
@@ -160,10 +159,6 @@
       wrapDepth++;
     }
 
-    // Keep the clone's width in sync with the card's ACTUAL rendered width
-    // on an ongoing basis (not a one-time snapshot) - the card may have its
-    // own width constraint independent of the shared parent, and this needs
-    // to keep matching across window resizes / sidebar toggles.
     function syncWidth() {
       var cardWidth = card.getBoundingClientRect().width;
       clone.style.setProperty("width", cardWidth + "px", "important");
@@ -176,9 +171,6 @@
       window.addEventListener("resize", syncWidth);
     }
 
-    // The clone has no event listeners (cloneNode doesn't copy them), so
-    // wire its "Try it" button to trigger the real hidden one instead of
-    // trying to reimplement the playground's open/submit behavior.
     var cloneTryIt = findTryItAnchor(clone);
     if (cloneTryIt) {
       cloneTryIt.addEventListener("click", function (event) {
@@ -191,8 +183,6 @@
     card.parentElement.insertBefore(clone, card);
     return cloneTryIt ? "ok" : "ok-no-tryit-wiring";
   }
-
-  var SENSITIVE_LABEL_KEYWORDS = ["authorization", "bearer", "token", "password", "secret"];
 
   function setNativeValue(el, value) {
     var proto = Object.getPrototypeOf(el);
@@ -267,7 +257,10 @@
 
   // Fills empty fields: real tenant domain where we have it, otherwise
   // promotes each field's own placeholder/example text into a real value.
-  // Never touches anything whose label suggests a credential.
+  // Never touches anything whose label suggests a credential. Reads tenant
+  // data from the OUTER window's rootStore regardless of which document
+  // `root` belongs to - that's intentional, real session data only exists
+  // on the main page, never duplicated into the sandboxed iframe.
   function applyFormAutofill(root) {
     var inputs = root.querySelectorAll("input, textarea");
     var filled = 0;
@@ -298,18 +291,19 @@
   }
 
   function mountFormAutofillToggle(root) {
-    if (document.querySelector(".adu-form-autofill-toggle")) return "already-mounted";
+    var doc = root.ownerDocument || document;
+    if (doc.querySelector(".adu-form-autofill-toggle")) return "already-mounted";
     var card = findFirstSectionCard(root);
     if (!card || !card.parentElement) return "card-not-found";
 
-    var wrap = document.createElement("label");
+    var wrap = doc.createElement("label");
     wrap.className = "adu-form-autofill-toggle";
 
-    var checkbox = document.createElement("input");
+    var checkbox = doc.createElement("input");
     checkbox.type = "checkbox";
     checkbox.setAttribute("aria-label", "Auto-fill all fields");
 
-    var text = document.createElement("span");
+    var text = doc.createElement("span");
     text.textContent = "Auto-fill from your tenant";
 
     wrap.appendChild(checkbox);
@@ -328,45 +322,79 @@
     return "ok";
   }
 
+  function runFormEnhancements(root, label) {
+    var results = [];
+    try {
+      results.push("restyled:" + restyleFieldRowsToVertical(root));
+    } catch (e) {
+      return label + " restyle-error:" + e.message;
+    }
+    try {
+      results.push("toggle:" + mountFormAutofillToggle(root));
+    } catch (e) {
+      return label + " toggle-error:" + e.message;
+    }
+    return label + " " + results.join(" ");
+  }
+
+  // Iframe handling: the Try It parameter form (Server/Authorization/Body)
+  // renders in a same-origin iframe, confirmed 2026-07-30. Same-origin means
+  // contentDocument access is legal - no cross-origin restriction. Each
+  // iframe gets its own MutationObserver since its content can change
+  // independently of the main page (e.g. switching operations via the
+  // in-modal dropdown) after the iframe itself has already loaded once.
+  var wiredIframes = new WeakSet();
+
+  function wireIframe(iframe) {
+    if (wiredIframes.has(iframe)) return;
+
+    function attach() {
+      var doc;
+      try {
+        doc = iframe.contentDocument;
+      } catch (e) {
+        return; // genuinely cross-origin, nothing we can do
+      }
+      if (!doc || !doc.body) return;
+      wiredIframes.add(iframe);
+
+      var scheduled = false;
+      function scheduleIframeEnhance() {
+        if (scheduled) return;
+        scheduled = true;
+        setTimeout(function () {
+          scheduled = false;
+          showDiagnosticBanner(runFormEnhancements(doc.body, "adu[iframe]"), "#2e7d32");
+        }, 150);
+      }
+
+      new MutationObserver(scheduleIframeEnhance).observe(doc.body, { childList: true, subtree: true });
+      scheduleIframeEnhance();
+    }
+
+    if (iframe.contentDocument && iframe.contentDocument.readyState === "complete") {
+      attach();
+    } else {
+      iframe.addEventListener("load", attach);
+    }
+  }
+
   function enhance() {
     if (!isTargetPage()) {
       showDiagnosticBanner("adu script loaded, wrong page: " + window.location.pathname, "#888");
       return;
     }
-    var results = [];
     try {
-      results.push("move:" + moveRequestLineAboveCodeSample());
+      var moveResult = moveRequestLineAboveCodeSample();
+      showDiagnosticBanner("adu move:" + moveResult, "#2e7d32");
     } catch (e) {
       showDiagnosticBanner("adu move error: " + e.message, "#c0392b");
-      return;
     }
-    try {
-      var restyled = restyleFieldRowsToVertical(document.body);
-      results.push("restyled:" + restyled);
-    } catch (e) {
-      showDiagnosticBanner("adu restyle error: " + e.message, "#c0392b");
-      return;
+
+    var iframes = document.querySelectorAll("iframe");
+    for (var i = 0; i < iframes.length; i++) {
+      wireIframe(iframes[i]);
     }
-    try {
-      results.push("toggle:" + mountFormAutofillToggle(document.body));
-    } catch (e) {
-      showDiagnosticBanner("adu toggle error: " + e.message, "#c0392b");
-      return;
-    }
-    // Extra diagnostics: how many inputs are reachable from the main
-    // document at all (0 would suggest the form lives in an iframe), and
-    // whether "Server"/"Body" text exists loosely (contains, not exact -
-    // would reveal a leading icon character breaking the exact match).
-    var inputCount = document.querySelectorAll("input, select, textarea").length;
-    var iframeCount = document.querySelectorAll("iframe").length;
-    var looseLeaves = leafTextElements(document.body).filter(function (l) {
-      return /server|body|authorization/i.test(l.text);
-    });
-    results.push("inputs:" + inputCount, "iframes:" + iframeCount, "looseMatches:" + looseLeaves.length);
-    if (looseLeaves.length) {
-      results.push("sample:\"" + looseLeaves[0].text + "\"");
-    }
-    showDiagnosticBanner("adu " + results.join(" "), "#2e7d32");
   }
 
   var scheduled = false;
