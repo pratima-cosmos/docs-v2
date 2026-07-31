@@ -320,11 +320,11 @@
     modal.className = "adu-authorize-modal";
 
     var title = doc.createElement("h3");
-    title.textContent = "Authorize";
+    title.textContent = "Set up your API credentials";
 
     var note = doc.createElement("p");
     note.className = "adu-authorize-note";
-    note.textContent = "One-time setup - this applies to every Management API endpoint in this browser, so you won't need to re-enter it each time.";
+    note.textContent = "This is a one-time setup. Once saved, this information is automatically filled in every time you test any endpoint - you won't need to enter it again.";
 
     var tokenLabel = doc.createElement("label");
     tokenLabel.textContent = "Bearer Token";
@@ -397,37 +397,24 @@
   // Authorize button described in customer feedback. Re-applies stored
   // credentials on every call (not just when first mounted) so a
   // freshly-reopened Try It form still gets auto-filled.
-  function mountAuthorizeButton(root) {
-    var doc = root.ownerDocument || document;
+  // No persistent button - the modal opens automatically the first time
+  // the user lands on any endpoint page with no stored credentials yet.
+  // Once saved, it never shows again in this browser and every endpoint's
+  // form gets auto-filled silently. This matches the exact flow described
+  // by the user (2026-07-31): select an endpoint -> modal appears once ->
+  // fill it -> click "Try it" anywhere from then on and it's pre-filled.
+  function showAuthorizeModalOnce(root) {
     var creds = getStoredCredentials();
-    var btn = queryDeep(doc, ".adu-authorize-button");
-
-    if (!btn) {
-      var h1 = queryDeep(root, "h1");
-      if (!h1 || !h1.parentElement) return "h1-not-found";
-      btn = doc.createElement("button");
-      btn.type = "button";
-      btn.className = "adu-authorize-button";
-      btn.addEventListener("click", function () {
-        openAuthorizeModal(root, function () {
-          btn.textContent = "Authorized ✓";
-          applyStoredCredentials(root);
-        });
-      });
-      h1.parentElement.insertBefore(btn, h1);
-
-      if (!creds && !window.__aduAuthorizeShown) {
-        window.__aduAuthorizeShown = true;
-        openAuthorizeModal(root, function () {
-          btn.textContent = "Authorized ✓";
-          applyStoredCredentials(root);
-        });
-      }
+    if (creds) {
+      applyStoredCredentials(root);
+      return "already-authorized";
     }
-
-    btn.textContent = creds ? "Authorized ✓" : "Authorize";
-    if (creds) applyStoredCredentials(root);
-    return "ok";
+    if (window.__aduAuthorizeShown) return "modal-already-shown-this-session";
+    window.__aduAuthorizeShown = true;
+    openAuthorizeModal(root, function () {
+      applyStoredCredentials(root);
+    });
+    return "modal-opened";
   }
 
   // Climbs from an input to the smallest ancestor that looks like "a field
@@ -831,7 +818,7 @@
       }
     }
     safe("authorize", function () {
-      return mountAuthorizeButton(root);
+      return showAuthorizeModalOnce(root);
     });
     safe("desc", function () {
       return truncateDescription(root);
