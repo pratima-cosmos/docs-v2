@@ -492,9 +492,10 @@
       setTimeout(function () {
         scheduled = false;
         try {
-          runFormEnhancements(doc.body, "adu[iframe]");
+          var result = runFormEnhancements(doc.body, "adu[iframe-observer]");
+          showDiagnosticBanner(result, "#1b5e20");
         } catch (e) {
-          console.error("[adu] iframe enhance error:", e);
+          showDiagnosticBanner("adu[iframe-observer] error: " + e.message, "#c0392b");
         }
       }, 150);
     }
@@ -534,8 +535,15 @@
       }
       var childCount = doc.body.children.length;
       iframeReport.push("#" + i + ":children=" + childCount);
+      // Attach the observer even while empty - content added inside an
+      // iframe's own document does NOT trigger the outer page's
+      // MutationObserver (separate DOM tree), so if we only start watching
+      // after content already exists, content that arrives later (the
+      // common case - iframe starts empty, fills in async) is missed
+      // entirely. This was the actual bug: childCount was 0 at check time
+      // and the observer never got created to catch what came next.
+      attachObserverIfNeeded(iframe, doc);
       if (childCount > 0) {
-        attachObserverIfNeeded(iframe, doc);
         try {
           formResults.push(runFormEnhancements(doc.body, "f" + i));
         } catch (e) {
