@@ -420,13 +420,21 @@
   // Climbs from an input to the smallest ancestor that looks like "a field
   // row" - a handful of children and a reasonable width. Capped so it can
   // never grab an entire section card.
+  // Confirmed 2026-07-31 via direct DOM trace (Puppeteer + CDP): the real
+  // label|input split is a CSS GRID container (Tailwind `grid lg:grid-cols-2`),
+  // not flexbox. The previous version climbed to the first ancestor with
+  // 2-4 children regardless of layout mode, which matched a tiny 1-purpose
+  // flex wrapper immediately around the input (2 levels too low) - setting
+  // flex-direction on it did nothing since it never touched the actual
+  // grid row. Must specifically require display:grid now.
   function findFieldRow(input) {
     var row = input;
     var depth = 0;
-    while (row && depth < 6) {
+    while (row && depth < 8) {
       row = row.parentElement;
       if (!row) break;
-      if (row.children.length >= 2 && row.children.length <= 4) {
+      var cs = (row.ownerDocument.defaultView || window).getComputedStyle(row);
+      if (cs.display === "grid" && row.children.length >= 2 && row.children.length <= 4) {
         var rect = row.getBoundingClientRect();
         if (rect.width > 250 && row.querySelectorAll("*").length <= 60) return row;
       }
@@ -443,8 +451,7 @@
       if (input.dataset.aduRestyled === "1") continue;
       var row = findFieldRow(input);
       if (!row) continue;
-      row.style.setProperty("flex-direction", "column", "important");
-      row.style.setProperty("align-items", "stretch", "important");
+      row.style.setProperty("grid-template-columns", "1fr", "important");
       row.style.setProperty("gap", "6px", "important");
       input.dataset.aduRestyled = "1";
       count++;
