@@ -452,58 +452,14 @@
     return label + " " + results.join(" ");
   }
 
-  // Iframe handling: the Try It parameter form renders in a same-origin
-  // iframe, confirmed 2026-07-30. Same-origin means contentDocument access
-  // is legal. Uses POLLING rather than the `load` event, which can fire
-  // before our listener attaches (race condition) and silently no-op
-  // everything - this was the actual bug behind several failed attempts.
-  var iframeObservers = new WeakMap(); // iframe -> the contentDocument it last observed
-
-  // Recursively collects every iframe reachable from `doc`, including
-  // iframes nested inside other iframes - a modal's outer iframe could
-  // itself contain a further iframe for the actual form content.
-  function collectAllIframes(doc, depth, out) {
-    if (depth > 3) return out;
-    var iframes;
-    try {
-      iframes = doc.querySelectorAll("iframe");
-    } catch (e) {
-      return out;
-    }
-    for (var i = 0; i < iframes.length; i++) {
-      out.push(iframes[i]);
-      var inner;
-      try {
-        inner = iframes[i].contentDocument;
-      } catch (e) {
-        inner = null;
-      }
-      if (inner) collectAllIframes(inner, depth + 1, out);
-    }
-    return out;
-  }
-
-  function attachObserverIfNeeded(iframe, doc) {
-    if (iframeObservers.get(iframe) === doc) return; // already observing this exact document
-    var scheduled = false;
-    function scheduleIframeEnhance() {
-      if (scheduled) return;
-      scheduled = true;
-      setTimeout(function () {
-        scheduled = false;
-        try {
-          var result = runFormEnhancements(doc.body, "adu[iframe-observer]");
-          showDiagnosticBanner(result, "#1b5e20");
-        } catch (e) {
-          showDiagnosticBanner("adu[iframe-observer] error: " + e.message, "#c0392b");
-        }
-      }, 150);
-    }
-    new MutationObserver(scheduleIframeEnhance).observe(doc.body, { childList: true, subtree: true });
-    iframeObservers.set(iframe, doc);
-    scheduleIframeEnhance();
-  }
-
+  // Confirmed 2026-07-31 via live Elements-panel inspection: the parameter
+  // form (Server/Authorization/Body, Radix UI tabpanel/code-group markup)
+  // renders directly in the MAIN document, not an iframe. The one iframe
+  // found earlier (id="q-messenger-frame", src on app.qualified.com, 0x0
+  // size) is an unrelated third-party chat widget - its "frame-specific"
+  // right-click context menu is almost certainly what got misread as
+  // belonging to the form. Removed all iframe-reaching logic; everything
+  // below runs directly against document.body.
   function enhance() {
     if (!isTargetPage()) {
       showDiagnosticBanner("adu script loaded, wrong page: " + window.location.pathname, "#888");
@@ -517,45 +473,14 @@
       moveResult = "ERR:" + e.message;
     }
 
-    var allIframes = collectAllIframes(document, 0, []);
-    var iframeReport = [];
-    var formResults = [];
-    for (var i = 0; i < allIframes.length; i++) {
-      var iframe = allIframes[i];
-      var doc;
-      try {
-        doc = iframe.contentDocument;
-      } catch (e) {
-        iframeReport.push("#" + i + ":cross-origin");
-        continue;
-      }
-      if (!doc || !doc.body) {
-        iframeReport.push("#" + i + ":no-doc");
-        continue;
-      }
-      var childCount = doc.body.children.length;
-      iframeReport.push("#" + i + ":children=" + childCount);
-      // Attach the observer even while empty - content added inside an
-      // iframe's own document does NOT trigger the outer page's
-      // MutationObserver (separate DOM tree), so if we only start watching
-      // after content already exists, content that arrives later (the
-      // common case - iframe starts empty, fills in async) is missed
-      // entirely. This was the actual bug: childCount was 0 at check time
-      // and the observer never got created to catch what came next.
-      attachObserverIfNeeded(iframe, doc);
-      if (childCount > 0) {
-        try {
-          formResults.push(runFormEnhancements(doc.body, "f" + i));
-        } catch (e) {
-          formResults.push("f" + i + "-ERR:" + e.message);
-        }
-      }
+    var formResult;
+    try {
+      formResult = runFormEnhancements(document.body, "form");
+    } catch (e) {
+      formResult = "form-ERR:" + e.message;
     }
 
-    var summary = "adu move:" + moveResult + " iframes:" + allIframes.length;
-    if (iframeReport.length) summary += " [" + iframeReport.join(",") + "]";
-    if (formResults.length) summary += " || " + formResults.join(" || ");
-    showDiagnosticBanner(summary, "#2e7d32");
+    showDiagnosticBanner("adu move:" + moveResult + " || " + formResult, "#2e7d32");
   }
 
   var scheduled = false;
