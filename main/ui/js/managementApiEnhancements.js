@@ -60,17 +60,50 @@
     el.textContent = message;
   }
 
+  // Shadow-DOM-aware traversal. Neither TreeWalker nor querySelectorAll
+  // pierce shadow roots - if the form is rendered inside a web component's
+  // shadow root (a different isolation mechanism than iframes, easy to
+  // mistake for "not there at all" since every text/selector search comes
+  // back with consistent, clean zero matches rather than a partial/flaky
+  // result), all the leaf-text and field-detection logic below would
+  // silently find nothing no matter how many times it's retried. This
+  // walks into `.shadowRoot` wherever present so that possibility is ruled
+  // out (or fixed, if that's what's actually happening).
+  function walkDeep(node, visit) {
+    if (node.shadowRoot) walkDeep(node.shadowRoot, visit);
+    var kids = node.children;
+    if (!kids) return;
+    for (var i = 0; i < kids.length; i++) {
+      visit(kids[i]);
+      walkDeep(kids[i], visit);
+    }
+  }
+
   function leafTextElements(root) {
     var out = [];
-    var doc = root.ownerDocument || document;
-    var walker = doc.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
-    var node;
-    while ((node = walker.nextNode())) {
-      if (node.children.length > 0) continue;
-      var text = (node.textContent || "").trim();
-      if (text) out.push({ el: node, text: text });
-    }
+    walkDeep(root, function (el) {
+      if (el.children.length > 0) return; // has children (light or shadow) - not a leaf
+      var text = (el.textContent || "").trim();
+      if (text) out.push({ el: el, text: text });
+    });
     return out;
+  }
+
+  function queryAllDeep(root, selector) {
+    var out = [];
+    walkDeep(root, function (el) {
+      if (el.matches && el.matches(selector)) out.push(el);
+    });
+    return out;
+  }
+
+  function queryDeep(root, selector) {
+    var found = null;
+    walkDeep(root, function (el) {
+      if (found) return;
+      if (el.matches && el.matches(selector)) found = el;
+    });
+    return found;
   }
 
   function findLanguageBadge(root) {
@@ -226,7 +259,7 @@
   }
 
   function restyleFieldRowsToVertical(root) {
-    var inputs = root.querySelectorAll("input, select, textarea");
+    var inputs = queryAllDeep(root, "input, select, textarea");
     var count = 0;
     for (var i = 0; i < inputs.length; i++) {
       var input = inputs[i];
@@ -284,7 +317,7 @@
   // <h1>) to 2 lines via CSS line-clamp - full text stays in the DOM
   // (accessible, copyable), just visually truncated.
   function truncateDescription(root) {
-    var h1 = root.querySelector("h1");
+    var h1 = queryDeep(root, "h1");
     if (!h1) return "h1-not-found";
     var el = h1.nextElementSibling;
     var depth = 0;
@@ -310,7 +343,7 @@
   // next to Send - same CSS `order` technique already used for the language
   // badge on the main page. Pure style change, no reparenting.
   function moveOperationPillRight(root) {
-    var h1 = root.querySelector("h1");
+    var h1 = queryDeep(root, "h1");
     if (!h1) return "h1-not-found";
     var titleText = (h1.textContent || "").trim();
     if (!titleText) return "title-empty";
@@ -365,7 +398,7 @@
   // data from the OUTER window's rootStore regardless of which document
   // `root` belongs to - real session data only exists on the main page.
   function applyFormAutofill(root) {
-    var inputs = root.querySelectorAll("input, textarea");
+    var inputs = queryAllDeep(root, "input, textarea");
     var filled = 0;
     for (var i = 0; i < inputs.length; i++) {
       var input = inputs[i];
@@ -395,7 +428,7 @@
 
   function mountFormAutofillToggle(root) {
     var doc = root.ownerDocument || document;
-    if (doc.querySelector(".adu-form-autofill-toggle")) return "already-mounted";
+    if (queryDeep(doc, ".adu-form-autofill-toggle")) return "already-mounted";
     var card = findFirstSectionCard(root);
     if (!card || !card.parentElement) return "card-not-found";
 
