@@ -108,3 +108,26 @@
   .adu-autofill-toggle {
   color: #a0a8b4;
 }
+
+.adu-form-autofill-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  color: #24292f;
+  background: #f6f8fa;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-form-autofill-toggle {
+  border-color: #2d2f3e;
+  background: #1e1f2b;
+  color: #e6e6e6;
+}

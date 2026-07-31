@@ -11,23 +11,24 @@
   //    React) next to an existing one is fine.
   // 4. NEVER hide anything found via a page-wide "first match" text search
   //    without confirming it's actually small/local - the left nav sidebar
-  //    repeats "GET"/"POST"/etc. badges for every endpoint link, so a naive
-  //    global search for the HTTP method text will match the sidebar, not
-  //    the request-line bar, and climbing from there to find a common
-  //    ancestor with the real "Try it" button can land on a huge wrapper
-  //    (e.g. the whole page layout) - hiding it blanks the entire page.
+  //    repeats "GET"/"POST"/etc. badges for every endpoint link. Grow
+  //    OUTWARD from a specific known anchor instead, and hard-check the
+  //    candidate container is small before touching visibility.
   //    This happened on 2026-07-30; see feedback_mintlify_dom_manipulation.md
   //
   // Confirmed 2026-07-30: the "Try it" panel's parameter form (Server/
   // Authorization/Body sections) renders inside a SAME-ORIGIN <iframe>, not
   // the main document. All DOM helpers below take a `root` and use
   // `root.ownerDocument` (not the global `document`) so they work correctly
-  // against either the main page or an iframe's contentDocument.
+  // against either the main page or an iframe's contentDocument. Iframe
+  // access is polling-based, not load-event-based - the load event can fire
+  // before our listener attaches, which silently no-ops everything.
 
   var TARGET_PATH = "/docs/api/management/v2/jobs/post-users-imports";
   var LANGUAGE_LABELS = ["cURL", "Curl", "JavaScript", "Python", "Node", "Node.js", "PHP", "Java", "Go", "Ruby", "C#"];
   var HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
-  var MAX_BAR_DESCENDANTS = 40; // safety cap - the real request-line bar is a handful of elements
+  var SEND_LABELS = ["Try it", "Send"];
+  var MAX_BAR_DESCENDANTS = 40;
   var SENSITIVE_LABEL_KEYWORDS = ["authorization", "bearer", "token", "password", "secret"];
 
   function isTargetPage() {
@@ -47,9 +48,10 @@
       el.style.padding = "6px 10px";
       el.style.borderRadius = "6px";
       el.style.fontFamily = "monospace";
-      el.style.fontSize = "12px";
+      el.style.fontSize = "11px";
       el.style.color = "#fff";
-      el.style.maxWidth = "60vw";
+      el.style.maxWidth = "70vw";
+      el.style.whiteSpace = "pre-wrap";
       document.body.appendChild(el);
     }
     el.style.background = color;
@@ -77,13 +79,10 @@
     return null;
   }
 
-  // Only ever matches the FIRST "Try it" leaf; there should only be one on
-  // an endpoint page. Does not search for HTTP method text globally - that's
-  // the part that broke before (sidebar nav repeats method badges).
-  function findTryItAnchor(root) {
+  function findSendAnchor(root) {
     var leaves = leafTextElements(root);
     for (var i = 0; i < leaves.length; i++) {
-      if (leaves[i].text === "Try it") {
+      if (SEND_LABELS.indexOf(leaves[i].text) !== -1) {
         return leaves[i].el.closest("button") || leaves[i].el;
       }
     }
@@ -100,10 +99,20 @@
     return row;
   }
 
-  // Grows OUTWARD from the "Try it" button (not from a global text search)
-  // until it finds an ancestor whose descendants include an HTTP method
-  // badge - i.e. the smallest container holding both. This stays local to
-  // the request-line bar and never reaches all the way to the sidebar.
+  function growToSharedAncestor(elA, elB, maxDepth) {
+    var ancestor = elA;
+    var depth = 0;
+    while (ancestor && depth < maxDepth) {
+      if (ancestor.contains(elB)) return ancestor;
+      ancestor = ancestor.parentElement;
+      depth++;
+    }
+    return null;
+  }
+
+  // Grows OUTWARD from the "Try it" button until it finds an ancestor whose
+  // descendants include an HTTP method badge - the smallest container
+  // holding both, staying local instead of reaching the sidebar.
   function findRequestLineBar(tryIt, maxDepth) {
     var ancestor = tryIt.parentElement;
     var depth = 0;
@@ -121,7 +130,7 @@
   }
 
   function moveRequestLineAboveCodeSample() {
-    var tryIt = findTryItAnchor(document.body);
+    var tryIt = findSendAnchor(document.body);
     if (!tryIt) return "tryit-not-found";
 
     var bar = findRequestLineBar(tryIt, 6);
@@ -171,7 +180,7 @@
       window.addEventListener("resize", syncWidth);
     }
 
-    var cloneTryIt = findTryItAnchor(clone);
+    var cloneTryIt = findSendAnchor(clone);
     if (cloneTryIt) {
       cloneTryIt.addEventListener("click", function (event) {
         event.preventDefault();
@@ -197,9 +206,8 @@
   }
 
   // Climbs from an input to the smallest ancestor that looks like "a field
-  // row" - a handful of children (label block + input block, maybe an icon)
-  // and a reasonable width. Capped so it can never grab an entire section
-  // card (which would have many more children/descendants).
+  // row" - a handful of children and a reasonable width. Capped so it can
+  // never grab an entire section card.
   function findFieldRow(input) {
     var row = input;
     var depth = 0;
@@ -215,8 +223,6 @@
     return null;
   }
 
-  // Pure CSS change (flex-direction) on each field row - no DOM moves, so
-  // this can't conflict with React's tree the way reparenting would.
   function restyleFieldRowsToVertical(root) {
     var inputs = root.querySelectorAll("input, select, textarea");
     var count = 0;
@@ -234,15 +240,111 @@
     return count;
   }
 
-  function findFirstSectionCard(root) {
+  function findSectionCard(root, sectionName) {
     var leaves = leafTextElements(root);
-    var sectionNames = ["Server", "Authorization", "Body"];
     for (var i = 0; i < leaves.length; i++) {
-      if (sectionNames.indexOf(leaves[i].text) !== -1) {
+      if (leaves[i].text === sectionName) {
         return climbToRow(leaves[i].el, 2, 5);
       }
     }
     return null;
+  }
+
+  function findFirstSectionCard(root) {
+    var sectionNames = ["Server", "Authorization", "Body"];
+    for (var i = 0; i < sectionNames.length; i++) {
+      var card = findSectionCard(root, sectionNames[i]);
+      if (card) return card;
+    }
+    return null;
+  }
+
+  // Strips the bordered/card look from each section (Server/Authorization/
+  // Body) without touching its expand/collapse behavior - purely cosmetic
+  // CSS, no functional change.
+  function flattenSectionCards(root) {
+    var sectionNames = ["Server", "Authorization", "Body"];
+    var count = 0;
+    for (var i = 0; i < sectionNames.length; i++) {
+      var card = findSectionCard(root, sectionNames[i]);
+      if (!card || card.dataset.aduFlattened === "1") continue;
+      card.style.setProperty("border", "none", "important");
+      card.style.setProperty("box-shadow", "none", "important");
+      card.style.setProperty("background", "transparent", "important");
+      card.style.setProperty("border-radius", "0", "important");
+      card.dataset.aduFlattened = "1";
+      count++;
+    }
+    return count;
+  }
+
+  // Clamps the endpoint description paragraph (the long text right after the
+  // <h1>) to 2 lines via CSS line-clamp - full text stays in the DOM
+  // (accessible, copyable), just visually truncated.
+  function truncateDescription(root) {
+    var h1 = root.querySelector("h1");
+    if (!h1) return "h1-not-found";
+    var el = h1.nextElementSibling;
+    var depth = 0;
+    while (el && depth < 3) {
+      var text = (el.textContent || "").trim();
+      if (text.length > 60) {
+        if (el.dataset.aduTruncated === "1") return "already-done";
+        el.style.setProperty("display", "-webkit-box", "important");
+        el.style.setProperty("-webkit-line-clamp", "2", "important");
+        el.style.setProperty("-webkit-box-orient", "vertical", "important");
+        el.style.setProperty("overflow", "hidden", "important");
+        el.dataset.aduTruncated = "1";
+        return "ok";
+      }
+      el = el.nextElementSibling;
+      depth++;
+    }
+    return "no-long-text-found";
+  }
+
+  // Moves the operation-picker pill (method + endpoint title + dropdown,
+  // e.g. "POST Create import users job v") to the right side of its bar,
+  // next to Send - same CSS `order` technique already used for the language
+  // badge on the main page. Pure style change, no reparenting.
+  function moveOperationPillRight(root) {
+    var h1 = root.querySelector("h1");
+    if (!h1) return "h1-not-found";
+    var titleText = (h1.textContent || "").trim();
+    if (!titleText) return "title-empty";
+
+    var leaves = leafTextElements(root);
+    var pillLeaf = null;
+    for (var i = 0; i < leaves.length; i++) {
+      if (leaves[i].text === titleText && leaves[i].el !== h1 && !h1.contains(leaves[i].el)) {
+        pillLeaf = leaves[i].el;
+        break;
+      }
+    }
+    if (!pillLeaf) return "pill-not-found";
+    if (pillLeaf.dataset.aduPillMoved === "1") return "already-done";
+
+    var sendAnchor = findSendAnchor(root);
+    if (!sendAnchor) return "send-not-found";
+
+    var pillItem = pillLeaf.closest("button, [role='button']") || pillLeaf;
+    var bar = growToSharedAncestor(pillItem, sendAnchor, 8);
+    if (!bar) return "bar-not-found";
+    if (bar.querySelectorAll("*").length > 80) return "bar-too-large";
+
+    var pillTopChild = pillItem;
+    while (pillTopChild.parentElement && pillTopChild.parentElement !== bar) {
+      pillTopChild = pillTopChild.parentElement;
+    }
+    if (pillTopChild.parentElement !== bar) return "pill-not-direct-child";
+
+    Array.prototype.forEach.call(bar.children, function (child, i) {
+      if (child === pillTopChild) return;
+      if (!child.style.order) child.style.setProperty("order", String(i + 1), "important");
+    });
+    pillTopChild.style.setProperty("order", "9999", "important");
+    pillLeaf.dataset.aduPillMoved = "1";
+    return "ok";
   }
 
   function rowLabelText(row, input) {
@@ -259,8 +361,7 @@
   // promotes each field's own placeholder/example text into a real value.
   // Never touches anything whose label suggests a credential. Reads tenant
   // data from the OUTER window's rootStore regardless of which document
-  // `root` belongs to - that's intentional, real session data only exists
-  // on the main page, never duplicated into the sandboxed iframe.
+  // `root` belongs to - real session data only exists on the main page.
   function applyFormAutofill(root) {
     var inputs = root.querySelectorAll("input, textarea");
     var filled = 0;
@@ -324,38 +425,55 @@
 
   function runFormEnhancements(root, label) {
     var results = [];
-    try {
-      results.push("restyled:" + restyleFieldRowsToVertical(root));
-    } catch (e) {
-      return label + " restyle-error:" + e.message;
+    function safe(name, fn) {
+      try {
+        results.push(name + ":" + fn());
+      } catch (e) {
+        results.push(name + "-ERR:" + e.message);
+      }
     }
-    try {
-      results.push("toggle:" + mountFormAutofillToggle(root));
-    } catch (e) {
-      return label + " toggle-error:" + e.message;
-    }
+    safe("desc", function () {
+      return truncateDescription(root);
+    });
+    safe("flat", function () {
+      return flattenSectionCards(root);
+    });
+    safe("restyled", function () {
+      return restyleFieldRowsToVertical(root);
+    });
+    safe("toggle", function () {
+      return mountFormAutofillToggle(root);
+    });
+    safe("pill", function () {
+      return moveOperationPillRight(root);
+    });
     return label + " " + results.join(" ");
   }
 
-  // Iframe handling: the Try It parameter form (Server/Authorization/Body)
-  // renders in a same-origin iframe, confirmed 2026-07-30. Same-origin means
-  // contentDocument access is legal - no cross-origin restriction. Each
-  // iframe gets its own MutationObserver since its content can change
-  // independently of the main page (e.g. switching operations via the
-  // in-modal dropdown) after the iframe itself has already loaded once.
+  // Iframe handling: the Try It parameter form renders in a same-origin
+  // iframe, confirmed 2026-07-30. Same-origin means contentDocument access
+  // is legal. Uses POLLING rather than the `load` event, which can fire
+  // before our listener attaches (race condition) and silently no-op
+  // everything - this was the actual bug behind several failed attempts.
   var wiredIframes = new WeakSet();
 
   function wireIframe(iframe) {
     if (wiredIframes.has(iframe)) return;
+    var attempts = 0;
 
-    function attach() {
+    function tryAttach() {
+      if (wiredIframes.has(iframe)) return;
       var doc;
       try {
         doc = iframe.contentDocument;
       } catch (e) {
         return; // genuinely cross-origin, nothing we can do
       }
-      if (!doc || !doc.body) return;
+      if (!doc || !doc.body || doc.body.children.length === 0) {
+        attempts++;
+        if (attempts < 40) setTimeout(tryAttach, 250); // poll up to ~10s
+        return;
+      }
       wiredIframes.add(iframe);
 
       var scheduled = false;
@@ -372,11 +490,7 @@
       scheduleIframeEnhance();
     }
 
-    if (iframe.contentDocument && iframe.contentDocument.readyState === "complete") {
-      attach();
-    } else {
-      iframe.addEventListener("load", attach);
-    }
+    tryAttach();
   }
 
   function enhance() {
