@@ -288,6 +288,16 @@
   // stored credentials - unlike applyFormAutofill, this intentionally
   // DOES touch credential-labeled fields, since this is explicit,
   // user-provided data being reused with consent, not a guessed value.
+  // Mintlify pre-populates some fields (e.g. tenantDomain) with a literal
+  // template VALUE like "{TENANT}.auth0.com" - not empty, not a real
+  // HTML placeholder attribute, an actual .value. A plain `if (input.value)`
+  // check treats that as real user input and never overwrites it. Real
+  // domains/tokens never look like "{...}", so anything matching that
+  // pattern (or genuinely empty) is safe to overwrite.
+  function isPlaceholderLikeValue(value) {
+    return !value || /^\{[^}]+\}/.test(value.trim());
+  }
+
   function applyStoredCredentials(root) {
     var creds = getStoredCredentials();
     if (!creds || !creds.token) return "no-stored-credentials";
@@ -295,7 +305,7 @@
     var filled = 0;
     for (var i = 0; i < inputs.length; i++) {
       var input = inputs[i];
-      if (input.value) continue;
+      if (!isPlaceholderLikeValue(input.value)) continue;
       var row = findFieldRow(input);
       var label = row ? rowLabelText(row, input) : "";
       if ((label.indexOf("domain") !== -1 || label.indexOf("tenant") !== -1) && creds.domain) {
