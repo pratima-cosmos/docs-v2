@@ -131,3 +131,65 @@
   background: #1e1f2b;
   color: #e6e6e6;
 }
+
+.adu-file-upload-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.adu-file-upload-input {
+  display: none;
+}
+
+.adu-file-upload-button {
+  padding: 6px 14px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #f6f8fa;
+  color: #24292f;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.adu-file-upload-button:hover {
+  background: #eceff2;
+}
+
+.adu-file-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 0.75rem;
+  color: #24292f;
+}
+
+.adu-file-chip-remove {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #57606a;
+  font-size: 0.875rem;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-file-upload-button {
+  border-color: #2d2f3e;
+  background: #1e1f2b;
+  color: #e6e6e6;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-file-chip {
+  border-color: #2d2f3e;
+  background: #13141a;
+  color: #e6e6e6;
+}

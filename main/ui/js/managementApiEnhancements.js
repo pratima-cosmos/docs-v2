@@ -426,6 +426,88 @@
     return filled;
   }
 
+  // Adds a real file-picker interaction to the "users" field: an "Upload"
+  // button that triggers a hidden native <input type="file"> (genuinely
+  // opens the OS file picker - standard browser behavior, not simulated),
+  // and once a file is chosen, shows a chip with its name/size. The
+  // original text input is hidden (not removed) and its value is kept in
+  // sync via setNativeValue so anything listening to it still sees a value.
+  function addUsersFileUploadUI(root) {
+    var inputs = queryAllDeep(root, "input, textarea");
+    var target = null;
+    for (var i = 0; i < inputs.length; i++) {
+      var row = findFieldRow(inputs[i]);
+      var label = row ? rowLabelText(row, inputs[i]) : "";
+      var placeholder = (inputs[i].placeholder || "").toLowerCase();
+      if (label.indexOf("users") !== -1 || placeholder.indexOf("users") !== -1) {
+        target = inputs[i];
+        break;
+      }
+    }
+    if (!target) return "users-input-not-found";
+    if (target.dataset.aduUploadUi === "1") return "already-done";
+    target.dataset.aduUploadUi = "1";
+
+    var doc = root.ownerDocument || document;
+    var wrap = doc.createElement("div");
+    wrap.className = "adu-file-upload-wrap";
+
+    var fileInput = doc.createElement("input");
+    fileInput.type = "file";
+    fileInput.className = "adu-file-upload-input";
+    fileInput.accept = ".json,.csv,.txt";
+
+    var button = doc.createElement("button");
+    button.type = "button";
+    button.className = "adu-file-upload-button";
+    button.textContent = "Upload";
+
+    var chip = doc.createElement("div");
+    chip.className = "adu-file-chip";
+    chip.style.display = "none";
+
+    var chipName = doc.createElement("span");
+    chipName.className = "adu-file-chip-name";
+
+    var removeBtn = doc.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "adu-file-chip-remove";
+    removeBtn.textContent = "×";
+    removeBtn.setAttribute("aria-label", "Remove file");
+
+    chip.appendChild(chipName);
+    chip.appendChild(removeBtn);
+
+    button.addEventListener("click", function () {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", function () {
+      var file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      chipName.textContent = file.name + " · " + Math.max(1, Math.round(file.size / 1024)) + " KB";
+      chip.style.display = "flex";
+      button.textContent = "Change file";
+      setNativeValue(target, file.name);
+    });
+
+    removeBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      fileInput.value = "";
+      chip.style.display = "none";
+      button.textContent = "Upload";
+      setNativeValue(target, "");
+    });
+
+    wrap.appendChild(button);
+    wrap.appendChild(chip);
+    wrap.appendChild(fileInput);
+
+    target.style.display = "none";
+    target.parentElement.insertBefore(wrap, target);
+    return "ok";
+  }
+
   function mountFormAutofillToggle(root) {
     var doc = root.ownerDocument || document;
     if (queryDeep(doc, ".adu-form-autofill-toggle")) return "already-mounted";
@@ -481,6 +563,9 @@
     });
     safe("pill", function () {
       return moveOperationPillRight(root);
+    });
+    safe("upload", function () {
+      return addUsersFileUploadUI(root);
     });
     return label + " " + results.join(" ");
   }
