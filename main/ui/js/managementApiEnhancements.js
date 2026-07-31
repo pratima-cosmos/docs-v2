@@ -1,5 +1,7 @@
 (function () {
   "use strict";
+  try {
+  console.log("[adu] managementApiEnhancements.js loaded, path=" + window.location.pathname);
 
   // Safety rules for this file:
   // 1. NEVER move/reparent an existing DOM node that Mintlify's native
@@ -471,9 +473,11 @@
       }
       if (!doc || !doc.body || doc.body.children.length === 0) {
         attempts++;
+        console.log("[adu] iframe not ready yet, attempt " + attempts + ", doc=" + !!doc + " bodyChildren=" + (doc && doc.body ? doc.body.children.length : "n/a"));
         if (attempts < 40) setTimeout(tryAttach, 250); // poll up to ~10s
         return;
       }
+      console.log("[adu] iframe ready after " + attempts + " attempts, bodyChildren=" + doc.body.children.length);
       wiredIframes.add(iframe);
 
       var scheduled = false;
@@ -506,8 +510,13 @@
     }
 
     var iframes = document.querySelectorAll("iframe");
+    console.log("[adu] iframe count on page: " + iframes.length);
     for (var i = 0; i < iframes.length; i++) {
-      wireIframe(iframes[i]);
+      try {
+        wireIframe(iframes[i]);
+      } catch (e) {
+        console.error("[adu] wireIframe threw:", e);
+      }
     }
   }
 
@@ -524,4 +533,23 @@
   var observer = new MutationObserver(scheduleEnhance);
   observer.observe(document.body, { childList: true, subtree: true });
   scheduleEnhance();
+  } catch (e) {
+    console.error("[adu] top-level error:", e);
+    try {
+      var banner = document.createElement("div");
+      banner.style.position = "fixed";
+      banner.style.top = "8px";
+      banner.style.right = "8px";
+      banner.style.zIndex = "999999";
+      banner.style.padding = "6px 10px";
+      banner.style.background = "#c0392b";
+      banner.style.color = "#fff";
+      banner.style.fontFamily = "monospace";
+      banner.style.fontSize = "11px";
+      banner.textContent = "adu TOP-LEVEL ERROR: " + e.message;
+      document.body.appendChild(banner);
+    } catch (e2) {
+      /* truly nothing we can do */
+    }
+  }
 })();
