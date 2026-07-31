@@ -571,6 +571,16 @@
   var observer = new MutationObserver(scheduleEnhance);
   observer.observe(document.body, { childList: true, subtree: true });
   scheduleEnhance();
+
+  // Safety net: if the iframe undergoes a full navigation (not just content
+  // filling into its initial document), the outer page's own DOM never
+  // changes, so the MutationObserver above never fires again, and any
+  // observer attached to the iframe's now-discarded document goes inert.
+  // Plain polling sidesteps all of that by re-reading iframe.contentDocument
+  // fresh every time, regardless of whether the reference changed.
+  setInterval(function () {
+    if (isTargetPage()) enhance();
+  }, 1000);
   } catch (e) {
     console.error("[adu] top-level error:", e);
     try {
