@@ -358,6 +358,24 @@
     note.className = "adu-authorize-note";
     note.textContent = "This is a one-time setup. Once saved, this information is automatically filled in every time you test any endpoint.";
 
+    // Inline Lucide icon markup (same open-source set used by this site's
+    // own UI, ui/package.json depends on lucide-react) - embedded as raw
+    // SVG since this is plain JS, not a React component, so the npm
+    // package's components can't be imported directly. Kept tiny (only
+    // the 5 icons this modal needs) rather than pulling in the library.
+    var LUCIDE_ICONS = {
+      eye:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>',
+      eyeOff:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>',
+      copy:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+      check:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+      info:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+    };
+
     // Wraps an input in a relative-positioned container with a copy button
     // (and optionally an eye toggle for masked fields) overlaid on the
     // right side - so a filled-in value can always be copied/revealed
@@ -375,12 +393,12 @@
         eyeBtn.type = "button";
         eyeBtn.className = "adu-authorize-icon-btn";
         eyeBtn.title = "Show";
-        eyeBtn.textContent = "👁";
+        eyeBtn.innerHTML = LUCIDE_ICONS.eye;
         eyeBtn.addEventListener("click", function (e) {
           e.preventDefault();
           var revealed = input.type === "text";
           input.type = revealed ? "password" : "text";
-          eyeBtn.textContent = revealed ? "👁" : "🙈";
+          eyeBtn.innerHTML = revealed ? LUCIDE_ICONS.eye : LUCIDE_ICONS.eyeOff;
           eyeBtn.title = revealed ? "Show" : "Hide";
         });
         icons.appendChild(eyeBtn);
@@ -390,14 +408,14 @@
       copyBtn.type = "button";
       copyBtn.className = "adu-authorize-icon-btn";
       copyBtn.title = "Copy";
-      copyBtn.textContent = "⧉";
+      copyBtn.innerHTML = LUCIDE_ICONS.copy;
       copyBtn.addEventListener("click", function (e) {
         e.preventDefault();
         if (!input.value) return;
         navigator.clipboard.writeText(input.value).then(function () {
-          copyBtn.textContent = "✓";
+          copyBtn.innerHTML = LUCIDE_ICONS.check;
           setTimeout(function () {
-            copyBtn.textContent = "⧉";
+            copyBtn.innerHTML = LUCIDE_ICONS.copy;
           }, 1200);
         });
       });
@@ -421,7 +439,7 @@
     tokenLabel.textContent = "Bearer Token";
     var tokenInfoIcon = doc.createElement("span");
     tokenInfoIcon.className = "adu-authorize-info-icon";
-    tokenInfoIcon.textContent = "ⓘ";
+    tokenInfoIcon.innerHTML = LUCIDE_ICONS.info;
     tokenInfoIcon.setAttribute(
       "title",
       "Your Management API access token. Find it in the Auth0 Dashboard: Applications > APIs > Auth0 Management API > API Explorer tab (or generate one via a Machine to Machine application's client credentials)."

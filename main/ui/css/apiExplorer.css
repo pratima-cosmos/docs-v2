@@ -311,7 +311,12 @@
 .adu-authorize-info-icon {
   cursor: help;
   color: #57606a;
-  font-size: 0.8125rem;
+  display: inline-flex;
+}
+
+.adu-authorize-info-icon svg {
+  width: 14px;
+  height: 14px;
 }
 
 .adu-authorize-help-link {
@@ -352,14 +357,20 @@
 }
 
 .adu-authorize-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   background: none;
   cursor: pointer;
-  font-size: 0.875rem;
-  line-height: 1;
   padding: 4px;
   border-radius: 4px;
   color: #57606a;
+}
+
+.adu-authorize-icon-btn svg {
+  width: 15px;
+  height: 15px;
 }
 
 .adu-authorize-icon-btn:hover {
