@@ -394,6 +394,10 @@
   position: relative;
   display: flex;
   align-items: center;
+  /* .adu-authorize-content uses a 10px flex gap between all children -
+     pull the space after this one down to 4px specifically (gap still
+     applies to the label-row-to-field gap above it, unaffected). */
+  margin-bottom: -6px;
 }
 
 .adu-authorize-field-wrap input {
