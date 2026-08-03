@@ -354,10 +354,6 @@
     var title = doc.createElement("h3");
     title.textContent = "Set up your API credentials";
 
-    var note = doc.createElement("p");
-    note.className = "adu-authorize-note";
-    note.textContent = "This is a one-time setup. Once saved, this information is automatically filled in every time you test any endpoint.";
-
     // Inline Lucide icon markup (same open-source set used by this site's
     // own UI, ui/package.json depends on lucide-react) - embedded as raw
     // SVG since this is plain JS, not a React component, so the npm
@@ -375,6 +371,23 @@
       info:
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
     };
+
+    // Reuses Mintlify's own blue "Note" callout classes exactly (found by
+    // inspecting a live rendered <Info>/<Note> callout elsewhere on this
+    // site, e.g. docs/quickstart/agent-skills.mdx) instead of custom CSS -
+    // these Tailwind utility classes are already loaded site-wide.
+    var note = doc.createElement("div");
+    note.className =
+      "callout my-2 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-600/20";
+    note.setAttribute("data-callout-type", "note");
+    var noteIconWrap = doc.createElement("div");
+    noteIconWrap.className = "mt-0.5 w-4";
+    noteIconWrap.setAttribute("data-component-part", "callout-icon");
+    noteIconWrap.innerHTML = LUCIDE_ICONS.info.replace("<svg ", '<svg class="size-4 text-blue-800 dark:text-blue-300" ');
+    var noteText = doc.createElement("p");
+    noteText.textContent = "This is a one-time setup. Once saved, this information is automatically filled in every time you test any endpoint.";
+    note.appendChild(noteIconWrap);
+    note.appendChild(noteText);
 
     // Wraps an input in a relative-positioned container with a copy button
     // (and optionally an eye toggle for masked fields) overlaid on the
