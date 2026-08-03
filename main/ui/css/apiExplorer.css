@@ -330,6 +330,10 @@
   cursor: help;
   color: #57606a;
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  margin: -4px;
 }
 
 .adu-authorize-info-icon svg {
