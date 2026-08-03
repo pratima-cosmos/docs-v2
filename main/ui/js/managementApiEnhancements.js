@@ -387,13 +387,13 @@
     // possible from here - browsers block cross-origin sites from reading
     // another site's session/cookies, this is a security boundary, not a
     // Mintlify limitation. A direct link is the practical alternative.
-    // Links to the generic dashboard entry point (not a specific tenant's
-    // Explorer URL) since this modal is shown to any visitor of the public
-    // docs site - manage.auth0.com routes each logged-in user to their own
-    // tenant automatically.
+    // NOTE: this URL is specific to one tenant (product-design) and API id
+    // - per explicit direction (2026-08-03) rather than the generic
+    // manage.auth0.com entry point. A different visitor's dashboard login
+    // would land here without access to this tenant's API Explorer.
     var tokenHelpLink = doc.createElement("a");
     tokenHelpLink.className = "adu-authorize-help-link";
-    tokenHelpLink.href = "https://manage.auth0.com/";
+    tokenHelpLink.href = "https://manage.auth0.com/dashboard/us/product-design/apis/5efe591a3b8e2e0022c5eac8/explorer";
     tokenHelpLink.target = "_blank";
     tokenHelpLink.rel = "noopener noreferrer";
     tokenHelpLink.textContent = "Don't have a token? Get one from your Auth0 Dashboard →";
