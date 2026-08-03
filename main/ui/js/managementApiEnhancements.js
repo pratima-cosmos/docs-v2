@@ -380,20 +380,9 @@
 
     // Reuses Mintlify's own blue "Note" callout classes exactly (found by
     // inspecting a live rendered <Info>/<Note> callout elsewhere on this
-    // site, e.g. docs/quickstart/agent-skills.mdx) instead of custom CSS -
-    // these Tailwind utility classes are already loaded site-wide.
-    var note = doc.createElement("div");
-    note.className =
-      "callout my-2 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-600/20";
-    note.setAttribute("data-callout-type", "note");
-    var noteIconWrap = doc.createElement("div");
-    noteIconWrap.className = "mt-0.5 w-4";
-    noteIconWrap.setAttribute("data-component-part", "callout-icon");
-    noteIconWrap.innerHTML = LUCIDE_ICONS.info.replace("<svg ", '<svg class="size-4 text-blue-800 dark:text-blue-300" ');
-    var noteText = doc.createElement("p");
-    noteText.textContent = "The token includes all the scopes that are granted to the API Explorer Application, by default it can invoke all the Management API endpoints.";
-    note.appendChild(noteIconWrap);
-    note.appendChild(noteText);
+    // site, e.g. docs/quickstart/agent-skills.mdx). Superseded by the info
+    // icon's hover tooltip below - kept out of the modal body per direction
+    // (2026-08-03).
 
     // Wraps an input in a relative-positioned container with a copy button
     // (and optionally an eye toggle for masked fields) overlaid on the
@@ -454,7 +443,7 @@
     tokenInfoIcon.innerHTML = LUCIDE_ICONS.info;
     tokenInfoIcon.setAttribute(
       "title",
-      "Your Management API access token. Find it in the Auth0 Dashboard: Applications > APIs > Auth0 Management API > API Explorer tab (or generate one via a Machine to Machine application's client credentials)."
+      "The token includes all the scopes that are granted to the API Explorer Application, by default it can invoke all the Management API endpoints."
     );
     tokenLabelRow.appendChild(tokenLabel);
     tokenLabelRow.appendChild(tokenInfoIcon);
@@ -466,7 +455,7 @@
     var tokenInput = doc.createElement("input");
     tokenInput.type = "password";
     tokenInput.className = "adu-authorize-token-input";
-    tokenInput.placeholder = "Paste your token";
+    tokenInput.placeholder = "Enter your token";
     var tokenFieldWrap = wrapFieldWithIcons(tokenInput, { maskable: true });
 
     // Auto-filling this from an already-logged-in dashboard session isn't
@@ -537,7 +526,6 @@
     // (note, label, field, help link) keep their own tighter spacing.
     var content = doc.createElement("div");
     content.className = "adu-authorize-content";
-    content.appendChild(note);
     content.appendChild(tokenLabelRow);
     content.appendChild(tokenFieldWrap);
     content.appendChild(tokenHelpRow);
