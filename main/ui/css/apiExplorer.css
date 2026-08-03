@@ -380,6 +380,12 @@
   border-radius: 6px;
 }
 
+/* Typed token value stays monospace (easier to read a long string), but
+   the placeholder ghost text should read like normal body copy. */
+.adu-authorize-token-input::placeholder {
+  font-family: Inter, "Inter Fallback", system-ui, -apple-system, sans-serif;
+}
+
 .adu-authorize-field-wrap {
   position: relative;
   display: flex;

@@ -356,7 +356,7 @@
     modal.className = "adu-authorize-modal";
 
     var title = doc.createElement("h3");
-    title.textContent = "Set up your API credentials - API Token";
+    title.textContent = "API Token";
 
     // Inline Lucide icon markup (same open-source set used by this site's
     // own UI, ui/package.json depends on lucide-react) - embedded as raw
@@ -391,7 +391,7 @@
     noteIconWrap.setAttribute("data-component-part", "callout-icon");
     noteIconWrap.innerHTML = LUCIDE_ICONS.info.replace("<svg ", '<svg class="size-4 text-blue-800 dark:text-blue-300" ');
     var noteText = doc.createElement("p");
-    noteText.textContent = "Enter your token once. It will be saved and automatically used for all endpoint tests.";
+    noteText.textContent = "The token includes all the scopes that are granted to the API Explorer Application, by default it can invoke all the Management API endpoints.";
     note.appendChild(noteIconWrap);
     note.appendChild(noteText);
 
@@ -466,7 +466,7 @@
     var tokenInput = doc.createElement("input");
     tokenInput.type = "password";
     tokenInput.className = "adu-authorize-token-input";
-    tokenInput.placeholder = "Paste your Management API access token";
+    tokenInput.placeholder = "Paste your token";
     var tokenFieldWrap = wrapFieldWithIcons(tokenInput, { maskable: true });
 
     // Auto-filling this from an already-logged-in dashboard session isn't
