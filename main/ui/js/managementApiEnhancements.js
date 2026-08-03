@@ -745,11 +745,34 @@
     return null;
   }
 
-  function findFirstSectionCard(root) {
-    var sectionNames = ["Server", "Authorization", "Body"];
-    for (var i = 0; i < sectionNames.length; i++) {
-      var card = findSectionCard(root, sectionNames[i]);
-      if (card) return card;
+  // Confirmed 2026-08-03 via full ancestor-chain trace from the tenantDomain
+  // input: climbing from any field input, the ancestor with exactly 3
+  // children is the container holding the Server/Authorization/Body
+  // section cards as its direct children - reliable because this page
+  // always has exactly those 3 sections. Used instead of climbing from a
+  // section HEADING's text (like findSectionCard does) because that
+  // approach picked the wrong "Authorization" leaf here and ended up
+  // inserting the autofill toggle nested INSIDE the Authorization field's
+  // own wrapper - which doesn't reserve layout space for extra content,
+  // so the toggle silently overlapped the Body section's fields below it,
+  // and would also vanish if that one field/section were collapsed.
+  function findSectionsListContainer(root) {
+    var inputs = queryAllDeep(root, "input, select, textarea");
+    var tenantInput = null;
+    for (var i = 0; i < inputs.length; i++) {
+      if (inputs[i].placeholder === "enter tenantDomain") {
+        tenantInput = inputs[i];
+        break;
+      }
+    }
+    if (!tenantInput) return null;
+    var el = tenantInput;
+    var depth = 0;
+    while (el && depth < 15) {
+      el = el.parentElement;
+      if (!el) break;
+      if (el.children.length === 3) return el;
+      depth++;
     }
     return null;
   }
@@ -773,106 +796,177 @@
     return count;
   }
 
-  // Adds a "Custom" tab into the code-sample's language row (cURL/C#/etc.),
-  // toggling between the native rendered code and a blank editable
+  // Each Body field's outer wrapper (findFieldRow's row's own parent) has
+  // its own border-bottom, producing a visible rule between consecutive
+  // fields (confirmed via DOM trace: "flex space-x-3 items-start" with
+  // border-bottom: 1px solid, one per field in the Body section). Per
+  // direction (2026-08-03), that line is redundant in the Body section
+  // specifically - each field block already reads as its own group without
+  // it. Server/Authorization are untouched.
+  //
+  // Uses findSectionsListContainer (anchored on the tenantDomain input)
+  // rather than findSectionCard("Body") - the text-search-based climb in
+  // findSectionCard returns whichever "Body" text match it finds first
+  // without verifying the climb succeeded, which is exactly what caused
+  // the autofill toggle to land inside the wrong element earlier. The
+  // sections list's last child is reliably Body (Server/Authorization/Body
+  // is a fixed order on this page).
+  function removeBodyFieldDividers(root) {
+    var sectionsList = findSectionsListContainer(root);
+    if (!sectionsList || sectionsList.children.length < 3) return "sections-list-not-found";
+    var bodyCard = sectionsList.children[sectionsList.children.length - 1];
+    var inputs = queryAllDeep(bodyCard, "input, select, textarea");
+    var count = 0;
+    for (var i = 0; i < inputs.length; i++) {
+      var row = findFieldRow(inputs[i]);
+      var wrapper = row && row.parentElement;
+      if (!wrapper || wrapper.dataset.aduNoDivider === "1") continue;
+      wrapper.style.setProperty("border-bottom", "none", "important");
+      wrapper.dataset.aduNoDivider = "1";
+      count++;
+    }
+    return count;
+  }
+
+  // Adds a "Custom JSON" tab into the code-sample's language row (cURL/C#/
+  // etc.), toggling between the native rendered code and a blank editable
   // textarea for pasting ad-hoc JSON to test with. We don't control
   // Mintlify's own tab/dropdown state, so this only *hides* the native
   // code body (CSS display, not removal) and shows a new panel instead -
   // clicking back on any of the original language controls restores it.
+  //
+  // Confirmed 2026-08-03: clicking "Try it" opens the interactive form in
+  // its own fixed-position modal (`z-40 fixed inset-0` overlay), which
+  // renders a SEPARATE code-sample panel from the one shown on the page
+  // by default - not the same DOM node updated in place. findLanguageBadge
+  // only ever returns the FIRST language-label match on the page, so the
+  // tab only ever got mounted on whichever of the two panels happened to
+  // render first, never both. Now finds every visible language-badge match,
+  // dedupes by header row, and mounts on each one that isn't already done.
   function addCustomBodyTab(root) {
-    var badge = findLanguageBadge(root);
-    if (!badge) return "badge-not-found";
-    var item = badge.closest("button, [role='tab'], [role='button']") || badge;
-    var headerRow = climbToRow(item, 2, 4);
-    if (!headerRow) return "header-row-not-found";
-    if (headerRow.dataset.aduCustomTab === "1") return "already-done";
-    var card = headerRow.parentElement;
-    if (!card) return "card-not-found";
-
-    var codeBody = null;
-    for (var i = 0; i < card.children.length; i++) {
-      if (card.children[i] !== headerRow) {
-        codeBody = card.children[i];
-        break;
+    var leaves = leafTextElements(root);
+    var headerRows = [];
+    for (var i = 0; i < leaves.length; i++) {
+      if (LANGUAGE_LABELS.indexOf(leaves[i].text) === -1) continue;
+      if (!isVisible(leaves[i].el)) continue;
+      var item = leaves[i].el.closest("button, [role='tab'], [role='button']") || leaves[i].el;
+      var headerRow = climbToRow(item, 2, 4);
+      if (!headerRow) continue;
+      // Two different visible language-label leaves (e.g. the active
+      // language name shown twice - once in a trigger, once inside its own
+      // dropdown list) can climb to two DIFFERENT-but-NESTED rows. A plain
+      // reference check doesn't catch that, so also skip anything that
+      // contains, or is contained by, a row already collected - otherwise
+      // both get a button, one ends up nested inside the other, and its
+      // textContent reads as doubled ("Custom JSONCustom JSON").
+      var overlaps = false;
+      for (var k = 0; k < headerRows.length; k++) {
+        if (headerRows[k] === headerRow || headerRows[k].contains(headerRow) || headerRow.contains(headerRows[k])) {
+          overlaps = true;
+          break;
+        }
       }
+      if (overlaps) continue;
+      headerRows.push(headerRow);
     }
-    if (!codeBody) return "code-body-not-found";
-    headerRow.dataset.aduCustomTab = "1";
+    if (headerRows.length === 0) return "badge-not-found";
 
     var doc = root.ownerDocument || document;
+    var mounted = 0;
+    var alreadyDone = 0;
 
-    var customTabBtn = doc.createElement("button");
-    customTabBtn.type = "button";
-    customTabBtn.className = "adu-custom-tab-button";
-    customTabBtn.textContent = "Custom JSON";
-
-    var customPanel = doc.createElement("div");
-    customPanel.className = "adu-custom-body-panel";
-    customPanel.style.display = "none";
-
-    var label = doc.createElement("div");
-    label.className = "adu-custom-body-label";
-    label.textContent = "Paste your own JSON here to test with (not sent automatically)";
-
-    var textarea = doc.createElement("textarea");
-    textarea.className = "adu-custom-body-textarea";
-    textarea.placeholder = '{\n  "your": "json here"\n}';
-    textarea.spellcheck = false;
-    textarea.rows = 10;
-
-    customPanel.appendChild(label);
-    customPanel.appendChild(textarea);
-
-    var isCustomActive = false;
-    function showCustom() {
-      codeBody.style.display = "none";
-      customPanel.style.display = "block";
-      customTabBtn.classList.add("adu-tab-active");
-      isCustomActive = true;
-      saveStoredCustomJsonActive(true);
-    }
-    function showNative() {
-      customPanel.style.display = "none";
-      codeBody.style.display = "";
-      customTabBtn.classList.remove("adu-tab-active");
-      isCustomActive = false;
-      saveStoredCustomJsonActive(false);
-    }
-
-    // Real toggle: clicking again while active switches back (this was
-    // previously one-way - clicking "Custom" had no way to return to the
-    // native view except clicking an unrelated language control).
-    customTabBtn.addEventListener("click", function () {
-      if (isCustomActive) {
-        showNative();
-      } else {
-        showCustom();
+    for (var h = 0; h < headerRows.length; h++) {
+      var row = headerRows[h];
+      if (row.dataset.aduCustomTab === "1") {
+        alreadyDone++;
+        continue;
       }
-    });
+      var card = row.parentElement;
+      if (!card) continue;
 
-    // Group with the existing copy/sparkle icon cluster (the row's own
-    // last child before this button is added) instead of appending
-    // directly to headerRow - that row uses justify-content: space-between
-    // for exactly 2 groups, and a 3rd top-level item there splits the gap
-    // into two, creating a large, uneven gap. Joining the existing
-    // cluster's own local gap keeps spacing consistent. Done BEFORE the
-    // loop below, so `child.contains(customTabBtn)` actually evaluates
-    // correctly - checking it beforehand always returns false since the
-    // button isn't in the tree yet, which is exactly the bug that caused
-    // the cluster to also get a "revert to native" listener and instantly
-    // undo the toggle via event bubbling (2026-08-03).
-    var iconsCluster = headerRow.children[headerRow.children.length - 1];
-    iconsCluster.appendChild(customTabBtn);
+      var codeBody = null;
+      for (var c = 0; c < card.children.length; c++) {
+        if (card.children[c] !== row) {
+          codeBody = card.children[c];
+          break;
+        }
+      }
+      if (!codeBody) continue;
+      row.dataset.aduCustomTab = "1";
 
-    Array.prototype.forEach.call(headerRow.children, function (child) {
-      if (child === customTabBtn || child.contains(customTabBtn)) return;
-      child.addEventListener("click", showNative);
-    });
-    card.insertBefore(customPanel, codeBody.nextSibling);
+      var customTabBtn = doc.createElement("button");
+      customTabBtn.type = "button";
+      customTabBtn.className = "adu-custom-tab-button";
+      customTabBtn.textContent = "Custom JSON";
 
-    if (getStoredCustomJsonActive()) showCustom();
+      var customPanel = doc.createElement("div");
+      customPanel.className = "adu-custom-body-panel";
+      customPanel.style.display = "none";
 
-    return "ok";
+      var textarea = doc.createElement("textarea");
+      textarea.className = "adu-custom-body-textarea";
+      textarea.placeholder = '{\n  "your": "json here"\n}';
+      textarea.spellcheck = false;
+      textarea.rows = 10;
+
+      customPanel.appendChild(textarea);
+
+      var isCustomActive = false;
+      (function (codeBody, customPanel, customTabBtn) {
+        function showCustom() {
+          codeBody.style.display = "none";
+          customPanel.style.display = "block";
+          customTabBtn.classList.add("adu-tab-active");
+          isCustomActive = true;
+          saveStoredCustomJsonActive(true);
+        }
+        function showNative() {
+          customPanel.style.display = "none";
+          codeBody.style.display = "";
+          customTabBtn.classList.remove("adu-tab-active");
+          isCustomActive = false;
+          saveStoredCustomJsonActive(false);
+        }
+
+        // Real toggle: clicking again while active switches back (this was
+        // previously one-way - clicking "Custom" had no way to return to
+        // the native view except clicking an unrelated language control).
+        customTabBtn.addEventListener("click", function () {
+          if (isCustomActive) {
+            showNative();
+          } else {
+            showCustom();
+          }
+        });
+
+        // Group with the existing copy/sparkle icon cluster (the row's own
+        // last child before this button is added) instead of appending
+        // directly to the header row - that row uses justify-content:
+        // space-between for exactly 2 groups, and a 3rd top-level item
+        // there splits the gap into two, creating a large, uneven gap.
+        // Joining the existing cluster's own local gap keeps spacing
+        // consistent. Done BEFORE the loop below, so
+        // `child.contains(customTabBtn)` actually evaluates correctly -
+        // checking it beforehand always returns false since the button
+        // isn't in the tree yet, which is exactly the bug that caused the
+        // cluster to also get a "revert to native" listener and instantly
+        // undo the toggle via event bubbling (2026-08-03).
+        var iconsCluster = row.children[row.children.length - 1];
+        iconsCluster.appendChild(customTabBtn);
+
+        Array.prototype.forEach.call(row.children, function (child) {
+          if (child === customTabBtn || child.contains(customTabBtn)) return;
+          child.addEventListener("click", showNative);
+        });
+        card.insertBefore(customPanel, codeBody.nextSibling);
+
+        if (getStoredCustomJsonActive()) showCustom();
+      })(codeBody, customPanel, customTabBtn);
+
+      mounted++;
+    }
+
+    return "mounted:" + mounted + " already:" + alreadyDone + " total:" + headerRows.length;
   }
 
   // Clamps the endpoint description paragraph (the long text right after the
@@ -1131,8 +1225,8 @@
   function mountFormAutofillToggle(root) {
     var doc = root.ownerDocument || document;
     if (queryDeep(doc, ".adu-form-autofill-toggle")) return "already-mounted";
-    var card = findFirstSectionCard(root);
-    if (!card || !card.parentElement) return "card-not-found";
+    var sectionsList = findSectionsListContainer(root);
+    if (!sectionsList || sectionsList.children.length < 1) return "sections-list-not-found";
 
     var wrap = doc.createElement("label");
     wrap.className = "adu-form-autofill-toggle";
@@ -1149,14 +1243,17 @@
 
     checkbox.addEventListener("change", function () {
       if (!checkbox.checked) return;
-      var filled = applyFormAutofill(card.parentElement);
+      var filled = applyFormAutofill(sectionsList);
       text.textContent = filled > 0 ? "Auto-filled " + filled + " field(s)" : "No empty fields to fill";
       setTimeout(function () {
         text.textContent = "Auto-fill from your tenant";
       }, 2500);
     });
 
-    card.parentElement.insertBefore(wrap, card);
+    // Inserted as a sibling BEFORE the first section (Server), outside
+    // all 3 sections' own collapsible bodies - stays visible regardless
+    // of which sections the user expands or collapses.
+    sectionsList.insertBefore(wrap, sectionsList.children[0]);
     return "ok";
   }
 
@@ -1177,6 +1274,9 @@
     });
     safe("flat", function () {
       return flattenSectionCards(root);
+    });
+    safe("noDivider", function () {
+      return removeBodyFieldDividers(root);
     });
     safe("restyled", function () {
       return restyleFieldRowsToVertical(root);
