@@ -358,11 +358,62 @@
     note.className = "adu-authorize-note";
     note.textContent = "This is a one-time setup. Once saved, this information is automatically filled in every time you test any endpoint.";
 
+    // Wraps an input in a relative-positioned container with a copy button
+    // (and optionally an eye toggle for masked fields) overlaid on the
+    // right side - so a filled-in value can always be copied/revealed
+    // without needing to select the text manually.
+    function wrapFieldWithIcons(input, opts) {
+      var wrap = doc.createElement("div");
+      wrap.className = "adu-authorize-field-wrap";
+
+      var icons = doc.createElement("div");
+      icons.className = "adu-authorize-field-icons";
+
+      var eyeBtn = null;
+      if (opts && opts.maskable) {
+        eyeBtn = doc.createElement("button");
+        eyeBtn.type = "button";
+        eyeBtn.className = "adu-authorize-icon-btn";
+        eyeBtn.title = "Show";
+        eyeBtn.textContent = "👁";
+        eyeBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var revealed = input.type === "text";
+          input.type = revealed ? "password" : "text";
+          eyeBtn.textContent = revealed ? "👁" : "🙈";
+          eyeBtn.title = revealed ? "Show" : "Hide";
+        });
+        icons.appendChild(eyeBtn);
+      }
+
+      var copyBtn = doc.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "adu-authorize-icon-btn";
+      copyBtn.title = "Copy";
+      copyBtn.textContent = "⧉";
+      copyBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (!input.value) return;
+        navigator.clipboard.writeText(input.value).then(function () {
+          copyBtn.textContent = "✓";
+          setTimeout(function () {
+            copyBtn.textContent = "⧉";
+          }, 1200);
+        });
+      });
+      icons.appendChild(copyBtn);
+
+      wrap.appendChild(input);
+      wrap.appendChild(icons);
+      return wrap;
+    }
+
     var domainLabel = doc.createElement("label");
     domainLabel.textContent = "Tenant Domain";
     var domainInput = doc.createElement("input");
     domainInput.type = "text";
     domainInput.placeholder = "{yourTenant}.auth0.com";
+    var domainFieldWrap = wrapFieldWithIcons(domainInput, { maskable: false });
 
     var tokenLabelRow = doc.createElement("div");
     tokenLabelRow.className = "adu-authorize-label-row";
@@ -378,10 +429,15 @@
     tokenLabelRow.appendChild(tokenLabel);
     tokenLabelRow.appendChild(tokenInfoIcon);
 
-    var tokenInput = doc.createElement("textarea");
+    // A single-line masked input (not the previous multi-line textarea) -
+    // needed for the eye-toggle pattern to work (type="password" only
+    // applies to <input>, not <textarea>). Tokens are long but browsers
+    // handle overflow in a single-line input fine (internal scroll).
+    var tokenInput = doc.createElement("input");
+    tokenInput.type = "password";
     tokenInput.className = "adu-authorize-token-input";
-    tokenInput.rows = 3;
     tokenInput.placeholder = "Paste your Management API access token";
+    var tokenFieldWrap = wrapFieldWithIcons(tokenInput, { maskable: true });
 
     // Auto-filling this from an already-logged-in dashboard session isn't
     // possible from here - browsers block cross-origin sites from reading
@@ -443,9 +499,9 @@
     modal.appendChild(title);
     modal.appendChild(note);
     modal.appendChild(domainLabel);
-    modal.appendChild(domainInput);
+    modal.appendChild(domainFieldWrap);
     modal.appendChild(tokenLabelRow);
-    modal.appendChild(tokenInput);
+    modal.appendChild(tokenFieldWrap);
     modal.appendChild(tokenHelpLink);
     modal.appendChild(actions);
     overlay.appendChild(modal);
