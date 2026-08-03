@@ -443,13 +443,6 @@
       return wrap;
     }
 
-    var domainLabel = doc.createElement("label");
-    domainLabel.textContent = "Tenant Domain";
-    var domainInput = doc.createElement("input");
-    domainInput.type = "text";
-    domainInput.placeholder = "{yourTenant}.auth0.com";
-    var domainFieldWrap = wrapFieldWithIcons(domainInput, { maskable: false });
-
     var tokenLabelRow = doc.createElement("div");
     tokenLabelRow.className = "adu-authorize-label-row";
     var tokenLabel = doc.createElement("label");
@@ -492,14 +485,7 @@
     var existing = getStoredCredentials();
     if (existing) {
       tokenInput.value = existing.token || "";
-      domainInput.value = existing.domain || "";
     }
-
-    tokenInput.addEventListener("input", function () {
-      if (domainInput.value) return; // don't clobber a manually-entered domain
-      var detected = decodeJwtDomain(tokenInput.value);
-      if (detected) domainInput.value = detected;
-    });
 
     var saveBtn = doc.createElement("button");
     saveBtn.type = "button";
@@ -514,7 +500,7 @@
     saveBtn.addEventListener("click", function () {
       var token = tokenInput.value.trim();
       if (!token) return;
-      var domain = domainInput.value.trim() || decodeJwtDomain(token) || "";
+      var domain = decodeJwtDomain(token) || "";
       saveStoredCredentials(domain, token);
       overlay.remove();
       if (onSaved) onSaved();
@@ -533,8 +519,6 @@
 
     modal.appendChild(title);
     modal.appendChild(note);
-    modal.appendChild(domainLabel);
-    modal.appendChild(domainFieldWrap);
     modal.appendChild(tokenLabelRow);
     modal.appendChild(tokenFieldWrap);
     modal.appendChild(tokenHelpLink);
