@@ -33,6 +33,26 @@
   var MAX_BAR_DESCENDANTS = 40;
   var SENSITIVE_LABEL_KEYWORDS = ["authorization", "bearer", "token", "password", "secret"];
 
+  // Inline Lucide icon markup (same open-source set used by this site's own
+  // UI, ui/package.json depends on lucide-react) - embedded as raw SVG since
+  // this is plain JS, not a React component, so the npm package's components
+  // can't be imported directly. Shared across the Authorize modal and the
+  // per-field description tooltips below.
+  var LUCIDE_ICONS = {
+    eye:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>',
+    eyeOff:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>',
+    copy:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+    check:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    info:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+    externalLink:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>',
+  };
+
   function isTargetPage() {
     return window.location.pathname.indexOf(TARGET_PATH) === 0;
   }
@@ -358,26 +378,6 @@
     var title = doc.createElement("h3");
     title.textContent = "API Token";
 
-    // Inline Lucide icon markup (same open-source set used by this site's
-    // own UI, ui/package.json depends on lucide-react) - embedded as raw
-    // SVG since this is plain JS, not a React component, so the npm
-    // package's components can't be imported directly. Kept tiny (only
-    // the 5 icons this modal needs) rather than pulling in the library.
-    var LUCIDE_ICONS = {
-      eye:
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>',
-      eyeOff:
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>',
-      copy:
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
-      check:
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
-      info:
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
-      externalLink:
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>',
-    };
-
     // Reuses Mintlify's own blue "Note" callout classes exactly (found by
     // inspecting a live rendered <Info>/<Note> callout elsewhere on this
     // site, e.g. docs/quickstart/agent-skills.mdx). Superseded by the info
@@ -628,6 +628,77 @@
     return count;
   }
 
+  // Each field's plain-language description (e.g. "connection_id of the
+  // connection to which users will be imported.") renders as its own full
+  // paragraph directly under the name/type/required badges - confirmed via
+  // DOM trace: findFieldRow's row has exactly 2 children, [0] a ".space-y-2"
+  // label block (itself: [0] the name+badges row, [1] the description
+  // paragraph when one exists) and [1] the input wrapper. That description
+  // paragraph is what was making every field take up extra vertical space
+  // even when the user didn't need to read it. Hide it and surface the same
+  // text via a hover/focus info icon next to the field name instead - same
+  // JS-controlled tooltip pattern as the Authorize modal's "API Token" info
+  // icon (openAuthorizeModal), so it's provably visible rather than relying
+  // on a native title attribute.
+  function addFieldInfoTooltips(root) {
+    var doc = root.ownerDocument || document;
+    var inputs = queryAllDeep(root, "input, select, textarea");
+    var count = 0;
+    for (var i = 0; i < inputs.length; i++) {
+      var input = inputs[i];
+      if (input.dataset.aduInfoTooltip === "1") continue;
+
+      var row = findFieldRow(input);
+      if (!row || row.children.length < 1) continue;
+      var labelBlock = row.children[0];
+      if (labelBlock.children.length < 2) continue; // no description paragraph for this field
+
+      var nameRow = labelBlock.children[0];
+      var descBlock = labelBlock.children[1];
+      var nameWrap = nameRow && nameRow.children[0];
+      if (!nameWrap) continue;
+
+      var descText = (descBlock.textContent || "").trim();
+      if (!descText) continue;
+
+      if (nameWrap.querySelector(".adu-field-info-icon")) {
+        input.dataset.aduInfoTooltip = "1";
+        continue;
+      }
+
+      var infoWrap = doc.createElement("span");
+      infoWrap.className = "adu-field-info-icon";
+      infoWrap.tabIndex = 0;
+      infoWrap.setAttribute("role", "button");
+      infoWrap.setAttribute("aria-label", "Field description");
+      infoWrap.innerHTML = LUCIDE_ICONS.info;
+
+      var tooltip = doc.createElement("span");
+      tooltip.className = "adu-field-tooltip";
+      tooltip.textContent = descText;
+      infoWrap.appendChild(tooltip);
+
+      (function (wrap, tip) {
+        function show() {
+          tip.classList.add("adu-field-tooltip-visible");
+        }
+        function hide() {
+          tip.classList.remove("adu-field-tooltip-visible");
+        }
+        wrap.addEventListener("mouseenter", show);
+        wrap.addEventListener("mouseleave", hide);
+        wrap.addEventListener("focus", show);
+        wrap.addEventListener("blur", hide);
+      })(infoWrap, tooltip);
+
+      nameWrap.appendChild(infoWrap);
+      descBlock.style.setProperty("display", "none", "important");
+      input.dataset.aduInfoTooltip = "1";
+      count++;
+    }
+    return count;
+  }
+
   // "Server"/"Authorization"/"Body" each have a static, unrelated duplicate
   // elsewhere on the page (confirmed via direct DOM trace 2026-07-31) - e.g.
   // a pre-existing "Authorization" heading that renders before the Try It
@@ -711,7 +782,7 @@
     var customTabBtn = doc.createElement("button");
     customTabBtn.type = "button";
     customTabBtn.className = "adu-custom-tab-button";
-    customTabBtn.textContent = "Try Custom";
+    customTabBtn.textContent = "Custom JSON";
 
     var customPanel = doc.createElement("div");
     customPanel.className = "adu-custom-body-panel";
@@ -1082,6 +1153,9 @@
     });
     safe("restyled", function () {
       return restyleFieldRowsToVertical(root);
+    });
+    safe("fieldInfo", function () {
+      return addFieldInfoTooltips(root);
     });
     safe("toggle", function () {
       return mountFormAutofillToggle(root);

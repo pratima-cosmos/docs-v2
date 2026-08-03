@@ -559,3 +559,65 @@ select[data-adu-restyled="1"] {
   max-width: 60% !important;
   min-width: 200px;
 }
+
+/* Per-field description, shown on hover/focus of an info icon next to the
+   field name instead of as a permanent paragraph (addFieldInfoTooltips) -
+   same JS-controlled tooltip pattern as .adu-authorize-tooltip, positioned
+   below the icon rather than to the side since field names sit near the
+   left edge of a full-width row and a side tooltip could run off it. */
+.adu-field-info-icon {
+  position: relative;
+  cursor: pointer;
+  color: #57606a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  margin-left: 2px;
+}
+
+.adu-field-info-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-field-info-icon {
+  color: #a0a8b4;
+}
+
+.adu-field-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 260px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #24292f;
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  cursor: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.adu-field-tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 8px;
+  border: 5px solid transparent;
+  border-bottom-color: #24292f;
+}
+
+.adu-field-tooltip-visible {
+  opacity: 1;
+  visibility: visible;
+}
