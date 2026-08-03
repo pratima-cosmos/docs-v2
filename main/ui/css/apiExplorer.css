@@ -344,9 +344,9 @@
 
 .adu-authorize-tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  left: calc(100% + 8px);
+  transform: translateY(-50%);
   width: 220px;
   padding: 8px 10px;
   border-radius: 6px;
@@ -368,11 +368,11 @@
 .adu-authorize-tooltip::after {
   content: "";
   position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
   border: 5px solid transparent;
-  border-top-color: #24292f;
+  border-right-color: #24292f;
 }
 
 .adu-authorize-tooltip-visible {
@@ -546,4 +546,16 @@
   border-color: #2d2f3e;
   background: #13141a;
   color: #e6e6e6;
+}
+
+/* The vertical field-row restyle (restyleFieldRowsToVertical) made each
+   input span the full row width (matching its label block above) - a
+   full-width bordered input reads as "its own box" per field. Mintlify's
+   own divide-y classes already provide a separator line between fields,
+   so no new border is needed here - just give the input breathing room
+   on the right instead of stretching edge-to-edge. */
+input[data-adu-restyled="1"],
+select[data-adu-restyled="1"] {
+  max-width: 60% !important;
+  min-width: 200px;
 }
