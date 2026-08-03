@@ -268,20 +268,27 @@
 }
 
 .adu-authorize-modal {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: block;
   width: 420px;
   max-width: 90vw;
-  padding: 20px;
+  padding: 40px;
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* Rhythm: title -> 24px -> content -> 24px -> CTAs. Content itself keeps
+   its own tighter internal spacing (label/field/help link stay close). */
 .adu-authorize-modal h3 {
-  margin: 0;
+  margin: 0 0 24px;
   font-size: 1.125rem;
+}
+
+.adu-authorize-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
 /* Mintlify's real callout paragraph renders at the main content's 16px
@@ -329,11 +336,36 @@
   height: 14px;
 }
 
-.adu-authorize-help-link {
+.adu-authorize-help-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
   font-size: 0.75rem;
+  color: #57606a;
+}
+
+.adu-authorize-help-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: #4f46e5;
+  white-space: nowrap;
+}
+
+.adu-authorize-help-link:hover {
   text-decoration: underline;
-  margin-top: -6px;
+}
+
+.adu-authorize-external-icon {
+  display: inline-flex;
+}
+
+.adu-authorize-external-icon svg {
+  width: 12px;
+  height: 12px;
 }
 
 .adu-authorize-token-input,
@@ -391,7 +423,6 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 6px;
 }
 
 .adu-authorize-save {

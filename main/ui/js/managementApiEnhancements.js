@@ -374,6 +374,8 @@
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
       info:
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+      externalLink:
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>',
     };
 
     // Reuses Mintlify's own blue "Note" callout classes exactly (found by
@@ -475,12 +477,25 @@
     // - per explicit direction (2026-08-03) rather than the generic
     // manage.auth0.com entry point. A different visitor's dashboard login
     // would land here without access to this tenant's API Explorer.
+    var tokenHelpRow = doc.createElement("div");
+    tokenHelpRow.className = "adu-authorize-help-row";
+
+    var tokenHelpText = doc.createElement("span");
+    tokenHelpText.textContent = "Don't have a token? Get one from your Auth0 Dashboard";
+
     var tokenHelpLink = doc.createElement("a");
     tokenHelpLink.className = "adu-authorize-help-link";
     tokenHelpLink.href = "https://manage.auth0.com/dashboard/us/product-design/apis/5efe591a3b8e2e0022c5eac8/explorer";
     tokenHelpLink.target = "_blank";
     tokenHelpLink.rel = "noopener noreferrer";
-    tokenHelpLink.textContent = "Don't have a token? Get one from your Auth0 Dashboard →";
+    var tokenHelpLinkIcon = doc.createElement("span");
+    tokenHelpLinkIcon.className = "adu-authorize-external-icon";
+    tokenHelpLinkIcon.innerHTML = LUCIDE_ICONS.externalLink;
+    tokenHelpLink.appendChild(doc.createTextNode("Get Token"));
+    tokenHelpLink.appendChild(tokenHelpLinkIcon);
+
+    tokenHelpRow.appendChild(tokenHelpText);
+    tokenHelpRow.appendChild(tokenHelpLink);
 
     var existing = getStoredCredentials();
     if (existing) {
@@ -517,11 +532,18 @@
     actions.appendChild(cancelBtn);
     actions.appendChild(saveBtn);
 
+    // Grouped so the 24px rhythm (title -> content -> actions) can be
+    // expressed as margin on this one wrapper, while the pieces inside it
+    // (note, label, field, help link) keep their own tighter spacing.
+    var content = doc.createElement("div");
+    content.className = "adu-authorize-content";
+    content.appendChild(note);
+    content.appendChild(tokenLabelRow);
+    content.appendChild(tokenFieldWrap);
+    content.appendChild(tokenHelpRow);
+
     modal.appendChild(title);
-    modal.appendChild(note);
-    modal.appendChild(tokenLabelRow);
-    modal.appendChild(tokenFieldWrap);
-    modal.appendChild(tokenHelpLink);
+    modal.appendChild(content);
     modal.appendChild(actions);
     overlay.appendChild(modal);
     doc.body.appendChild(overlay);
