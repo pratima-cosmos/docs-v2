@@ -233,9 +233,13 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.8125rem;
   padding: 10px;
-  border: 1px solid #d0d7de;
+  border: none;
   border-radius: 8px;
-  background: #f6f8fa;
+  /* Matches the native code panel's own card background (confirmed via
+     computed style: rgb(255,255,255)) rather than a grey box, so the
+     Custom JSON tab reads as the same surface as the default cURL/etc
+     view instead of a distinct bordered component (2026-08-03). */
+  background: #fff;
   color: #24292f;
   resize: vertical;
 }
@@ -532,7 +536,6 @@
 
 :is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
   .adu-custom-body-textarea {
-  border-color: #2d2f3e;
   background: #13141a;
   color: #e6e6e6;
 }

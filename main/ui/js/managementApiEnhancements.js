@@ -57,29 +57,6 @@
     return window.location.pathname.indexOf(TARGET_PATH) === 0;
   }
 
-  function showDiagnosticBanner(message, color) {
-    var id = "adu-diagnostic-banner";
-    var el = document.getElementById(id);
-    if (!el) {
-      el = document.createElement("div");
-      el.id = id;
-      el.style.position = "fixed";
-      el.style.top = "8px";
-      el.style.right = "8px";
-      el.style.zIndex = "999999";
-      el.style.padding = "6px 10px";
-      el.style.borderRadius = "6px";
-      el.style.fontFamily = "monospace";
-      el.style.fontSize = "11px";
-      el.style.color = "#fff";
-      el.style.maxWidth = "70vw";
-      el.style.whiteSpace = "pre-wrap";
-      document.body.appendChild(el);
-    }
-    el.style.background = color;
-    el.textContent = message;
-  }
-
   // Shadow-DOM-aware traversal. Neither TreeWalker nor querySelectorAll
   // pierce shadow roots - if the form is rendered inside a web component's
   // shadow root (a different isolation mechanism than iframes, easy to
@@ -644,6 +621,32 @@
       if (!row) continue;
       row.style.setProperty("grid-template-columns", "1fr", "important");
       row.style.setProperty("gap", "6px", "important");
+
+      // Capping the input/select's OWN width (via the CSS rule for
+      // [data-adu-restyled]) isn't enough on its own: its immediate
+      // positioning wrapper (the "relative flex-1" div - also holds the
+      // select's decorative chevron for dropdown-style fields) is a flex
+      // item that stretches to fill the row regardless of the input's own
+      // width. For optional boolean fields with a trailing delete button
+      // (a sibling of this wrapper, not the input), that left a big empty
+      // gap between the now-narrower input and the button, which still sat
+      // pinned to the full-width row's right edge (2026-08-03). Capping
+      // the wrapper too closes that gap.
+      if (input.parentElement) {
+        input.parentElement.style.setProperty("max-width", "60%", "important");
+        input.parentElement.style.setProperty("flex", "0 1 60%", "important");
+      }
+
+      // These optional boolean fields (upsert, send_completion_email) also
+      // render a decorative dropdown chevron next to the select - purely
+      // visual (pointer-events: none, the select itself is clickable
+      // anywhere), not a separate control. Hidden per direction since the
+      // field is just true/false, not a real multi-option dropdown.
+      if (input.tagName === "SELECT" && input.parentElement) {
+        var chevron = input.parentElement.querySelector("svg");
+        if (chevron) chevron.style.setProperty("display", "none", "important");
+      }
+
       input.dataset.aduRestyled = "1";
       count++;
     }
@@ -1308,10 +1311,7 @@
   // belonging to the form. Removed all iframe-reaching logic; everything
   // below runs directly against document.body.
   function enhance() {
-    if (!isTargetPage()) {
-      showDiagnosticBanner("adu script loaded, wrong page: " + window.location.pathname, "#888");
-      return;
-    }
+    if (!isTargetPage()) return;
 
     var moveResult;
     try {
@@ -1327,7 +1327,7 @@
       formResult = "form-ERR:" + e.message;
     }
 
-    showDiagnosticBanner("adu move:" + moveResult + " || " + formResult, "#2e7d32");
+    console.log("[adu] move:" + moveResult + " || " + formResult);
   }
 
   var scheduled = false;
