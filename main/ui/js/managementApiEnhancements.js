@@ -114,12 +114,34 @@
     return null;
   }
 
+  function isVisible(el) {
+    var rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  }
+
   function findSendAnchor(root) {
     var leaves = leafTextElements(root);
     for (var i = 0; i < leaves.length; i++) {
       if (SEND_LABELS.indexOf(leaves[i].text) !== -1) {
         return leaves[i].el.closest("button") || leaves[i].el;
       }
+    }
+    return null;
+  }
+
+  // Same as findSendAnchor but skips hidden/off-screen duplicates - needed
+  // once the Try It form is open, where an accessibility/duplicate "Send"
+  // text can exist at y=0 and otherwise gets matched first, forcing any
+  // shared-ancestor search outward to a huge, unrelated container. Kept
+  // separate from findSendAnchor (used on the pre-click page too) so this
+  // stricter filter can't regress the already-confirmed-working request-line
+  // shadow-bar feature.
+  function findVisibleSendAnchor(root) {
+    var leaves = leafTextElements(root);
+    for (var i = 0; i < leaves.length; i++) {
+      if (SEND_LABELS.indexOf(leaves[i].text) === -1) continue;
+      if (!isVisible(leaves[i].el)) continue;
+      return leaves[i].el.closest("button") || leaves[i].el;
     }
     return null;
   }
@@ -469,12 +491,26 @@
     return count;
   }
 
+  // "Server"/"Authorization"/"Body" each have a static, unrelated duplicate
+  // elsewhere on the page (confirmed via direct DOM trace 2026-07-31) - e.g.
+  // a pre-existing "Authorization" heading that renders before the Try It
+  // form even opens. "Server" itself is reliably unique, so it's used as a
+  // Y-position anchor: any match for the OTHER section names above that
+  // anchor is the unrelated duplicate, not the real form section.
   function findSectionCard(root, sectionName) {
     var leaves = leafTextElements(root);
-    for (var i = 0; i < leaves.length; i++) {
-      if (leaves[i].text === sectionName) {
-        return climbToRow(leaves[i].el, 2, 5);
+    var anchorY = -Infinity;
+    for (var j = 0; j < leaves.length; j++) {
+      if (leaves[j].text === "Server" && isVisible(leaves[j].el)) {
+        anchorY = leaves[j].el.getBoundingClientRect().y;
+        break;
       }
+    }
+    for (var i = 0; i < leaves.length; i++) {
+      if (leaves[i].text !== sectionName) continue;
+      if (!isVisible(leaves[i].el)) continue;
+      if (sectionName !== "Server" && leaves[i].el.getBoundingClientRect().y < anchorY) continue;
+      return climbToRow(leaves[i].el, 2, 5);
     }
     return null;
   }
@@ -582,26 +618,39 @@
   // Clamps the endpoint description paragraph (the long text right after the
   // <h1>) to 2 lines via CSS line-clamp - full text stays in the DOM
   // (accessible, copyable), just visually truncated.
+  // Confirmed via DOM trace: h1's only sibling is the "Copy page" button -
+  // the description paragraph is actually a sibling of h1's PARENT (the
+  // title+copy-button row), one level up. Checks both in case some pages
+  // really do have it as a direct h1 sibling.
   function truncateDescription(root) {
     var h1 = queryDeep(root, "h1");
     if (!h1) return "h1-not-found";
-    var el = h1.nextElementSibling;
-    var depth = 0;
-    while (el && depth < 3) {
-      var text = (el.textContent || "").trim();
-      if (text.length > 60) {
-        if (el.dataset.aduTruncated === "1") return "already-done";
-        el.style.setProperty("display", "-webkit-box", "important");
-        el.style.setProperty("-webkit-line-clamp", "2", "important");
-        el.style.setProperty("-webkit-box-orient", "vertical", "important");
-        el.style.setProperty("overflow", "hidden", "important");
-        el.dataset.aduTruncated = "1";
-        return "ok";
+
+    function findLongTextSibling(startEl) {
+      var el = startEl;
+      var depth = 0;
+      while (el && depth < 3) {
+        if ((el.textContent || "").trim().length > 60) return el;
+        el = el.nextElementSibling;
+        depth++;
       }
-      el = el.nextElementSibling;
-      depth++;
+      return null;
     }
-    return "no-long-text-found";
+
+    var target = findLongTextSibling(h1.nextElementSibling);
+    var ancestor = h1.parentElement;
+    for (var up = 0; !target && ancestor && up < 3; up++) {
+      target = findLongTextSibling(ancestor.nextElementSibling);
+      ancestor = ancestor.parentElement;
+    }
+    if (!target) return "no-long-text-found";
+    if (target.dataset.aduTruncated === "1") return "already-done";
+    target.style.setProperty("display", "-webkit-box", "important");
+    target.style.setProperty("-webkit-line-clamp", "2", "important");
+    target.style.setProperty("-webkit-box-orient", "vertical", "important");
+    target.style.setProperty("overflow", "hidden", "important");
+    target.dataset.aduTruncated = "1";
+    return "ok";
   }
 
   // Moves the operation-picker pill (method + endpoint title + dropdown,
@@ -614,24 +663,36 @@
     var titleText = (h1.textContent || "").trim();
     if (!titleText) return "title-empty";
 
+    var sendAnchor = findVisibleSendAnchor(root);
+    if (!sendAnchor) return "send-not-found";
+    var sendY = sendAnchor.getBoundingClientRect().y;
+
+    // Multiple elements can repeat the exact page title (e.g. an unrelated
+    // "next page" card further down) - the real pill is the one closest in
+    // Y position to the Send button, since they share the same top bar.
     var leaves = leafTextElements(root);
     var pillLeaf = null;
+    var bestDistance = Infinity;
     for (var i = 0; i < leaves.length; i++) {
-      if (leaves[i].text === titleText && leaves[i].el !== h1 && !h1.contains(leaves[i].el)) {
+      if (leaves[i].text !== titleText || leaves[i].el === h1 || h1.contains(leaves[i].el)) continue;
+      if (!isVisible(leaves[i].el)) continue; // skip hidden SEO/duplicate-title elements
+      var distance = Math.abs(leaves[i].el.getBoundingClientRect().y - sendY);
+      if (distance < bestDistance) {
+        bestDistance = distance;
         pillLeaf = leaves[i].el;
-        break;
       }
     }
     if (!pillLeaf) return "pill-not-found";
     if (pillLeaf.dataset.aduPillMoved === "1") return "already-done";
 
-    var sendAnchor = findSendAnchor(root);
-    if (!sendAnchor) return "send-not-found";
-
     var pillItem = pillLeaf.closest("button, [role='button']") || pillLeaf;
     var bar = growToSharedAncestor(pillItem, sendAnchor, 8);
     if (!bar) return "bar-not-found";
-    if (bar.querySelectorAll("*").length > 80) return "bar-too-large";
+    // No size cap here unlike moveRequestLineAboveCodeSample - this only
+    // ever sets CSS `order` on direct children (safe: reorders within an
+    // existing flex row, can't hide/blank anything even in the worst case
+    // of matching a larger-than-expected container).
+    if (bar.contains(document.body) || bar === document.body) return "bar-is-body";
 
     var pillTopChild = pillItem;
     while (pillTopChild.parentElement && pillTopChild.parentElement !== bar) {
