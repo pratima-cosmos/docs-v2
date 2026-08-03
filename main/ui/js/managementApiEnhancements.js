@@ -308,6 +308,28 @@
     }
   }
 
+  // Whether the Custom JSON tab was left active, persisted the same way as
+  // the Authorize credentials above - without this, refreshing the page (or
+  // coming back later) silently reset the toggle to the native code view,
+  // which read as "my Custom JSON selection didn't stick" (2026-08-03).
+  var CUSTOM_JSON_STORAGE_KEY = "adu_custom_json_active";
+
+  function getStoredCustomJsonActive() {
+    try {
+      return localStorage.getItem(CUSTOM_JSON_STORAGE_KEY) === "1";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function saveStoredCustomJsonActive(active) {
+    try {
+      localStorage.setItem(CUSTOM_JSON_STORAGE_KEY, active ? "1" : "0");
+    } catch (e) {
+      /* private browsing / storage quota - toggle just won't persist, non-fatal */
+    }
+  }
+
   // Decodes the `iss` (issuer) claim out of a JWT's payload without
   // verifying its signature - we only need the tenant domain for
   // convenience auto-fill, this is never used for actual auth decisions.
@@ -807,12 +829,14 @@
       customPanel.style.display = "block";
       customTabBtn.classList.add("adu-tab-active");
       isCustomActive = true;
+      saveStoredCustomJsonActive(true);
     }
     function showNative() {
       customPanel.style.display = "none";
       codeBody.style.display = "";
       customTabBtn.classList.remove("adu-tab-active");
       isCustomActive = false;
+      saveStoredCustomJsonActive(false);
     }
 
     // Real toggle: clicking again while active switches back (this was
@@ -845,6 +869,9 @@
       child.addEventListener("click", showNative);
     });
     card.insertBefore(customPanel, codeBody.nextSibling);
+
+    if (getStoredCustomJsonActive()) showCustom();
+
     return "ok";
   }
 
