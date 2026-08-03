@@ -401,7 +401,7 @@
         eyeBtn.type = "button";
         eyeBtn.className = "adu-authorize-icon-btn";
         eyeBtn.title = "Show";
-        eyeBtn.innerHTML = LUCIDE_ICONS.eye;
+        eyeBtn.innerHTML = LUCIDE_ICONS.eyeOff;
         eyeBtn.addEventListener("click", function (e) {
           e.preventDefault();
           var revealed = input.type === "text";
