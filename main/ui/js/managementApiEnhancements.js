@@ -711,7 +711,7 @@
     var customTabBtn = doc.createElement("button");
     customTabBtn.type = "button";
     customTabBtn.className = "adu-custom-tab-button";
-    customTabBtn.textContent = "Custom";
+    customTabBtn.textContent = "Try Custom";
 
     var customPanel = doc.createElement("div");
     customPanel.className = "adu-custom-body-panel";
@@ -730,24 +730,49 @@
     customPanel.appendChild(label);
     customPanel.appendChild(textarea);
 
+    var isCustomActive = false;
     function showCustom() {
       codeBody.style.display = "none";
       customPanel.style.display = "block";
       customTabBtn.classList.add("adu-tab-active");
+      isCustomActive = true;
     }
     function showNative() {
       customPanel.style.display = "none";
       codeBody.style.display = "";
       customTabBtn.classList.remove("adu-tab-active");
+      isCustomActive = false;
     }
 
-    customTabBtn.addEventListener("click", showCustom);
-    Array.prototype.forEach.call(headerRow.children, function (child) {
-      if (child === customTabBtn) return;
-      child.addEventListener("click", showNative);
+    // Real toggle: clicking again while active switches back (this was
+    // previously one-way - clicking "Custom" had no way to return to the
+    // native view except clicking an unrelated language control).
+    customTabBtn.addEventListener("click", function () {
+      if (isCustomActive) {
+        showNative();
+      } else {
+        showCustom();
+      }
     });
 
-    headerRow.appendChild(customTabBtn);
+    // Group with the existing copy/sparkle icon cluster (the row's own
+    // last child before this button is added) instead of appending
+    // directly to headerRow - that row uses justify-content: space-between
+    // for exactly 2 groups, and a 3rd top-level item there splits the gap
+    // into two, creating a large, uneven gap. Joining the existing
+    // cluster's own local gap keeps spacing consistent. Done BEFORE the
+    // loop below, so `child.contains(customTabBtn)` actually evaluates
+    // correctly - checking it beforehand always returns false since the
+    // button isn't in the tree yet, which is exactly the bug that caused
+    // the cluster to also get a "revert to native" listener and instantly
+    // undo the toggle via event bubbling (2026-08-03).
+    var iconsCluster = headerRow.children[headerRow.children.length - 1];
+    iconsCluster.appendChild(customTabBtn);
+
+    Array.prototype.forEach.call(headerRow.children, function (child) {
+      if (child === customTabBtn || child.contains(customTabBtn)) return;
+      child.addEventListener("click", showNative);
+    });
     card.insertBefore(customPanel, codeBody.nextSibling);
     return "ok";
   }
@@ -897,6 +922,20 @@
   // original text input is hidden (not removed) and its value is kept in
   // sync via setNativeValue so anything listening to it still sees a value.
   function addUsersFileUploadUI(root) {
+    var doc = root.ownerDocument || document;
+
+    // Only one upload UI should ever exist. Repeated enhance() cycles
+    // (mutation + 1s poll) combined with the form re-rendering fresh
+    // "users" inputs across open/close cycles produced several stacked
+    // upload buttons (2026-08-03) - the per-input dataset flag alone
+    // didn't prevent this since each fresh input starts unflagged. Clean
+    // up any extras and skip entirely if one is already present anywhere.
+    var existingWraps = queryAllDeep(doc, ".adu-file-upload-wrap");
+    if (existingWraps.length > 1) {
+      for (var w = 1; w < existingWraps.length; w++) existingWraps[w].remove();
+    }
+    if (existingWraps.length > 0) return "already-mounted";
+
     var inputs = queryAllDeep(root, "input, textarea");
     var target = null;
     for (var i = 0; i < inputs.length; i++) {
