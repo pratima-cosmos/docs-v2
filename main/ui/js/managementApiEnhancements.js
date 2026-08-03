@@ -383,6 +383,21 @@
     tokenInput.rows = 3;
     tokenInput.placeholder = "Paste your Management API access token";
 
+    // Auto-filling this from an already-logged-in dashboard session isn't
+    // possible from here - browsers block cross-origin sites from reading
+    // another site's session/cookies, this is a security boundary, not a
+    // Mintlify limitation. A direct link is the practical alternative.
+    // Links to the generic dashboard entry point (not a specific tenant's
+    // Explorer URL) since this modal is shown to any visitor of the public
+    // docs site - manage.auth0.com routes each logged-in user to their own
+    // tenant automatically.
+    var tokenHelpLink = doc.createElement("a");
+    tokenHelpLink.className = "adu-authorize-help-link";
+    tokenHelpLink.href = "https://manage.auth0.com/";
+    tokenHelpLink.target = "_blank";
+    tokenHelpLink.rel = "noopener noreferrer";
+    tokenHelpLink.textContent = "Don't have a token? Get one from your Auth0 Dashboard →";
+
     var existing = getStoredCredentials();
     if (existing) {
       tokenInput.value = existing.token || "";
@@ -431,6 +446,7 @@
     modal.appendChild(domainInput);
     modal.appendChild(tokenLabelRow);
     modal.appendChild(tokenInput);
+    modal.appendChild(tokenHelpLink);
     modal.appendChild(actions);
     overlay.appendChild(modal);
     doc.body.appendChild(overlay);

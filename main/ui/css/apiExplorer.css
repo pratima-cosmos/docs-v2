@@ -314,6 +314,13 @@
   font-size: 0.8125rem;
 }
 
+.adu-authorize-help-link {
+  font-size: 0.75rem;
+  color: #4f46e5;
+  text-decoration: underline;
+  margin-top: -6px;
+}
+
 .adu-authorize-token-input,
 .adu-authorize-modal input[type="text"] {
   width: 100%;
