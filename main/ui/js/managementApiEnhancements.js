@@ -359,7 +359,7 @@
     note.textContent = "This is a one-time setup. Once saved, this information is automatically filled in every time you test any endpoint.";
 
     var domainLabel = doc.createElement("label");
-    domainLabel.textContent = "Tenant Domain (auto-detected from the token if left blank)";
+    domainLabel.textContent = "Tenant Domain";
     var domainInput = doc.createElement("input");
     domainInput.type = "text";
     domainInput.placeholder = "{yourTenant}.auth0.com";
