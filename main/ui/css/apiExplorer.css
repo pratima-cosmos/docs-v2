@@ -297,6 +297,23 @@
   margin-bottom: -4px;
 }
 
+.adu-authorize-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: -4px;
+}
+
+.adu-authorize-label-row label {
+  margin-bottom: 0;
+}
+
+.adu-authorize-info-icon {
+  cursor: help;
+  color: #57606a;
+  font-size: 0.8125rem;
+}
+
 .adu-authorize-token-input,
 .adu-authorize-modal input[type="text"] {
   width: 100%;
@@ -319,10 +336,14 @@
   padding: 6px 16px;
   border: none;
   border-radius: 6px;
-  background: #4f46e5;
+  background: #000;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+}
+
+.adu-authorize-save:hover {
+  background: #1a1a1a;
 }
 
 .adu-authorize-cancel {

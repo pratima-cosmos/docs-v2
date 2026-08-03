@@ -356,20 +356,32 @@
 
     var note = doc.createElement("p");
     note.className = "adu-authorize-note";
-    note.textContent = "This is a one-time setup. Once saved, this information is automatically filled in every time you test any endpoint - you won't need to enter it again.";
-
-    var tokenLabel = doc.createElement("label");
-    tokenLabel.textContent = "Bearer Token";
-    var tokenInput = doc.createElement("textarea");
-    tokenInput.className = "adu-authorize-token-input";
-    tokenInput.rows = 3;
-    tokenInput.placeholder = "Paste your Management API access token";
+    note.textContent = "This is a one-time setup. Once saved, this information is automatically filled in every time you test any endpoint.";
 
     var domainLabel = doc.createElement("label");
     domainLabel.textContent = "Tenant Domain (auto-detected from the token if left blank)";
     var domainInput = doc.createElement("input");
     domainInput.type = "text";
     domainInput.placeholder = "{yourTenant}.auth0.com";
+
+    var tokenLabelRow = doc.createElement("div");
+    tokenLabelRow.className = "adu-authorize-label-row";
+    var tokenLabel = doc.createElement("label");
+    tokenLabel.textContent = "Bearer Token";
+    var tokenInfoIcon = doc.createElement("span");
+    tokenInfoIcon.className = "adu-authorize-info-icon";
+    tokenInfoIcon.textContent = "ⓘ";
+    tokenInfoIcon.setAttribute(
+      "title",
+      "Your Management API access token. Find it in the Auth0 Dashboard: Applications > APIs > Auth0 Management API > API Explorer tab (or generate one via a Machine to Machine application's client credentials)."
+    );
+    tokenLabelRow.appendChild(tokenLabel);
+    tokenLabelRow.appendChild(tokenInfoIcon);
+
+    var tokenInput = doc.createElement("textarea");
+    tokenInput.className = "adu-authorize-token-input";
+    tokenInput.rows = 3;
+    tokenInput.placeholder = "Paste your Management API access token";
 
     var existing = getStoredCredentials();
     if (existing) {
@@ -415,10 +427,10 @@
 
     modal.appendChild(title);
     modal.appendChild(note);
-    modal.appendChild(tokenLabel);
-    modal.appendChild(tokenInput);
     modal.appendChild(domainLabel);
     modal.appendChild(domainInput);
+    modal.appendChild(tokenLabelRow);
+    modal.appendChild(tokenInput);
     modal.appendChild(actions);
     overlay.appendChild(modal);
     doc.body.appendChild(overlay);
