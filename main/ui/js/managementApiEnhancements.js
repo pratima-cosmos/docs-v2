@@ -334,7 +334,11 @@
         setNativeValue(input, creds.domain);
         filled++;
       } else if (label.indexOf("authorization") !== -1 || label.indexOf("bearer") !== -1) {
-        setNativeValue(input, "Bearer " + creds.token.replace(/^Bearer\s+/i, ""));
+        // The real field already renders a fixed "Bearer " label before the
+        // input (confirmed via DOM inspection, 2026-08-03) - the input's own
+        // value must be just the raw token, not "Bearer <token>" again,
+        // or it would show as "Bearer Bearer eyJ...".
+        setNativeValue(input, creds.token.replace(/^Bearer\s+/i, ""));
         filled++;
       }
     }
@@ -449,7 +453,7 @@
     var tokenLabelRow = doc.createElement("div");
     tokenLabelRow.className = "adu-authorize-label-row";
     var tokenLabel = doc.createElement("label");
-    tokenLabel.textContent = "Bearer Token";
+    tokenLabel.textContent = "API Token";
     var tokenInfoIcon = doc.createElement("span");
     tokenInfoIcon.className = "adu-authorize-info-icon";
     tokenInfoIcon.innerHTML = LUCIDE_ICONS.info;
