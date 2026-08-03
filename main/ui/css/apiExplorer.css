@@ -284,6 +284,22 @@
   font-size: 1.125rem;
 }
 
+/* Mintlify's real callout paragraph renders at the main content's 16px
+   body size, which looks oversized inside this compact 420px modal where
+   everything else runs 12-13px - scale it down to match, keep the
+   softer gray from the real callout instead of pure black. */
+.adu-authorize-modal .callout p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: rgb(66, 64, 69);
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-authorize-modal .callout p {
+  color: rgb(230, 230, 230);
+}
+
 .adu-authorize-modal label {
   font-size: 0.75rem;
   font-weight: 600;
