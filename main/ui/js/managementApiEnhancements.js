@@ -438,15 +438,39 @@
     tokenLabelRow.className = "adu-authorize-label-row";
     var tokenLabel = doc.createElement("label");
     tokenLabel.textContent = "API Token";
-    var tokenInfoIcon = doc.createElement("span");
-    tokenInfoIcon.className = "adu-authorize-info-icon";
-    tokenInfoIcon.innerHTML = LUCIDE_ICONS.info;
-    tokenInfoIcon.setAttribute(
-      "title",
-      "The token includes all the scopes that are granted to the API Explorer Application, by default it can invoke all the Management API endpoints."
-    );
+
+    // Custom tooltip instead of relying on the native `title` attribute -
+    // that kept not showing (2026-08-03) despite every structural check
+    // (title present, nothing overlapping, pointer-events fine) passing,
+    // and native tooltip rendering/timing isn't something verifiable
+    // ahead of time. This version's visibility is directly controlled by
+    // JS, so it can be confirmed rather than assumed.
+    var tokenInfoWrap = doc.createElement("span");
+    tokenInfoWrap.className = "adu-authorize-info-icon";
+    tokenInfoWrap.tabIndex = 0;
+    tokenInfoWrap.setAttribute("role", "button");
+    tokenInfoWrap.setAttribute("aria-label", "About the API token");
+    tokenInfoWrap.innerHTML = LUCIDE_ICONS.info;
+
+    var tokenInfoTooltip = doc.createElement("span");
+    tokenInfoTooltip.className = "adu-authorize-tooltip";
+    tokenInfoTooltip.textContent =
+      "The token includes all the scopes that are granted to the API Explorer Application, by default it can invoke all the Management API endpoints.";
+    tokenInfoWrap.appendChild(tokenInfoTooltip);
+
+    function showTooltip() {
+      tokenInfoTooltip.classList.add("adu-authorize-tooltip-visible");
+    }
+    function hideTooltip() {
+      tokenInfoTooltip.classList.remove("adu-authorize-tooltip-visible");
+    }
+    tokenInfoWrap.addEventListener("mouseenter", showTooltip);
+    tokenInfoWrap.addEventListener("mouseleave", hideTooltip);
+    tokenInfoWrap.addEventListener("focus", showTooltip);
+    tokenInfoWrap.addEventListener("blur", hideTooltip);
+
     tokenLabelRow.appendChild(tokenLabel);
-    tokenLabelRow.appendChild(tokenInfoIcon);
+    tokenLabelRow.appendChild(tokenInfoWrap);
 
     // A single-line masked input (not the previous multi-line textarea) -
     // needed for the eye-toggle pattern to work (type="password" only
