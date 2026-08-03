@@ -356,7 +356,7 @@
     modal.className = "adu-authorize-modal";
 
     var title = doc.createElement("h3");
-    title.textContent = "Set up your API credentials";
+    title.textContent = "Set up your API credentials - API Token";
 
     // Inline Lucide icon markup (same open-source set used by this site's
     // own UI, ui/package.json depends on lucide-react) - embedded as raw
@@ -391,7 +391,7 @@
     noteIconWrap.setAttribute("data-component-part", "callout-icon");
     noteIconWrap.innerHTML = LUCIDE_ICONS.info.replace("<svg ", '<svg class="size-4 text-blue-800 dark:text-blue-300" ');
     var noteText = doc.createElement("p");
-    noteText.textContent = "This is a one-time setup. Once saved, this information is automatically filled in every time you test any endpoint.";
+    noteText.textContent = "Enter your token once. It will be saved and automatically used for all endpoint tests.";
     note.appendChild(noteIconWrap);
     note.appendChild(noteText);
 
@@ -481,7 +481,7 @@
     tokenHelpRow.className = "adu-authorize-help-row";
 
     var tokenHelpText = doc.createElement("span");
-    tokenHelpText.textContent = "Don't have a token? Get one from your Auth0 Dashboard";
+    tokenHelpText.textContent = "Don't have a token?";
 
     var tokenHelpLink = doc.createElement("a");
     tokenHelpLink.className = "adu-authorize-help-link";
