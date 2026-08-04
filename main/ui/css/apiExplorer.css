@@ -219,12 +219,19 @@
 }
 
 .adu-custom-tab-button.adu-tab-active {
-  background: #eef2ff;
-  color: #4f46e5;
+  /* Matches the Auth0 brand purple already used elsewhere in this UI
+     (e.g. the Authorize modal's "Get Token" link, #7549f2) rather than
+     the previous indigo, per direction (2026-08-04). */
+  background: #f3effe;
+  color: #7549f2;
 }
 
+/* Matches the native code panel's own thin padding (confirmed via computed
+   style: 14px 16px) - the panel provides all the spacing now, so the
+   textarea itself carries none (avoids doubling up into a visibly larger
+   gap than the default cURL/etc view has, per direction 2026-08-04). */
 .adu-custom-body-panel {
-  padding: 12px;
+  padding: 14px 16px;
 }
 
 .adu-custom-body-textarea {
@@ -232,9 +239,9 @@
   box-sizing: border-box;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.8125rem;
-  padding: 10px;
+  padding: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   /* Matches the native code panel's own card background (confirmed via
      computed style: rgb(255,255,255)) rather than a grey box, so the
      Custom JSON tab reads as the same surface as the default cURL/etc
@@ -540,17 +547,6 @@
   color: #e6e6e6;
 }
 
-/* The vertical field-row restyle (restyleFieldRowsToVertical) made each
-   input span the full row width (matching its label block above) - a
-   full-width bordered input reads as "its own box" per field. Mintlify's
-   own divide-y classes already provide a separator line between fields,
-   so no new border is needed here - just give the input breathing room
-   on the right instead of stretching edge-to-edge. */
-input[data-adu-restyled="1"],
-select[data-adu-restyled="1"] {
-  max-width: 60% !important;
-  min-width: 200px;
-}
 
 /* Per-field description, shown on hover/focus of an info icon next to the
    field name instead of as a permanent paragraph (addFieldInfoTooltips) -

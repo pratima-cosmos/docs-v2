@@ -620,21 +620,28 @@
       var row = findFieldRow(input);
       if (!row) continue;
       row.style.setProperty("grid-template-columns", "1fr", "important");
-      row.style.setProperty("gap", "6px", "important");
+      row.style.setProperty("gap", "8px", "important");
 
-      // Capping the input/select's OWN width (via the CSS rule for
-      // [data-adu-restyled]) isn't enough on its own: its immediate
-      // positioning wrapper (the "relative flex-1" div - also holds the
-      // select's decorative chevron for dropdown-style fields) is a flex
-      // item that stretches to fill the row regardless of the input's own
-      // width. For optional boolean fields with a trailing delete button
-      // (a sibling of this wrapper, not the input), that left a big empty
-      // gap between the now-narrower input and the button, which still sat
-      // pinned to the full-width row's right edge (2026-08-03). Capping
-      // the wrapper too closes that gap.
+      // Cap width on the input's positioning wrapper ONLY (the "relative
+      // flex-1" div - also holds the select's decorative chevron for
+      // dropdown-style fields), not on the input itself. The input already
+      // has its own "flex-1" class and fills its wrapper via flexbox, so
+      // capping BOTH the input's own width AND its wrapper's width compounds
+      // multiplicatively (60% of a 60%-capped wrapper = 36% of the row,
+      // not 60%) - confirmed via measured rect (2026-08-03). One cap, on
+      // the wrapper, is enough.
       if (input.parentElement) {
-        input.parentElement.style.setProperty("max-width", "60%", "important");
-        input.parentElement.style.setProperty("flex", "0 1 60%", "important");
+        input.parentElement.style.setProperty("max-width", "70%", "important");
+        input.parentElement.style.setProperty("min-width", "200px", "important");
+        input.parentElement.style.setProperty("flex", "0 1 70%", "important");
+      }
+
+      // The wrapper's own parent, for optional boolean fields, also holds
+      // the trailing delete button as a sibling (native gap-1 = 4px) - set
+      // to a consistent 8px regardless. For fields with no delete button
+      // this container has only one child, so the gap is a no-op.
+      if (input.parentElement && input.parentElement.parentElement) {
+        input.parentElement.parentElement.style.setProperty("gap", "8px", "important");
       }
 
       // These optional boolean fields (upsert, send_completion_email) also
@@ -665,6 +672,15 @@
   // JS-controlled tooltip pattern as the Authorize modal's "API Token" info
   // icon (openAuthorizeModal), so it's provably visible rather than relying
   // on a native title attribute.
+  // The endpoint-level description (removed from the top via
+  // truncateDescription below, per direction 2026-08-03) covered the
+  // email_verified/upsert behavior of the "users" field specifically, not
+  // the endpoint in general - moved here instead of just being dropped.
+  var FIELD_INFO_OVERRIDES = {
+    users:
+      "Import users from a formatted file into a connection via a long-running job. When importing users, with or without upsert, the email_verified is set to false when the email address is added or updated. Users must verify their email address. To avoid this behavior, set email_verified to true in the imported data.",
+  };
+
   function addFieldInfoTooltips(root) {
     var doc = root.ownerDocument || document;
     var inputs = queryAllDeep(root, "input, select, textarea");
@@ -676,14 +692,16 @@
       var row = findFieldRow(input);
       if (!row || row.children.length < 1) continue;
       var labelBlock = row.children[0];
-      if (labelBlock.children.length < 2) continue; // no description paragraph for this field
 
       var nameRow = labelBlock.children[0];
-      var descBlock = labelBlock.children[1];
       var nameWrap = nameRow && nameRow.children[0];
       if (!nameWrap) continue;
 
-      var descText = (descBlock.textContent || "").trim();
+      var fieldName = nameWrap.children[0] ? (nameWrap.children[0].textContent || "").trim() : "";
+      var descText = FIELD_INFO_OVERRIDES[fieldName];
+      if (!descText && labelBlock.children.length >= 2) {
+        descText = (labelBlock.children[1].textContent || "").trim();
+      }
       if (!descText) continue;
 
       if (nameWrap.querySelector(".adu-field-info-icon")) {
@@ -717,7 +735,9 @@
       })(infoWrap, tooltip);
 
       nameWrap.appendChild(infoWrap);
-      descBlock.style.setProperty("display", "none", "important");
+      if (labelBlock.children.length >= 2) {
+        labelBlock.children[1].style.setProperty("display", "none", "important");
+      }
       input.dataset.aduInfoTooltip = "1";
       count++;
     }
@@ -972,14 +992,18 @@
     return "mounted:" + mounted + " already:" + alreadyDone + " total:" + headerRows.length;
   }
 
-  // Clamps the endpoint description paragraph (the long text right after the
-  // <h1>) to 2 lines via CSS line-clamp - full text stays in the DOM
-  // (accessible, copyable), just visually truncated.
+  // Removes the endpoint description paragraph (the long text right after
+  // the <h1>) entirely - its content about email_verified/upsert behavior
+  // was specific to the "users" field, not the endpoint in general, and
+  // now lives in that field's own info-icon tooltip instead (see
+  // FIELD_INFO_OVERRIDES in addFieldInfoTooltips). Previously this only
+  // line-clamped the text to 2 lines; per direction (2026-08-04) it's
+  // hidden outright now that the content has a better home.
   // Confirmed via DOM trace: h1's only sibling is the "Copy page" button -
   // the description paragraph is actually a sibling of h1's PARENT (the
   // title+copy-button row), one level up. Checks both in case some pages
   // really do have it as a direct h1 sibling.
-  function truncateDescription(root) {
+  function hideDescription(root) {
     var h1 = queryDeep(root, "h1");
     if (!h1) return "h1-not-found";
 
@@ -1002,10 +1026,7 @@
     }
     if (!target) return "no-long-text-found";
     if (target.dataset.aduTruncated === "1") return "already-done";
-    target.style.setProperty("display", "-webkit-box", "important");
-    target.style.setProperty("-webkit-line-clamp", "2", "important");
-    target.style.setProperty("-webkit-box-orient", "vertical", "important");
-    target.style.setProperty("overflow", "hidden", "important");
+    target.style.setProperty("display", "none", "important");
     target.dataset.aduTruncated = "1";
     return "ok";
   }
@@ -1273,7 +1294,7 @@
       return showAuthorizeModalOnce(root);
     });
     safe("desc", function () {
-      return truncateDescription(root);
+      return hideDescription(root);
     });
     safe("flat", function () {
       return flattenSectionCards(root);
