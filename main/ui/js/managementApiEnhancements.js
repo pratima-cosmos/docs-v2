@@ -402,6 +402,32 @@
     return masked;
   }
 
+  // Brief confirmation after saving the Authorize modal's token, matching
+  // the old Management API Explorer's Authorize-button feedback described
+  // in customer call transcripts - the modal itself just closes otherwise,
+  // giving no sign the token was actually saved. Self-dismissing, additive
+  // (own fixed-position element, not touching any Mintlify-rendered node).
+  function showAuthorizeSuccessToast(doc) {
+    var existing = doc.querySelector(".adu-toast");
+    if (existing) existing.remove();
+
+    var toast = doc.createElement("div");
+    toast.className = "adu-toast";
+    toast.setAttribute("role", "status");
+    toast.innerHTML = LUCIDE_ICONS.check + "<span>Authorized — you're all set to use the API endpoints.</span>";
+    doc.body.appendChild(toast);
+
+    requestAnimationFrame(function () {
+      toast.classList.add("adu-toast-visible");
+    });
+    setTimeout(function () {
+      toast.classList.remove("adu-toast-visible");
+      setTimeout(function () {
+        toast.remove();
+      }, 200);
+    }, 3000);
+  }
+
   function openAuthorizeModal(root, onSaved) {
     var doc = root.ownerDocument || document;
     if (queryDeep(doc, ".adu-authorize-modal")) return;
@@ -568,6 +594,7 @@
       var domain = decodeJwtDomain(token) || "";
       saveStoredCredentials(domain, token);
       overlay.remove();
+      showAuthorizeSuccessToast(doc);
       if (onSaved) onSaved();
     });
     cancelBtn.addEventListener("click", function () {
@@ -1246,8 +1273,15 @@
       var doc = root.ownerDocument || document;
       var note = doc.createElement("p");
       note.className = "adu-generic-error-note";
+      // Deliberately doesn't claim a specific status code - when the
+      // browser blocks a response (CORS) or a request never connects
+      // (unreachable domain, network failure), fetch() gets a bare
+      // TypeError with zero access to status/headers/body. There's
+      // nothing here to read a real code from. These are illustrative
+      // examples of what a real failure would look like, per direction
+      // (2026-08-05), not a live value.
       note.textContent =
-        "This usually means the request never reached the server at all (an unreachable tenant domain, a network issue, or a CORS restriction) - so there's no real status code to show.";
+        "This request never reached the server (unreachable tenant domain, network issue, or CORS restriction), so the real status code can't be recovered here - the browser blocks that information entirely when this happens. For reference: a 400 usually means a malformed request body or invalid domain, and a 429 means you've been rate-limited by the API.";
       container.appendChild(note);
       explained++;
     }

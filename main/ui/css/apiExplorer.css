@@ -130,7 +130,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 20px;
+  gap: 4px;
 }
 
 .adu-file-upload-row {
@@ -157,7 +157,12 @@
 
 .adu-file-upload-button {
   padding: 8px 24px;
-  min-width: 140px;
+  /* Fixed (not min) width, plus flex-shrink: 0, so the button stays the
+     same size whether it reads "Upload" or "Change file" and never gets
+     compressed by its flex row when the sample link/chip crowd it
+     (2026-08-05). */
+  width: 140px;
+  flex-shrink: 0;
   border: 1px solid #d0d7de;
   border-radius: 6px;
   background: #f6f8fa;
@@ -630,12 +635,48 @@
 .adu-generic-error-note {
   margin: 4px 0 0;
   font-size: 0.75rem;
-  color: #57606a;
+  /* Matches the "required" badge red already used elsewhere in this UI
+     (rgb(220, 38, 38) / text-red-600), so this genuinely reads as an
+     error state, not a neutral hint (2026-08-05). */
+  color: #dc2626;
   text-align: center;
   max-width: 320px;
 }
 
 :is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
   .adu-generic-error-note {
-  color: #a0a8b4;
+  color: #f87171;
+}
+
+.adu-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translate(-50%, 8px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  z-index: 1000001;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.adu-toast svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #4ade80;
+}
+
+.adu-toast-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
