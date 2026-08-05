@@ -130,7 +130,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 20px;
 }
 
 .adu-file-upload-row {
@@ -142,6 +142,11 @@
 
 .adu-file-upload-input {
   display: none;
+}
+
+.adu-file-upload-hint {
+  font-size: 0.75rem;
+  color: #57606a;
 }
 
 .adu-file-sample-link {
@@ -164,11 +169,6 @@
 
 .adu-file-upload-button:hover {
   background: #eceff2;
-}
-
-.adu-file-upload-hint {
-  font-size: 0.75rem;
-  color: #57606a;
 }
 
 .adu-file-chip {
@@ -201,6 +201,11 @@
 }
 
 :is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-file-upload-hint {
+  color: #a0a8b4;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
   .adu-file-chip {
   border-color: #2d2f3e;
   background: #13141a;
@@ -226,12 +231,21 @@
   color: #7549f2;
 }
 
-/* Matches the native code panel's own thin padding (confirmed via computed
-   style: 14px 16px) - the panel provides all the spacing now, so the
-   textarea itself carries none (avoids doubling up into a visibly larger
-   gap than the default cURL/etc view has, per direction 2026-08-04). */
+/* Matches the native code panel's own code-block-root element exactly
+   (confirmed via computed style, 2026-08-05: padding 14px 16px,
+   border-radius 14px "rounded-xt", background rgb(255,255,255)) - that
+   native element owns its padding/radius/background all together, so this
+   panel does too, rather than splitting them across panel+textarea. A
+   split (padding on the panel, background/radius on the textarea, as this
+   used to be) left the transparent panel's padding as a plain square gutter
+   with the outer card's own background showing through, and the textarea's
+   own square corners visible past where the card's rounding should read as
+   continuous - it looked like extra, mismatched space around a flat-cornered
+   box instead of one seamless rounded surface like the default cURL/etc view. */
 .adu-custom-body-panel {
   padding: 14px 16px;
+  border-radius: 14px;
+  background: #fff;
 }
 
 .adu-custom-body-textarea {
@@ -242,11 +256,7 @@
   padding: 0;
   border: none;
   border-radius: 0;
-  /* Matches the native code panel's own card background (confirmed via
-     computed style: rgb(255,255,255)) rather than a grey box, so the
-     Custom JSON tab reads as the same surface as the default cURL/etc
-     view instead of a distinct bordered component (2026-08-03). */
-  background: #fff;
+  background: transparent;
   color: #24292f;
   resize: vertical;
 }
@@ -542,8 +552,12 @@
 }
 
 :is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
-  .adu-custom-body-textarea {
+  .adu-custom-body-panel {
   background: #13141a;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-custom-body-textarea {
   color: #e6e6e6;
 }
 
@@ -575,9 +589,12 @@
 }
 
 .adu-field-tooltip {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
+  /* Fixed (viewport) positioning, coordinates set via JS on show - the
+     icon's row ancestor clips overflow (Mintlify's `truncate` on the
+     name/type/required line), which silently clipped this when it was
+     `position: absolute` even though opacity/visibility toggled correctly
+     (2026-08-05). */
+  position: fixed;
   width: 260px;
   padding: 8px 10px;
   border-radius: 6px;
@@ -608,4 +625,17 @@
 .adu-field-tooltip-visible {
   opacity: 1;
   visibility: visible;
+}
+
+.adu-generic-error-note {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  color: #57606a;
+  text-align: center;
+  max-width: 320px;
+}
+
+:is(html.dark, html[data-appearance="dark"], html[data-theme="dark"])
+  .adu-generic-error-note {
+  color: #a0a8b4;
 }

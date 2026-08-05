@@ -364,6 +364,44 @@
     return filled;
   }
 
+  // Masks the endpoint's own Authorization/Bearer input as a native password
+  // field (dots) regardless of whether its value came from stored
+  // credentials or the user typing it in directly - it's a credential
+  // field either way. Native Mintlify markup renders this as type="text" by
+  // default, so nothing masks it unless we set this ourselves. Idempotent
+  // via a dataset marker so repeated pipeline passes don't re-touch it.
+  function maskAuthorizationField(root) {
+    var inputs = queryAllDeep(root, "input, textarea");
+    var masked = 0;
+    for (var i = 0; i < inputs.length; i++) {
+      var input = inputs[i];
+      if (input.dataset.aduMasked === "1") continue;
+      var row = findFieldRow(input);
+      var label = row ? rowLabelText(row, input) : "";
+      if (label.indexOf("authorization") !== -1 || label.indexOf("bearer") !== -1) {
+        input.type = "password";
+        input.dataset.aduMasked = "1";
+        // This is a React-controlled input: typing fires the native "input"
+        // event, React's own onChange re-renders it, and that re-render
+        // resets the DOM `type` attribute back to the component's own JSX
+        // value ("text") - confirmed via Puppeteer keystroke simulation
+        // (2026-08-05), the field visibly unmasked after the very first
+        // character typed. A one-time `input.type = "password"` assignment
+        // doesn't survive that. Re-apply it after every keystroke instead,
+        // deferred via setTimeout so it runs after React's render commits
+        // rather than racing it.
+        input.addEventListener("input", function () {
+          var el = this;
+          setTimeout(function () {
+            el.type = "password";
+          }, 0);
+        });
+        masked++;
+      }
+    }
+    return masked;
+  }
+
   function openAuthorizeModal(root, onSaved) {
     var doc = root.ownerDocument || document;
     if (queryDeep(doc, ".adu-authorize-modal")) return;
@@ -620,7 +658,15 @@
       var row = findFieldRow(input);
       if (!row) continue;
       row.style.setProperty("grid-template-columns", "1fr", "important");
-      row.style.setProperty("gap", "8px", "important");
+      // Label-to-input gap within one field, reduced per direction
+      // (2026-08-05) from the native/previous 8px down to 4px.
+      row.style.setProperty("gap", "4px", "important");
+      // The row's own native top/bottom padding was 20px each (confirmed
+      // via computed style) - with the divider removed and no margin
+      // between adjacent rows (removeBodyFieldDividers), that's 40px of
+      // dead space between one field's input and the next field's label.
+      // 8px top + 8px bottom sums to the requested 16px between fields.
+      row.style.setProperty("padding", "8px 0", "important");
 
       // Cap width on the input's positioning wrapper ONLY (the "relative
       // flex-1" div - also holds the select's decorative chevron for
@@ -722,7 +768,21 @@
       infoWrap.appendChild(tooltip);
 
       (function (wrap, tip) {
+        // The icon's immediate row ancestor is a Mintlify `truncate` block
+        // (overflow: hidden, for the name/type/required badges line) -
+        // confirmed via Puppeteer (2026-08-05): the tooltip's opacity and
+        // visibility WERE toggling correctly on hover, but nothing rendered
+        // because that ancestor clipped it. `position: fixed` (set here via
+        // JS, viewport coordinates) escapes that clipping entirely, unlike
+        // `position: absolute` which stays confined to it regardless of
+        // which element is actually `position: relative`.
         function show() {
+          var rect = wrap.getBoundingClientRect();
+          var left = rect.left;
+          var maxLeft = window.innerWidth - 260 - 8;
+          if (left > maxLeft) left = Math.max(8, maxLeft);
+          tip.style.top = rect.bottom + 8 + "px";
+          tip.style.left = left + "px";
           tip.classList.add("adu-field-tooltip-visible");
         }
         function hide() {
@@ -798,6 +858,27 @@
       depth++;
     }
     return null;
+  }
+
+  // 16px vertical spacing between the Server/Authorization/Body cards,
+  // overriding Mintlify's native 8px (Tailwind `space-y-2`) per direction
+  // (2026-08-05). Uses findSectionsListContainer (anchored on the reliably-
+  // unique tenantDomain input), not findSectionCard's text search - the
+  // Authorization/Body text has unrelated duplicates further down the
+  // static reference content below the Try It area, and this must run
+  // BEFORE mountFormAutofillToggle inserts its own toggle as a 4th child
+  // of this same container, which would otherwise make
+  // findSectionsListContainer's "exactly 3 children" check fail on this
+  // and any later pass (confirmed via Puppeteer, 2026-08-05).
+  function spaceBetweenSectionCards(root) {
+    var sectionsList = findSectionsListContainer(root);
+    if (!sectionsList || sectionsList.children.length < 3) return "sections-list-not-found";
+    if (sectionsList.dataset.aduCardSpacing === "1") return "already-done";
+    for (var i = 1; i < sectionsList.children.length; i++) {
+      sectionsList.children[i].style.setProperty("margin-top", "16px", "important");
+    }
+    sectionsList.dataset.aduCardSpacing = "1";
+    return "ok";
   }
 
   // Strips the bordered/card look from each section (Server/Authorization/
@@ -1137,6 +1218,42 @@
   // and once a file is chosen, shows a chip with its name/size. The
   // original text input is hidden (not removed) and its value is kept in
   // sync via setNativeValue so anything listening to it still sees a value.
+  // The Playground's own generic failure message ("An error occurred while
+  // making the request: unable to complete request", shown with a "--"
+  // status badge instead of a real code) only appears when the browser
+  // never received an HTTP response at all - confirmed via direct testing
+  // (2026-08-05): a real request that DOES get a response (even a 400/403/
+  // 429) already renders the real status code and body correctly on its
+  // own, nothing needed there. The generic message specifically means the
+  // request failed before any response existed - typically an unreachable
+  // domain, a network error, or a CORS block (the same tradeoff already
+  // flagged from `api.playground.proxy: false` in the escalation notes) -
+  // there's no real status code to recover or display in that case. This
+  // just appends a short explanation so that's clear, rather than the bare
+  // unexplained message.
+  var GENERIC_ERROR_TEXT = "An error occurred while making the request: unable to complete request";
+
+  function explainGenericPlaygroundError(root) {
+    var leaves = leafTextElements(root);
+    var explained = 0;
+    for (var i = 0; i < leaves.length; i++) {
+      if (leaves[i].text !== GENERIC_ERROR_TEXT) continue;
+      var msgEl = leaves[i].el;
+      var container = msgEl.parentElement;
+      if (!container || container.dataset.aduErrorExplained === "1") continue;
+      container.dataset.aduErrorExplained = "1";
+
+      var doc = root.ownerDocument || document;
+      var note = doc.createElement("p");
+      note.className = "adu-generic-error-note";
+      note.textContent =
+        "This usually means the request never reached the server at all (an unreachable tenant domain, a network issue, or a CORS restriction) - so there's no real status code to show.";
+      container.appendChild(note);
+      explained++;
+    }
+    return explained;
+  }
+
   function addUsersFileUploadUI(root) {
     var doc = root.ownerDocument || document;
 
@@ -1180,12 +1297,6 @@
     button.type = "button";
     button.className = "adu-file-upload-button";
     button.textContent = "Upload";
-
-    var hint = doc.createElement("span");
-    hint.className = "adu-file-upload-hint";
-    // 512000 bytes is the actual documented limit for this endpoint (see
-    // the 413 response in the OAS spec), not a made-up number.
-    hint.textContent = "JSON, CSV, TXT · up to 500 KB";
 
     var chip = doc.createElement("div");
     chip.className = "adu-file-chip";
@@ -1231,14 +1342,25 @@
     sampleLink.rel = "noopener noreferrer";
     sampleLink.textContent = "View sample file format";
 
+    // Upload button + sample-file link side by side; the format/size hint
+    // moves back below them (re-added per direction 2026-08-05, after being
+    // dropped entirely per direction earlier the same day) in small gray
+    // text, with extra breathing room (20px, via .adu-file-upload-wrap's
+    // gap) between the button row and this line.
     var row = doc.createElement("div");
     row.className = "adu-file-upload-row";
     row.appendChild(button);
-    row.appendChild(hint);
+    row.appendChild(sampleLink);
     row.appendChild(chip);
 
+    var hint = doc.createElement("span");
+    hint.className = "adu-file-upload-hint";
+    // 512000 bytes is the actual documented limit for this endpoint (see
+    // the 413 response in the OAS spec), not a made-up number.
+    hint.textContent = "JSON, CSV, TXT · up to 500 KB";
+
     wrap.appendChild(row);
-    wrap.appendChild(sampleLink);
+    wrap.appendChild(hint);
     wrap.appendChild(fileInput);
 
     target.style.display = "none";
@@ -1293,6 +1415,9 @@
     safe("authorize", function () {
       return showAuthorizeModalOnce(root);
     });
+    safe("maskToken", function () {
+      return maskAuthorizationField(root);
+    });
     safe("desc", function () {
       return hideDescription(root);
     });
@@ -1308,6 +1433,9 @@
     safe("fieldInfo", function () {
       return addFieldInfoTooltips(root);
     });
+    safe("cardSpacing", function () {
+      return spaceBetweenSectionCards(root);
+    });
     safe("toggle", function () {
       return mountFormAutofillToggle(root);
     });
@@ -1319,6 +1447,9 @@
     });
     safe("customTab", function () {
       return addCustomBodyTab(root);
+    });
+    safe("errorExplain", function () {
+      return explainGenericPlaygroundError(root);
     });
     return label + " " + results.join(" ");
   }
