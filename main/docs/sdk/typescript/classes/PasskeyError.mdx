@@ -1,0 +1,48 @@
+---
+title: Passkey Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Constructor
+
+### PasskeyError()
+
+```typescript
+new PasskeyError(code: string, message: string, cause?: PasskeyErrorResponse)
+```
+
+#### Parameters
+
+<ResponseField name="code" type="string" required>
+</ResponseField>
+
+<ResponseField name="message" type="string" required>
+</ResponseField>
+
+<ResponseField name="cause" type="PasskeyErrorResponse">
+Type: [PasskeyErrorResponse](/docs/sdk/typescript/interfaces/PasskeyErrorResponse)
+</ResponseField>
+
+#### Returns
+
+`PasskeyError`
+
+## Properties
+
+### cause
+
+```typescript
+cause: PasskeyErrorResponse
+```
+
+Type: [PasskeyErrorResponse](/docs/sdk/typescript/interfaces/PasskeyErrorResponse)
+
+### code
+
+```typescript
+code: string
+```
+

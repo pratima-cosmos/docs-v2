@@ -1,0 +1,64 @@
+---
+title: Popup Timeout Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when the login popup times out (if the user does not complete auth)*
+
+## Constructor
+
+### PopupTimeoutError()
+
+```typescript
+new PopupTimeoutError(popup: Window)
+```
+
+#### Parameters
+
+<ResponseField name="popup" type="Window" required>
+</ResponseField>
+
+#### Returns
+
+`PopupTimeoutError`
+
+## Properties
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+### popup
+
+```typescript
+popup: Window
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

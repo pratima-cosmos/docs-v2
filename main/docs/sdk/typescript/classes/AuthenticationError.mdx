@@ -1,0 +1,80 @@
+---
+title: Authentication Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Thrown when handling the redirect callback fails, will be one of Auth0's
+Authentication API's Standard Error Responses: https://auth0.com/docs/api/authentication?javascript#standard-error-responses*
+
+## Constructor
+
+### AuthenticationError()
+
+```typescript
+new AuthenticationError(error: string, error_description: string, state: string, appState: any)
+```
+
+#### Parameters
+
+<ResponseField name="error" type="string" required>
+</ResponseField>
+
+<ResponseField name="error_description" type="string" required>
+</ResponseField>
+
+<ResponseField name="state" type="string" required>
+</ResponseField>
+
+<ResponseField name="appState" type="any" required>
+</ResponseField>
+
+#### Returns
+
+`AuthenticationError`
+
+## Properties
+
+### appState
+
+```typescript
+appState: any
+```
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+### state
+
+```typescript
+state: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

@@ -1,0 +1,61 @@
+---
+title: Generic Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Thrown when network requests to the Auth server fail.*
+
+## Constructor
+
+### GenericError()
+
+```typescript
+new GenericError(error: string, error_description: string)
+```
+
+#### Parameters
+
+<ResponseField name="error" type="string" required>
+</ResponseField>
+
+<ResponseField name="error_description" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+
+## Properties
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

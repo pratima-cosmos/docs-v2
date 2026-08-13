@@ -1,0 +1,70 @@
+---
+title: My Account Api Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when the MyAccount API returns a non-2xx response.*
+
+## Constructor
+
+### MyAccountApiError()
+
+```typescript
+new MyAccountApiError(__namedParameters: ErrorResponse)
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="ErrorResponse" required>
+Type: [ErrorResponse](/docs/sdk/typescript/interfaces/ErrorResponse)
+</ResponseField>
+
+#### Returns
+
+`MyAccountApiError`
+
+## Properties
+
+### detail
+
+```typescript
+detail: string
+```
+
+Human-readable explanation specific to this occurrence
+
+### status
+
+```typescript
+status: number
+```
+
+HTTP status code
+
+### title
+
+```typescript
+title: string
+```
+
+Short human-readable summary of the error
+
+### type
+
+```typescript
+type: string
+```
+
+RFC 7807 error type identifier
+
+### validation_errors
+
+```typescript
+validation_errors: object[]
+```
+
+Field-level validation errors, if present
+

@@ -1,0 +1,80 @@
+---
+title: Local Storage Cache
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Constructor
+
+### LocalStorageCache()
+
+```typescript
+new LocalStorageCache()
+```
+
+#### Returns
+
+`LocalStorageCache`
+
+## Methods
+
+### allKeys()
+
+```typescript
+allKeys(): string[]
+```
+
+#### Returns
+
+`string[]`
+
+### get()
+
+```typescript
+get(key: string): MaybePromise<undefined | T>
+```
+
+#### Parameters
+
+<ResponseField name="key" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`MaybePromise<undefined | T>`
+
+### remove()
+
+```typescript
+remove(key: string): void
+```
+
+#### Parameters
+
+<ResponseField name="key" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`void`
+
+### set()
+
+```typescript
+set(key: string, entry: T): void
+```
+
+#### Parameters
+
+<ResponseField name="key" type="string" required>
+</ResponseField>
+
+<ResponseField name="entry" type="T" required>
+</ResponseField>
+
+#### Returns
+
+`void`
+

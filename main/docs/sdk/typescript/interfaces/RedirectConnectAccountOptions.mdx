@@ -1,0 +1,60 @@
+---
+title: Redirect Connect Account Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Properties
+
+### appState
+
+```typescript
+appState: TAppState
+```
+
+Optional application state to persist through the transaction.
+
+### authorization_params
+
+```typescript
+authorization_params: AuthorizationParams
+```
+
+Additional authorization parameters for the request.
+
+Type: [AuthorizationParams](/docs/sdk/typescript/interfaces/AuthorizationParams)
+
+### connection
+
+```typescript
+connection: string
+```
+
+The name of the connection to link (e.g. 'google-oauth2').
+
+### openUrl
+
+```typescript
+openUrl: object
+```
+
+Optional function to handle the redirect URL.
+
+### redirectUri
+
+```typescript
+redirectUri: string
+```
+
+The URI to redirect back to after connecting the account.
+
+### scopes
+
+```typescript
+scopes: string[]
+```
+
+Array of scopes to request from the Identity Provider during the connect account flow.
+

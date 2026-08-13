@@ -1,0 +1,36 @@
+---
+title: Enroll Sms Params
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*SMS enrollment parameters*
+
+## Properties
+
+### factorType
+
+```typescript
+factorType: "sms"
+```
+
+The factor type for enrollment
+
+### mfaToken
+
+```typescript
+mfaToken: string
+```
+
+MFA token from mfa_required error
+
+### phoneNumber
+
+```typescript
+phoneNumber: string
+```
+
+Phone number in E.164 format (required for SMS)
+

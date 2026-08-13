@@ -1,0 +1,33 @@
+---
+title: Logout Url Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Properties
+
+### clientId
+
+```typescript
+clientId: null | string
+```
+
+The `clientId` of your application.
+
+If this property is not set, then the `clientId` that was used during initialization of the SDK is sent to the logout endpoint.
+
+If this property is set to `null`, then no client ID value is sent to the logout endpoint.
+
+[Read more about how redirecting after logout works](https://auth0.com/docs/logout/guides/redirect-users-after-logout)
+
+### logoutParams
+
+```typescript
+logoutParams: object
+```
+
+Parameters to pass to the logout endpoint. This can be known parameters defined by Auth0 or custom parameters
+you wish to provide.
+

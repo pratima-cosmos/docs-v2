@@ -1,0 +1,47 @@
+---
+title: Passkey Get Token Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when exchanging a passkey credential for tokens fails.
+
+Unlike the challenge errors, this carries `mfa_token` / `mfa_requirements` on
+its `cause` when the server responds with `mfa_required`.*
+
+## Constructor
+
+### PasskeyGetTokenError()
+
+```typescript
+new PasskeyGetTokenError(message: string, cause?: PasskeyGetTokenApiErrorResponse)
+```
+
+#### Parameters
+
+<ResponseField name="message" type="string" required>
+</ResponseField>
+
+<ResponseField name="cause" type="PasskeyGetTokenApiErrorResponse">
+</ResponseField>
+
+#### Returns
+
+`PasskeyGetTokenError`
+
+## Properties
+
+### cause
+
+```typescript
+cause: PasskeyGetTokenApiErrorResponse
+```
+
+### code
+
+```typescript
+code: string
+```
+

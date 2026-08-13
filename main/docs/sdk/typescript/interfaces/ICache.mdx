@@ -1,0 +1,68 @@
+---
+title: I Cache
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Methods
+
+### allKeys()
+
+```typescript
+allKeys(): MaybePromise<string[]>
+```
+
+#### Returns
+
+`MaybePromise<string[]>`
+
+### get()
+
+```typescript
+get(key: string): MaybePromise<undefined | T>
+```
+
+#### Parameters
+
+<ResponseField name="key" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`MaybePromise<undefined | T>`
+
+### remove()
+
+```typescript
+remove(key: string): MaybePromise<void>
+```
+
+#### Parameters
+
+<ResponseField name="key" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`MaybePromise<void>`
+
+### set()
+
+```typescript
+set(key: string, entry: T): MaybePromise<void>
+```
+
+#### Parameters
+
+<ResponseField name="key" type="string" required>
+</ResponseField>
+
+<ResponseField name="entry" type="T" required>
+</ResponseField>
+
+#### Returns
+
+`MaybePromise<void>`
+

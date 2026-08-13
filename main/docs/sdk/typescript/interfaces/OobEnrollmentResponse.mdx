@@ -1,0 +1,70 @@
+---
+title: Oob Enrollment Response
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Response when enrolling an OOB authenticator*
+
+## Properties
+
+### authenticatorType
+
+```typescript
+authenticatorType: "oob"
+```
+
+Authenticator type
+
+### barcodeUri
+
+```typescript
+barcodeUri: string
+```
+
+URI for QR code (for Push/Guardian enrollment)
+
+### bindingMethod
+
+```typescript
+bindingMethod: string
+```
+
+Binding method (e.g., 'prompt' for user code entry)
+
+### id
+
+```typescript
+id: string
+```
+
+Authenticator ID
+
+### oobChannel
+
+```typescript
+oobChannel: OobChannel
+```
+
+Delivery channel used
+
+Type: [OobChannel](/docs/sdk/typescript/types/OobChannel)
+
+### oobCode
+
+```typescript
+oobCode: string
+```
+
+Out-of-band code for verification
+
+### recoveryCodes
+
+```typescript
+recoveryCodes: string[]
+```
+
+Recovery codes (generated when enrolling first MFA factor)
+

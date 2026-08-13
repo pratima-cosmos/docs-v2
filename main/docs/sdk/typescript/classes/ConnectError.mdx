@@ -1,0 +1,89 @@
+---
+title: Connect Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Thrown when handling the redirect callback for the connect flow fails, will be one of Auth0's
+Authentication API's Standard Error Responses: https://auth0.com/docs/api/authentication?javascript#standard-error-responses*
+
+## Constructor
+
+### ConnectError()
+
+```typescript
+new ConnectError(error: string, error_description: string, connection: string, state: string, appState: any)
+```
+
+#### Parameters
+
+<ResponseField name="error" type="string" required>
+</ResponseField>
+
+<ResponseField name="error_description" type="string" required>
+</ResponseField>
+
+<ResponseField name="connection" type="string" required>
+</ResponseField>
+
+<ResponseField name="state" type="string" required>
+</ResponseField>
+
+<ResponseField name="appState" type="any" required>
+</ResponseField>
+
+#### Returns
+
+`ConnectError`
+
+## Properties
+
+### appState
+
+```typescript
+appState: any
+```
+
+### connection
+
+```typescript
+connection: string
+```
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+### state
+
+```typescript
+state: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

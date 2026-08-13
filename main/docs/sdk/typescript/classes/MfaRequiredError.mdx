@@ -1,0 +1,82 @@
+---
+title: Mfa Required Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when the token exchange results in a `mfa_required` error*
+
+## Constructor
+
+### MfaRequiredError()
+
+```typescript
+new MfaRequiredError(error: string, error_description: string, mfa_token: string, mfa_requirements: MfaRequirements)
+```
+
+#### Parameters
+
+<ResponseField name="error" type="string" required>
+</ResponseField>
+
+<ResponseField name="error_description" type="string" required>
+</ResponseField>
+
+<ResponseField name="mfa_token" type="string" required>
+</ResponseField>
+
+<ResponseField name="mfa_requirements" type="MfaRequirements" required>
+Type: [MfaRequirements](/docs/sdk/typescript/interfaces/MfaRequirements)
+</ResponseField>
+
+#### Returns
+
+`MfaRequiredError`
+
+## Properties
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+### mfa_requirements
+
+```typescript
+mfa_requirements: MfaRequirements
+```
+
+Type: [MfaRequirements](/docs/sdk/typescript/interfaces/MfaRequirements)
+
+### mfa_token
+
+```typescript
+mfa_token: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

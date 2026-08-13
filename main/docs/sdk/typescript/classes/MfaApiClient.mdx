@@ -1,0 +1,134 @@
+---
+title: Mfa Api Client
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Client for Auth0 MFA API operations
+
+Manages multi-factor authentication including:
+- Listing enrolled authenticators
+- Enrolling new authenticators (OTP, SMS, Voice, Push, Email)
+- Initiating MFA challenges
+- Verifying MFA challenges
+
+This is a wrapper around auth0-auth-js MfaClient that maintains
+backward compatibility with the existing spa-js API.
+
+MFA context (scope, audience) is stored internally keyed by mfaToken,
+enabling concurrent MFA flows without state conflicts.*
+
+## Methods
+
+### challenge()
+
+```typescript
+challenge(params: ChallengeAuthenticatorParams): Promise<ChallengeResponse>
+```
+
+Initiates an MFA challenge
+
+Sends OTP via SMS, initiates push notification, or prepares for OTP entry
+
+#### Parameters
+
+<ResponseField name="params" type="ChallengeAuthenticatorParams" required>
+Challenge parameters including mfaToken
+
+Type: [ChallengeAuthenticatorParams](/docs/sdk/typescript/interfaces/ChallengeAuthenticatorParams)
+</ResponseField>
+
+#### Returns
+
+`Promise<ChallengeResponse>`
+
+### enroll()
+
+```typescript
+enroll(params: EnrollParams): Promise<EnrollmentResponse>
+```
+
+Enrolls a new MFA authenticator
+
+Requires MFA access token with 'enroll' scope
+
+#### Parameters
+
+<ResponseField name="params" type="EnrollParams" required>
+Enrollment parameters including mfaToken and factorType
+
+Type: [EnrollParams](/docs/sdk/typescript/types/EnrollParams)
+</ResponseField>
+
+#### Returns
+
+`Promise<EnrollmentResponse>`
+
+### getAuthenticators()
+
+```typescript
+getAuthenticators(mfaToken: string): Promise<Authenticator[]>
+```
+
+Gets enrolled MFA authenticators filtered by challenge types from context.
+
+Challenge types are automatically resolved from the stored MFA context
+(set when mfa_required error occurred).
+
+#### Parameters
+
+<ResponseField name="mfaToken" type="string" required>
+MFA token from mfa_required error
+</ResponseField>
+
+#### Returns
+
+`Promise<Authenticator[]>`
+
+### getEnrollmentFactors()
+
+```typescript
+getEnrollmentFactors(mfaToken: string): Promise<EnrollmentFactor[]>
+```
+
+Gets available MFA enrollment factors from the stored context.
+
+This method exposes the enrollment options from the mfa_required error's
+mfaRequirements.enroll array, eliminating the need for manual parsing.
+
+#### Parameters
+
+<ResponseField name="mfaToken" type="string" required>
+MFA token from mfa_required error
+</ResponseField>
+
+#### Returns
+
+`Promise<EnrollmentFactor[]>`
+
+### verify()
+
+```typescript
+verify(params: VerifyParams): Promise<TokenEndpointResponse>
+```
+
+Verifies an MFA challenge and completes authentication
+
+The scope and audience are retrieved from the stored context (set when the
+mfa_required error occurred). The grant_type is automatically inferred from
+which verification field is provided (otp, oobCode, or recoveryCode).
+
+#### Parameters
+
+<ResponseField name="params" type="VerifyParams" required>
+Verification parameters with OTP, OOB code, or recovery code
+
+Type: [VerifyParams](/docs/sdk/typescript/interfaces/VerifyParams)
+</ResponseField>
+
+#### Returns
+
+`Promise<TokenEndpointResponse>`
+

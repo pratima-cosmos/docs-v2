@@ -1,0 +1,165 @@
+---
+title: Authorization Params
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Properties
+
+### acr_values
+
+```typescript
+acr_values: string
+```
+
+### audience
+
+```typescript
+audience: string
+```
+
+The default audience to be used for requesting API access.
+
+### connection
+
+```typescript
+connection: string
+```
+
+The name of the connection configured for your application.
+If null, it will redirect to the Auth0 Login Page and show
+the Login Widget.
+
+### display
+
+```typescript
+display: "page" | "popup" | "touch" | "wap"
+```
+
+- `'page'`: displays the UI with a full page view
+- `'popup'`: displays the UI with a popup window
+- `'touch'`: displays the UI in a way that leverages a touch interface
+- `'wap'`: displays the UI with a "feature phone" type interface
+
+### id_token_hint
+
+```typescript
+id_token_hint: string
+```
+
+Previously issued ID Token.
+
+### invitation
+
+```typescript
+invitation: string
+```
+
+The Id of an invitation to accept. This is available from the user invitation URL that is given when participating in a user invitation flow.
+
+### login_hint
+
+```typescript
+login_hint: string
+```
+
+The user's email address or other identifier. When your app knows
+which user is trying to authenticate, you can provide this parameter
+to pre-fill the email box or select the right session for sign-in.
+
+This currently only affects the classic Lock experience.
+
+### max_age
+
+```typescript
+max_age: string | number
+```
+
+Maximum allowable elapsed time (in seconds) since authentication.
+If the last time the user authenticated is greater than this value,
+the user must be reauthenticated.
+
+### organization
+
+```typescript
+organization: string
+```
+
+The organization to log in to.
+
+This will specify an `organization` parameter in your user's login request.
+
+- If you provide an Organization ID (a string with the prefix `org_`), it will be validated against the `org_id` claim of your user's ID Token. The validation is case-sensitive.
+- If you provide an Organization Name (a string *without* the prefix `org_`), it will be validated against the `org_name` claim of your user's ID Token. The validation is case-insensitive.
+  To use an Organization Name you must have "Allow Organization Names in Authentication API" switched on in your Auth0 settings dashboard.
+  More information is available on the [Auth0 documentation portal](https://auth0.com/docs/manage-users/organizations/configure-organizations/use-org-name-authentication-api)
+
+### prompt
+
+```typescript
+prompt: "none" | "login" | "consent" | "select_account"
+```
+
+- `'none'`: do not prompt user for login or consent on reauthentication
+- `'login'`: prompt user for reauthentication
+- `'consent'`: prompt user for consent before processing request
+- `'select_account'`: prompt user to select an account
+
+### redirect_uri
+
+```typescript
+redirect_uri: string
+```
+
+The default URL where Auth0 will redirect your browser to with
+the authentication result. It must be whitelisted in
+the "Allowed Callback URLs" field in your Auth0 Application's
+settings. If not provided here, it should be provided in the other
+methods that provide authentication.
+
+### scope
+
+```typescript
+scope: string
+```
+
+The default scope to be used on authentication requests.
+
+This defaults to `profile email` if not set. If you are setting extra scopes and require
+`profile` and `email` to be included then you must include them in the provided scope.
+
+Note: The `openid` scope is **always applied** regardless of this setting.
+
+### screen_hint
+
+```typescript
+screen_hint: string
+```
+
+Provides a hint to Auth0 as to what flow should be displayed.
+The default behavior is to show a login page but you can override
+this by passing 'signup' to show the signup page instead.
+
+This only affects the New Universal Login Experience.
+
+### session_transfer_token
+
+```typescript
+session_transfer_token: string
+```
+
+Session transfer token from a native application for Native to Web SSO.
+When `sessionTransferTokenQueryParamName` is set, this is automatically
+extracted from the specified URL query parameter if present.
+
+### ui_locales
+
+```typescript
+ui_locales: string
+```
+
+The space-separated list of language tags, ordered by preference.
+For example: `'fr-CA fr en'`.
+

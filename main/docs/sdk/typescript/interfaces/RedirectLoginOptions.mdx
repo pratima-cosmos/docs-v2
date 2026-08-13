@@ -1,0 +1,53 @@
+---
+title: Redirect Login Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Properties
+
+### appState
+
+```typescript
+appState: TAppState
+```
+
+Used to store state before doing the redirect
+
+### authorizationParams
+
+```typescript
+authorizationParams: AuthorizationParams
+```
+
+URL parameters that will be sent back to the Authorization Server. This can be known parameters
+defined by Auth0 or custom parameters that you define.
+
+Type: [AuthorizationParams](/docs/sdk/typescript/interfaces/AuthorizationParams)
+
+### fragment
+
+```typescript
+fragment: string
+```
+
+Used to add to the URL fragment before redirecting
+
+### onRedirect
+
+```typescript
+onRedirect: object
+```
+
+Used to control the redirect and not rely on the SDK to do the actual redirect.
+
+### openUrl
+
+```typescript
+openUrl: object
+```
+
+Used to control the redirect and not rely on the SDK to do the actual redirect.
+

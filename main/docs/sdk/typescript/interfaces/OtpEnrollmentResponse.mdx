@@ -1,0 +1,52 @@
+---
+title: Otp Enrollment Response
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Response when enrolling an OTP authenticator*
+
+## Properties
+
+### authenticatorType
+
+```typescript
+authenticatorType: "otp"
+```
+
+Authenticator type
+
+### barcodeUri
+
+```typescript
+barcodeUri: string
+```
+
+URI for generating QR code (otpauth://...)
+
+### id
+
+```typescript
+id: string
+```
+
+Authenticator ID
+
+### recoveryCodes
+
+```typescript
+recoveryCodes: string[]
+```
+
+Recovery codes for account recovery
+
+### secret
+
+```typescript
+secret: string
+```
+
+Base32-encoded secret for TOTP generation
+

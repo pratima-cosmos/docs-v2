@@ -1,0 +1,16 @@
+---
+title: Enroll Params
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Union type for all enrollment parameter types
+
+Type: [EnrollEmailParams](/docs/sdk/typescript/interfaces/EnrollEmailParams), [EnrollOtpParams](/docs/sdk/typescript/interfaces/EnrollOtpParams), [EnrollPushParams](/docs/sdk/typescript/interfaces/EnrollPushParams), [EnrollSmsParams](/docs/sdk/typescript/interfaces/EnrollSmsParams), [EnrollVoiceParams](/docs/sdk/typescript/interfaces/EnrollVoiceParams)*
+
+```typescript
+type EnrollParams = EnrollOtpParams | EnrollSmsParams | EnrollVoiceParams | EnrollEmailParams | EnrollPushParams
+```
+

@@ -1,0 +1,54 @@
+---
+title: Timeout Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Thrown when silent auth times out (usually due to a configuration issue) or
+when network requests to the Auth server timeout.*
+
+## Constructor
+
+### TimeoutError()
+
+```typescript
+new TimeoutError()
+```
+
+#### Returns
+
+`TimeoutError`
+
+## Properties
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

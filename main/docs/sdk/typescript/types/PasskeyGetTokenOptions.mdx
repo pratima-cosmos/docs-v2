@@ -1,0 +1,19 @@
+---
+title: Passkey Get Token Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Options for exchanging a signed passkey credential for tokens.
+
+`credential` is the raw `PublicKeyCredential` produced by the WebAuthn
+ceremony — a creation credential (signup) or an assertion credential
+(login). The credential type (attestation vs assertion) is detected
+automatically during serialization.*
+
+```typescript
+type PasskeyGetTokenOptions = object
+```
+

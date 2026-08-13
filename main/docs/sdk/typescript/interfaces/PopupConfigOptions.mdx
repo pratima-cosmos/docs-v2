@@ -1,0 +1,54 @@
+---
+title: Popup Config Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Properties
+
+### closePopup
+
+```typescript
+closePopup: boolean
+```
+
+Controls whether the SDK automatically closes the popup window.
+
+- `true` (default): SDK closes the popup automatically after receiving the authorization response
+- `false`: SDK does not close the popup. The caller is responsible for closing it, including on errors.
+
+Setting this to `false` is useful when you need full control over the popup lifecycle,
+such as in Chrome extensions where closing the popup too early can terminate the
+extension's service worker before authentication completes.
+
+When `closePopup: false`, you should close the popup in a try/finally block:
+```
+const popup = window.open('', '_blank');
+try {
+  await auth0.loginWithPopup({}, { popup, closePopup: false });
+} finally {
+  popup.close();
+}
+```
+
+### popup
+
+```typescript
+popup: any
+```
+
+Accepts an already-created popup window to use. If not specified, the SDK
+will create its own. This may be useful for platforms like iOS that have
+security restrictions around when popups can be invoked (e.g. from a user click event)
+
+### timeoutInSeconds
+
+```typescript
+timeoutInSeconds: number
+```
+
+The number of seconds to wait for a popup response before
+throwing a timeout error. Defaults to 60s
+

@@ -1,0 +1,57 @@
+---
+title: Verify Params
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Parameters for verifying an MFA challenge.
+
+The grant_type is automatically inferred from which verification field is provided:
+- `otp` field → MFA-OTP grant type
+- `oobCode` field → MFA-OOB grant type
+- `recoveryCode` field → MFA-RECOVERY-CODE grant type*
+
+## Properties
+
+### bindingCode
+
+```typescript
+bindingCode: string
+```
+
+Binding code (for OOB challenges with binding)
+
+### mfaToken
+
+```typescript
+mfaToken: string
+```
+
+MFA token from challenge flow
+
+### oobCode
+
+```typescript
+oobCode: string
+```
+
+Out-of-band code (for OOB challenges)
+
+### otp
+
+```typescript
+otp: string
+```
+
+One-time password (for OTP challenges)
+
+### recoveryCode
+
+```typescript
+recoveryCode: string
+```
+
+Recovery code (for recovery code verification)
+

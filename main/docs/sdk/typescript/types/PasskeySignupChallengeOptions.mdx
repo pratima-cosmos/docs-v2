@@ -1,0 +1,17 @@
+---
+title: Passkey Signup Challenge Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Options for requesting a passkey signup challenge.
+
+At least one user identifier (`email`, `username`, or `phoneNumber`) must be provided.
+Which identifiers are accepted depends on what is configured on your database connection.*
+
+```typescript
+type PasskeySignupChallengeOptions = PasskeySignupChallengeBaseOptions & object | object | object
+```
+

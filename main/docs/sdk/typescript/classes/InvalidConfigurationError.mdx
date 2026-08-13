@@ -1,0 +1,68 @@
+---
+title: Invalid Configuration Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Thrown at construction time for an invalid option combination (e.g.
+`refreshTokenMode: 'online'` without `useDpop: true`). The `suggestion` names the fix.*
+
+## Constructor
+
+### InvalidConfigurationError()
+
+```typescript
+new InvalidConfigurationError(message: string, suggestion: string)
+```
+
+#### Parameters
+
+<ResponseField name="message" type="string" required>
+</ResponseField>
+
+<ResponseField name="suggestion" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`InvalidConfigurationError`
+
+## Properties
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+### suggestion
+
+```typescript
+suggestion: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

@@ -1,0 +1,64 @@
+---
+title: Use Dpop Nonce Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when the wrong DPoP nonce is used and a potential subsequent retry wasn't able to fix it.*
+
+## Constructor
+
+### UseDpopNonceError()
+
+```typescript
+new UseDpopNonceError(newDpopNonce: undefined | string)
+```
+
+#### Parameters
+
+<ResponseField name="newDpopNonce" type="undefined | string" required>
+</ResponseField>
+
+#### Returns
+
+`UseDpopNonceError`
+
+## Properties
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+### newDpopNonce
+
+```typescript
+newDpopNonce: undefined | string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

@@ -1,0 +1,49 @@
+---
+title: Get Token Silently Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Properties
+
+### authorizationParams
+
+```typescript
+authorizationParams: object
+```
+
+Parameters that will be sent back to Auth0 as part of a request.
+
+### cacheMode
+
+```typescript
+cacheMode: "cache-only" | "on" | "off"
+```
+
+When `off`, ignores the cache and always sends a
+request to Auth0.
+When `cache-only`, only reads from the cache and never sends a request to Auth0.
+Defaults to `on`, where it both reads from the cache and sends a request to Auth0 as needed.
+
+### detailedResponse
+
+```typescript
+detailedResponse: boolean
+```
+
+If true, the full response from the /oauth/token endpoint (or the cache, if the cache was used) is returned
+(minus `refresh_token` if one was issued). Otherwise, just the access token is returned.
+
+The default is `false`.
+
+### timeoutInSeconds
+
+```typescript
+timeoutInSeconds: number
+```
+
+A maximum number of seconds to wait before declaring the background /authorize call as failed for timeout
+Defaults to 60s.
+

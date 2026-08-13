@@ -1,0 +1,44 @@
+---
+title: Passkey Challenge Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when requesting a passkey login challenge fails.*
+
+## Constructor
+
+### PasskeyChallengeError()
+
+```typescript
+new PasskeyChallengeError(message: string, cause?: PasskeyApiErrorResponse)
+```
+
+#### Parameters
+
+<ResponseField name="message" type="string" required>
+</ResponseField>
+
+<ResponseField name="cause" type="PasskeyApiErrorResponse">
+</ResponseField>
+
+#### Returns
+
+`PasskeyChallengeError`
+
+## Properties
+
+### cause
+
+```typescript
+cause: PasskeyApiErrorResponse
+```
+
+### code
+
+```typescript
+code: string
+```
+

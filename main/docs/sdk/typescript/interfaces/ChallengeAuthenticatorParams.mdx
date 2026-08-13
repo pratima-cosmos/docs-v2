@@ -1,0 +1,36 @@
+---
+title: Challenge Authenticator Params
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Parameters for initiating an MFA challenge*
+
+## Properties
+
+### authenticatorId
+
+```typescript
+authenticatorId: string
+```
+
+Specific authenticator to challenge (optional)
+
+### challengeType
+
+```typescript
+challengeType: "otp" | "oob"
+```
+
+Type of challenge to initiate
+
+### mfaToken
+
+```typescript
+mfaToken: string
+```
+
+MFA token from mfa_required error or MFA-scoped access token
+

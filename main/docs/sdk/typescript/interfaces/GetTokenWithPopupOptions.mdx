@@ -1,0 +1,31 @@
+---
+title: Get Token With Popup Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Properties
+
+### authorizationParams
+
+```typescript
+authorizationParams: AuthorizationParams
+```
+
+URL parameters that will be sent back to the Authorization Server. This can be known parameters
+defined by Auth0 or custom parameters that you define.
+
+Type: [AuthorizationParams](/docs/sdk/typescript/interfaces/AuthorizationParams)
+
+### cacheMode
+
+```typescript
+cacheMode: "cache-only" | "on" | "off"
+```
+
+When `off`, ignores the cache and always sends a request to Auth0.
+When `cache-only`, only reads from the cache and never sends a request to Auth0.
+Defaults to `on`, where it both reads from the cache and sends a request to Auth0 as needed.
+

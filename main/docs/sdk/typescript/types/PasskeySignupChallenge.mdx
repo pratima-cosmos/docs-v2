@@ -1,0 +1,17 @@
+---
+title: Passkey Signup Challenge
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*A passkey signup challenge ready for the WebAuthn ceremony.
+
+`publicKey` is decoded (base64url → ArrayBuffer) and can be fed directly into
+a WebAuthn credential creation ceremony. `authSession` must be retained and passed to `getTokenWithPasskey()`.*
+
+```typescript
+type PasskeySignupChallenge = object
+```
+

@@ -1,0 +1,62 @@
+---
+title: Popup Cancelled Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Constructor
+
+### PopupCancelledError()
+
+```typescript
+new PopupCancelledError(popup: Window)
+```
+
+#### Parameters
+
+<ResponseField name="popup" type="Window" required>
+</ResponseField>
+
+#### Returns
+
+`PopupCancelledError`
+
+## Properties
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+### popup
+
+```typescript
+popup: Window
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

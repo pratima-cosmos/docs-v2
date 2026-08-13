@@ -1,0 +1,73 @@
+---
+title: Missing Scopes Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when there are missing scopes after refreshing a token*
+
+## Constructor
+
+### MissingScopesError()
+
+```typescript
+new MissingScopesError(audience: string, scope: string)
+```
+
+#### Parameters
+
+<ResponseField name="audience" type="string" required>
+</ResponseField>
+
+<ResponseField name="scope" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`MissingScopesError`
+
+## Properties
+
+### audience
+
+```typescript
+audience: string
+```
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+### scope
+
+```typescript
+scope: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

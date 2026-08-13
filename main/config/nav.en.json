@@ -62,6 +62,11 @@
           "$ref": "./navigation/sdk-libraries.json"
         },
         {
+          "item": "SDK Reference",
+          "icon": "/icons/sdk-reference.svg",
+          "$ref": "./navigation/generated/spa-js-reference.en.json"
+        },
+        {
           "item": "Events Catalog",
           "icon": "/icons/events-catalog.svg",
           "$ref": "./navigation/generated/events-catalog.en.json"

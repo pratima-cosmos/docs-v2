@@ -1,0 +1,19 @@
+---
+title: Connect Account Redirect Result
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*The result returned after a successful account connection redirect.
+
+Combines the redirect login result (including any persisted app state)
+with the complete response from the My Account API.
+
+Type: [CompleteResponse](/docs/sdk/typescript/interfaces/CompleteResponse)*
+
+```typescript
+type ConnectAccountRedirectResult = CompleteResponse & object
+```
+

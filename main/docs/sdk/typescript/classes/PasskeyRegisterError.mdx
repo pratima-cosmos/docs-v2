@@ -1,0 +1,44 @@
+---
+title: Passkey Register Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when requesting a passkey register challenge fails.*
+
+## Constructor
+
+### PasskeyRegisterError()
+
+```typescript
+new PasskeyRegisterError(message: string, cause?: PasskeyApiErrorResponse)
+```
+
+#### Parameters
+
+<ResponseField name="message" type="string" required>
+</ResponseField>
+
+<ResponseField name="cause" type="PasskeyApiErrorResponse">
+</ResponseField>
+
+#### Returns
+
+`PasskeyRegisterError`
+
+## Properties
+
+### cause
+
+```typescript
+cause: PasskeyApiErrorResponse
+```
+
+### code
+
+```typescript
+code: string
+```
+

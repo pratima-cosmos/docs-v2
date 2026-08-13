@@ -1,0 +1,52 @@
+---
+title: Fetcher
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Constructor
+
+### Fetcher()
+
+```typescript
+new Fetcher(config: FetcherConfig<TOutput>, hooks: FetcherHooks)
+```
+
+#### Parameters
+
+<ResponseField name="config" type="FetcherConfig<TOutput>" required>
+Type: [FetcherConfig](/docs/sdk/typescript/types/FetcherConfig)
+</ResponseField>
+
+<ResponseField name="hooks" type="FetcherHooks" required>
+</ResponseField>
+
+#### Returns
+
+`Fetcher<TOutput>`
+
+## Methods
+
+### fetchWithAuth()
+
+```typescript
+fetchWithAuth(info: URL | RequestInfo, init?: RequestInit, authParams?: AuthParams): Promise<TOutput>
+```
+
+#### Parameters
+
+<ResponseField name="info" type="URL | RequestInfo" required>
+</ResponseField>
+
+<ResponseField name="init" type="RequestInit">
+</ResponseField>
+
+<ResponseField name="authParams" type="AuthParams">
+</ResponseField>
+
+#### Returns
+
+`Promise<TOutput>`
+

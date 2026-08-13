@@ -1,0 +1,212 @@
+---
+title: My Account Api Client
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Client for Auth0 MyAccount API operations.
+
+Provides methods for managing the current user's account:
+- Connected accounts (link/unlink external identity providers)
+- MFA factors
+- Authentication methods (passkeys, phone, email, TOTP) - list, get, update, delete
+- Authentication method enrollment (challenge and verify)*
+
+## Constructor
+
+### MyAccountApiClient()
+
+```typescript
+new MyAccountApiClient(myAccountFetcher: Fetcher<Response>, apiBase: string)
+```
+
+#### Parameters
+
+<ResponseField name="myAccountFetcher" type="Fetcher<Response>" required>
+Type: [Fetcher](/docs/sdk/typescript/classes/Fetcher)
+</ResponseField>
+
+<ResponseField name="apiBase" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`MyAccountApiClient`
+
+## Methods
+
+### completeAccount()
+
+```typescript
+completeAccount(params: CompleteRequest): Promise<CompleteResponse>
+```
+
+Verify the redirect from the connect account flow and complete the connecting of the account.
+
+#### Parameters
+
+<ResponseField name="params" type="CompleteRequest" required>
+Completion parameters including auth session, connect code, and redirect URI
+
+Type: [CompleteRequest](/docs/sdk/typescript/interfaces/CompleteRequest)
+</ResponseField>
+
+#### Returns
+
+`Promise<CompleteResponse>`
+
+### connectAccount()
+
+```typescript
+connectAccount(params: ConnectRequest): Promise<ConnectResponse>
+```
+
+Get a ticket for the connect account flow.
+
+#### Parameters
+
+<ResponseField name="params" type="ConnectRequest" required>
+Connection parameters including connection name and redirect URI
+
+Type: [ConnectRequest](/docs/sdk/typescript/interfaces/ConnectRequest)
+</ResponseField>
+
+#### Returns
+
+`Promise<ConnectResponse>`
+
+### deleteAuthenticationMethod()
+
+```typescript
+deleteAuthenticationMethod(id: string): Promise<void>
+```
+
+Delete an authentication method by ID.
+
+#### Parameters
+
+<ResponseField name="id" type="string" required>
+The ID of the authentication method to delete
+</ResponseField>
+
+#### Returns
+
+`Promise<void>`
+
+### enrollmentChallenge()
+
+```typescript
+enrollmentChallenge(options: EnrollmentChallengeOptions): Promise<EnrollmentChallengeResponse>
+```
+
+Start the enrollment of an authentication method for the current user.
+The response shape varies by type.
+
+#### Parameters
+
+<ResponseField name="options" type="EnrollmentChallengeOptions" required>
+Enrollment challenge options specifying the factor type and any type-specific fields
+
+Type: [EnrollmentChallengeOptions](/docs/sdk/typescript/types/EnrollmentChallengeOptions)
+</ResponseField>
+
+#### Returns
+
+`Promise<EnrollmentChallengeResponse>`
+
+### enrollmentVerify()
+
+```typescript
+enrollmentVerify(options: EnrollmentVerifyOptions): Promise<AuthenticationMethod>
+```
+
+Confirm the enrollment of an authentication method to complete registration.
+
+#### Parameters
+
+<ResponseField name="options" type="EnrollmentVerifyOptions" required>
+Enrollment verify options including the auth session and type-specific verification data
+
+Type: [EnrollmentVerifyOptions](/docs/sdk/typescript/types/EnrollmentVerifyOptions)
+</ResponseField>
+
+#### Returns
+
+`Promise<AuthenticationMethod>`
+
+### getAuthenticationMethod()
+
+```typescript
+getAuthenticationMethod(id: string): Promise<AuthenticationMethod>
+```
+
+Get an authentication method by ID.
+
+#### Parameters
+
+<ResponseField name="id" type="string" required>
+The ID of the authentication method to retrieve
+</ResponseField>
+
+#### Returns
+
+`Promise<AuthenticationMethod>`
+
+### getAuthenticationMethods()
+
+```typescript
+getAuthenticationMethods(type?: AuthenticationMethodType): Promise<AuthenticationMethod[]>
+```
+
+Get a list of all authentication methods for the current user.
+
+#### Parameters
+
+<ResponseField name="type" type="AuthenticationMethodType">
+Optional filter to return only methods of a specific type
+
+Type: [AuthenticationMethodType](/docs/sdk/typescript/types/AuthenticationMethodType)
+</ResponseField>
+
+#### Returns
+
+`Promise<AuthenticationMethod[]>`
+
+### getFactors()
+
+```typescript
+getFactors(): Promise<Factor[]>
+```
+
+Get the status of all factors for the current user.
+
+#### Returns
+
+`Promise<Factor[]>`
+
+### updateAuthenticationMethod()
+
+```typescript
+updateAuthenticationMethod(id: string, data: UpdateAuthenticationMethodRequest): Promise<AuthenticationMethod>
+```
+
+Update details of an authentication method by ID.
+
+#### Parameters
+
+<ResponseField name="id" type="string" required>
+The ID of the authentication method to update
+</ResponseField>
+
+<ResponseField name="data" type="UpdateAuthenticationMethodRequest" required>
+The fields to update (e.g. name, preferred_authentication_method for phone)
+
+Type: [UpdateAuthenticationMethodRequest](/docs/sdk/typescript/interfaces/UpdateAuthenticationMethodRequest)
+</ResponseField>
+
+#### Returns
+
+`Promise<AuthenticationMethod>`
+

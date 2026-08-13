@@ -1,0 +1,139 @@
+---
+title: Passkey Api Client
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Client for Auth0 Passkey operations.
+
+Provides 2 public methods:
+- `signup` — Register a new user with a passkey (full flow: challenge → WebAuthn → token exchange)
+- `login` — Sign in with a passkey (full flow: challenge → WebAuthn → token exchange)*
+
+## Methods
+
+### getLoginChallenge()
+
+```typescript
+getLoginChallenge(options?: PasskeyLoginChallengeOptions): Promise<PasskeyLoginChallenge>
+```
+
+Request a passkey login challenge.
+
+Step 1 of the granular login flow. Returns the auth session and a
+decoded `PublicKeyCredentialRequestOptions`. Run the WebAuthn assertion
+ceremony with `publicKey`, then hand the resulting credential and `authSession` to
+`getTokenWithPasskey()`.
+
+#### Parameters
+
+<ResponseField name="options" type="PasskeyLoginChallengeOptions">
+Optional login challenge options (realm/organization)
+
+Type: [PasskeyLoginChallengeOptions](/docs/sdk/typescript/interfaces/PasskeyLoginChallengeOptions)
+</ResponseField>
+
+#### Returns
+
+`Promise<PasskeyLoginChallenge>`
+
+### getSignupChallenge()
+
+```typescript
+getSignupChallenge(options: PasskeySignupChallengeOptions): Promise<PasskeySignupChallenge>
+```
+
+Request a passkey signup challenge.
+
+Step 1 of the granular signup flow. Returns the auth session and a
+decoded `PublicKeyCredentialCreationOptions`. Run the WebAuthn credential
+creation ceremony with `publicKey`, then hand the resulting credential and `authSession` to
+`getTokenWithPasskey()`.
+
+#### Parameters
+
+<ResponseField name="options" type="PasskeySignupChallengeOptions" required>
+Signup challenge options (user identifier, optional realm/organization/metadata)
+
+Type: [PasskeySignupChallengeOptions](/docs/sdk/typescript/types/PasskeySignupChallengeOptions)
+</ResponseField>
+
+#### Returns
+
+`Promise<PasskeySignupChallenge>`
+
+### getTokenWithPasskey()
+
+```typescript
+getTokenWithPasskey(options: PasskeyGetTokenOptions): Promise<TokenEndpointResponse>
+```
+
+Exchange a signed passkey credential for tokens.
+
+Step 2 of the granular flow. Serializes the raw `PublicKeyCredential`
+produced by the WebAuthn ceremony — either a creation (signup) or an
+assertion (login) credential — and exchanges it for tokens. The credential
+type (attestation vs assertion) is detected automatically.
+
+#### Parameters
+
+<ResponseField name="options" type="PasskeyGetTokenOptions" required>
+The auth session, raw credential, and optional realm/organization/scope/audience
+
+Type: [PasskeyGetTokenOptions](/docs/sdk/typescript/types/PasskeyGetTokenOptions)
+</ResponseField>
+
+#### Returns
+
+`Promise<TokenEndpointResponse>`
+
+### login()
+
+```typescript
+login(options?: PasskeyLoginOptions): Promise<TokenEndpointResponse>
+```
+
+Sign in with an existing passkey.
+
+Handles the full flow: requests a login challenge, triggers the browser
+WebAuthn assertion ceremony, serializes the result, and exchanges it
+for tokens.
+
+#### Parameters
+
+<ResponseField name="options" type="PasskeyLoginOptions">
+Optional passkey login options (optional scope/audience/realm/organization)
+
+Type: [PasskeyLoginOptions](/docs/sdk/typescript/types/PasskeyLoginOptions)
+</ResponseField>
+
+#### Returns
+
+`Promise<TokenEndpointResponse>`
+
+### signup()
+
+```typescript
+signup(options: PasskeySignupOptions): Promise<TokenEndpointResponse>
+```
+
+Register a new user with a passkey.
+
+Handles the full flow: requests a signup challenge, triggers the browser
+WebAuthn credential creation ceremony, serializes the result, and exchanges
+it for tokens.
+
+#### Parameters
+
+<ResponseField name="options" type="PasskeySignupOptions" required>
+Passkey signup options (user identifier, optional scope/audience)
+
+Type: [PasskeySignupOptions](/docs/sdk/typescript/types/PasskeySignupOptions)
+</ResponseField>
+
+#### Returns
+
+`Promise<TokenEndpointResponse>`
+

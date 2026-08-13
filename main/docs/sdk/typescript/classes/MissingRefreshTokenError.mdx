@@ -1,0 +1,73 @@
+---
+title: Missing Refresh Token Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when there is no refresh token to use*
+
+## Constructor
+
+### MissingRefreshTokenError()
+
+```typescript
+new MissingRefreshTokenError(audience: string, scope: string)
+```
+
+#### Parameters
+
+<ResponseField name="audience" type="string" required>
+</ResponseField>
+
+<ResponseField name="scope" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`MissingRefreshTokenError`
+
+## Properties
+
+### audience
+
+```typescript
+audience: string
+```
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+### scope
+
+```typescript
+scope: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): GenericError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`GenericError`
+

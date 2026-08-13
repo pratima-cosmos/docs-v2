@@ -1,0 +1,62 @@
+---
+title: Mfa Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Base class for MFA-related errors in auth0-spa-js.
+Extends GenericError for unified error hierarchy across the SDK.*
+
+## Constructor
+
+### MfaError()
+
+```typescript
+new MfaError(error: string, error_description: string)
+```
+
+#### Parameters
+
+<ResponseField name="error" type="string" required>
+</ResponseField>
+
+<ResponseField name="error_description" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`MfaError`
+
+## Properties
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): MfaError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`MfaError`
+

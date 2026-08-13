@@ -1,0 +1,259 @@
+---
+title: Id Token
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Properties
+
+### __raw
+
+```typescript
+__raw: string
+```
+
+### acr
+
+```typescript
+acr: string
+```
+
+### act
+
+```typescript
+act: ActClaim
+```
+
+The actor claim, present in ID tokens returned via token exchange responses.
+Identifies the acting party that has been delegated authority to act on behalf
+of the subject. Set via Auth0 Actions using the `setActor` command.
+
+Type: [ActClaim](/docs/sdk/typescript/interfaces/ActClaim)
+
+### address
+
+```typescript
+address: string
+```
+
+### amr
+
+```typescript
+amr: string[]
+```
+
+### at_hash
+
+```typescript
+at_hash: string
+```
+
+### aud
+
+```typescript
+aud: string
+```
+
+### auth_time
+
+```typescript
+auth_time: string
+```
+
+### azp
+
+```typescript
+azp: string
+```
+
+### birthdate
+
+```typescript
+birthdate: string
+```
+
+### c_hash
+
+```typescript
+c_hash: string
+```
+
+### cnf
+
+```typescript
+cnf: string
+```
+
+### email
+
+```typescript
+email: string
+```
+
+### email_verified
+
+```typescript
+email_verified: boolean
+```
+
+### exp
+
+```typescript
+exp: number
+```
+
+### family_name
+
+```typescript
+family_name: string
+```
+
+### gender
+
+```typescript
+gender: string
+```
+
+### given_name
+
+```typescript
+given_name: string
+```
+
+### iat
+
+```typescript
+iat: number
+```
+
+### iss
+
+```typescript
+iss: string
+```
+
+### jti
+
+```typescript
+jti: string
+```
+
+### locale
+
+```typescript
+locale: string
+```
+
+### middle_name
+
+```typescript
+middle_name: string
+```
+
+### name
+
+```typescript
+name: string
+```
+
+### nbf
+
+```typescript
+nbf: number
+```
+
+### nickname
+
+```typescript
+nickname: string
+```
+
+### nonce
+
+```typescript
+nonce: string
+```
+
+### org_id
+
+```typescript
+org_id: string
+```
+
+### org_name
+
+```typescript
+org_name: string
+```
+
+### phone_number
+
+```typescript
+phone_number: string
+```
+
+### phone_number_verified
+
+```typescript
+phone_number_verified: boolean
+```
+
+### picture
+
+```typescript
+picture: string
+```
+
+### preferred_username
+
+```typescript
+preferred_username: string
+```
+
+### profile
+
+```typescript
+profile: string
+```
+
+### session_expiry
+
+```typescript
+session_expiry: number
+```
+
+IPSIE session expiry ceiling (Unix timestamp in seconds).
+When present, the SDK will not return tokens after this point in time.
+
+### sid
+
+```typescript
+sid: string
+```
+
+### sub_jwk
+
+```typescript
+sub_jwk: string
+```
+
+### updated_at
+
+```typescript
+updated_at: string
+```
+
+### website
+
+```typescript
+website: string
+```
+
+### zoneinfo
+
+```typescript
+zoneinfo: string
+```
+

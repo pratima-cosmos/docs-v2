@@ -1,0 +1,70 @@
+---
+title: Authenticator
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Represents an MFA authenticator enrolled by a user*
+
+## Properties
+
+### active
+
+```typescript
+active: boolean
+```
+
+Whether the authenticator is active
+
+### authenticatorType
+
+```typescript
+authenticatorType: AuthenticatorType
+```
+
+Type of authenticator
+
+Type: [AuthenticatorType](/docs/sdk/typescript/types/AuthenticatorType)
+
+### createdAt
+
+```typescript
+createdAt: string
+```
+
+ISO 8601 timestamp when created
+
+### id
+
+```typescript
+id: string
+```
+
+Unique identifier for the authenticator
+
+### lastAuth
+
+```typescript
+lastAuth: string
+```
+
+ISO 8601 timestamp of last authentication
+
+### name
+
+```typescript
+name: string
+```
+
+Optional friendly name
+
+### type
+
+```typescript
+type: string
+```
+
+Types of MFA challenges
+

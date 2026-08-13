@@ -1,0 +1,47 @@
+---
+title: create Auth0 Client
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+```typescript
+createAuth0Client(options: Auth0ClientOptions & object): Promise<Auth0Client>
+```
+
+Online mode requires `useRefreshTokens: true` and `useDpop: true`, enforced here at
+compile time. Dynamic values, casts, and plain JS are covered by the runtime check in
+the `Auth0Client` constructor.
+
+## Parameters
+
+<ResponseField name="options" type="Auth0ClientOptions & object" required>
+Type: [Auth0ClientOptions](/docs/sdk/typescript/interfaces/Auth0ClientOptions)
+</ResponseField>
+
+## Returns
+
+`Promise<Auth0Client>`
+
+```typescript
+createAuth0Client(options: Auth0ClientOptions & object): Promise<Auth0Client>
+```
+
+Asynchronously creates the Auth0Client instance and calls `checkSession`.
+
+**Note:** There are caveats to using this in a private browser tab, which may not silently authenticate
+a user on page refresh. Please see [the checkSession docs](https://auth0.github.io/auth0-spa-js/classes/Auth0Client.html#checksession) for more info.
+
+## Parameters
+
+<ResponseField name="options" type="Auth0ClientOptions & object" required>
+The client options
+
+Type: [Auth0ClientOptions](/docs/sdk/typescript/interfaces/Auth0ClientOptions)
+</ResponseField>
+
+## Returns
+
+`Promise<Auth0Client>`
+

@@ -1,0 +1,23 @@
+---
+title: Act Claim
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Represents the actor claim (`act`) in an ID token returned via a token exchange response.
+
+The `act` claim identifies the acting party — the entity that has been delegated authority
+to act on behalf of the subject. It is set via Auth0 Actions using the `setActor` command.*
+
+## Properties
+
+### sub
+
+```typescript
+sub: string
+```
+
+The identifier of the acting party.
+

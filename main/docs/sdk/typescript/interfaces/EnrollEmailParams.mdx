@@ -1,0 +1,36 @@
+---
+title: Enroll Email Params
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Email enrollment parameters*
+
+## Properties
+
+### email
+
+```typescript
+email: string
+```
+
+Email address (optional, uses user's email if not provided)
+
+### factorType
+
+```typescript
+factorType: "email"
+```
+
+The factor type for enrollment
+
+### mfaToken
+
+```typescript
+mfaToken: string
+```
+
+MFA token from mfa_required error
+

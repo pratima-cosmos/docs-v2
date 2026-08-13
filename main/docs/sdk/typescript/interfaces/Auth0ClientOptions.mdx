@@ -1,0 +1,290 @@
+---
+title: Auth0 Client Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Properties
+
+### authorizationParams
+
+```typescript
+authorizationParams: ClientAuthorizationParams
+```
+
+URL parameters that will be sent back to the Authorization Server. This can be known parameters
+defined by Auth0 or custom parameters that you define.
+
+Type: [ClientAuthorizationParams](/docs/sdk/typescript/interfaces/ClientAuthorizationParams)
+
+### authorizeTimeoutInSeconds
+
+```typescript
+authorizeTimeoutInSeconds: number
+```
+
+A maximum number of seconds to wait before declaring background calls to /authorize as failed for timeout
+Defaults to 60s.
+
+### cache
+
+```typescript
+cache: ICache
+```
+
+Specify a custom cache implementation to use for token storage and retrieval. This setting takes precedence over `cacheLocation` if they are both specified.
+
+Type: [ICache](/docs/sdk/typescript/interfaces/ICache)
+
+### cacheLocation
+
+```typescript
+cacheLocation: CacheLocation
+```
+
+The location to use when storing cache data. Valid values are `memory` or `localstorage`.
+The default setting is `memory`.
+
+Read more about [changing storage options in the Auth0 docs](https://auth0.com/docs/libraries/auth0-single-page-app-sdk#change-storage-options)
+
+Type: [CacheLocation](/docs/sdk/typescript/types/CacheLocation)
+
+### clientId
+
+```typescript
+clientId: string
+```
+
+The Client ID found on your Application settings page
+
+### cookieDomain
+
+```typescript
+cookieDomain: string
+```
+
+The domain the cookie is accessible from. If not set, the cookie is scoped to
+the current domain, including the subdomain.
+
+Note: setting this incorrectly may cause silent authentication to stop working
+on page load.
+
+
+To keep a user logged in across multiple subdomains set this to your
+top-level domain and prefixed with a `.` (eg: `.example.com`).
+
+### domain
+
+```typescript
+domain: string
+```
+
+Your Auth0 account domain such as `'example.auth0.com'`,
+`'example.eu.auth0.com'` or , `'example.mycompany.com'`
+(when using [custom domains](https://auth0.com/docs/custom-domains))
+
+### httpTimeoutInSeconds
+
+```typescript
+httpTimeoutInSeconds: number
+```
+
+Specify the timeout for HTTP calls using `fetch`. The default is 10 seconds.
+
+### interactiveErrorHandler
+
+```typescript
+interactiveErrorHandler: "popup"
+```
+
+Configures automatic handling of interactive authentication errors.
+
+When set, the SDK intercepts `mfa_required` errors from `getTokenSilently()`
+and handles them automatically instead of throwing to the caller.
+
+- `'popup'`: Opens Universal Login in a popup to complete MFA.
+  The original `authorizationParams` (audience, scope) are preserved.
+  On success, the token is returned. On failure, popup errors are thrown.
+
+This option only affects `getTokenSilently()`. Other methods are not affected.
+
+### issuer
+
+```typescript
+issuer: string
+```
+
+The issuer to be used for validation of JWTs, optionally defaults to the domain above
+
+### leeway
+
+```typescript
+leeway: number
+```
+
+The value in seconds used to account for clock skew in JWT expirations.
+Typically, this value is no more than a minute or two at maximum.
+Defaults to 60s.
+
+### legacySameSiteCookie
+
+```typescript
+legacySameSiteCookie: boolean
+```
+
+Sets an additional cookie with no SameSite attribute to support legacy browsers
+that are not compatible with the latest SameSite changes.
+This will log a warning on modern browsers, you can disable the warning by setting
+this to false but be aware that some older useragents will not work,
+See https://www.chromium.org/updates/same-site/incompatible-clients
+Defaults to true
+
+### nowProvider
+
+```typescript
+nowProvider: object
+```
+
+Modify the value used as the current time during the token validation.
+
+**Note**: Using this improperly can potentially compromise the token validation.
+
+### refreshTokenMode
+
+```typescript
+refreshTokenMode: RefreshTokenMode
+```
+
+Selects the refresh-token variant used when `useRefreshTokens: true`.
+Defaults to `RefreshTokenMode.Offline`.
+
+- `RefreshTokenMode.Offline` (default): rotating offline refresh tokens (`offline_access`).
+- `RefreshTokenMode.Online`: non-rotating, session-bound Online Refresh Tokens (`online_access`).
+
+Online mode requires `useRefreshTokens: true` and `useDpop: true`. The
+`online_access` and `offline_access` scopes are mutually exclusive.
+
+Type: [RefreshTokenMode](/docs/sdk/typescript/variables/RefreshTokenMode)
+
+### sessionCheckExpiryDays
+
+```typescript
+sessionCheckExpiryDays: number
+```
+
+Number of days until the cookie `auth0.is.authenticated` will expire
+Defaults to 1.
+
+### sessionTransferTokenQueryParamName
+
+```typescript
+sessionTransferTokenQueryParamName: string
+```
+
+Query parameter name to extract the session transfer token from for Native to Web SSO.
+
+When set, the SDK automatically extracts the token from the specified URL query
+parameter and includes it as `session_transfer_token` in authorization requests.
+This enables seamless single sign-on when users transition from a native mobile
+application to a web application.
+
+After extraction, the token is automatically removed from the URL using
+`window.history.replaceState()` to prevent accidental reuse on subsequent
+authentication requests.
+
+**Default:** `undefined` (feature disabled)
+
+**Common values:**
+- `'session_transfer_token'` - Standard parameter name
+- `'stt'` - Shortened version
+- Custom parameter name of your choice
+
+Set to `undefined` to disable automatic extraction if you prefer to handle
+session transfer tokens manually.
+
+### useCookiesForTransactions
+
+```typescript
+useCookiesForTransactions: boolean
+```
+
+If `true`, the SDK will use a cookie when storing information about the auth transaction while
+the user is going through the authentication flow on the authorization server.
+
+The default is `false`, in which case the SDK will use session storage.
+
+### useDpop
+
+```typescript
+useDpop: boolean
+```
+
+If `true`, DPoP (OAuth 2.0 Demonstrating Proof of Possession, RFC9449)
+will be used to cryptographically bind tokens to this specific browser
+so they can't be used from a different device in case of a leak.
+
+The default setting is `false`.
+
+### useFormData
+
+```typescript
+useFormData: boolean
+```
+
+If true, data to the token endpoint is transmitted as x-www-form-urlencoded data, if false it will be transmitted as JSON. The default setting is `true`.
+
+**Note:** Setting this to `false` may affect you if you use Auth0 Rules and are sending custom, non-primitive data. If you disable this,
+please verify that your Auth0 Rules continue to work as intended.
+
+### useMrrt
+
+```typescript
+useMrrt: boolean
+```
+
+If `true`, the SDK will allow the refreshing of tokens using MRRT
+
+### useRefreshTokens
+
+```typescript
+useRefreshTokens: boolean
+```
+
+If true, refresh tokens are used to fetch new access tokens from the Auth0 server. If false, the standard technique of using a hidden iframe and the `authorization_code` grant with `prompt=none` is used.
+The default setting is `false`.
+
+Standard technique relies on cookies. Because browsers increasingly block third-party cookies, it requires a Custom Domain to function reliably. Refresh tokens serve as a fallback for environments where third-party cookies are blocked.
+Using a Custom Domain with this set to `false` is the most secure and recommended approach.
+
+**Note**: Use of refresh tokens must be enabled by an administrator on your Auth0 client application.
+
+### useRefreshTokensFallback
+
+```typescript
+useRefreshTokensFallback: boolean
+```
+
+If true, fallback to the technique of using a hidden iframe and the `authorization_code` grant with `prompt=none` when unable to use refresh tokens. If false, the iframe fallback is not used and
+errors relating to a failed `refresh_token` grant should be handled appropriately. The default setting is `false`.
+
+**Note**: There might be situations where doing silent auth with a Web Message response from an iframe is not possible,
+like when you're serving your application from the file system or a custom protocol (like in a Desktop or Native app).
+In situations like this you can disable the iframe fallback and handle the failed `refresh_token` grant and prompt the user to login interactively with `loginWithRedirect` or `loginWithPopup`."
+
+E.g. Using the `file:` protocol in an Electron application does not support that legacy technique.
+
+### workerUrl
+
+```typescript
+workerUrl: string
+```
+
+If provided, the SDK will load the token worker from this URL instead of the integrated `blob`. An example of when this is useful is if you have strict
+Content-Security-Policy (CSP) and wish to avoid needing to set `worker-src: blob:`. We recommend either serving the worker, which you can find in the module
+at `<module_path>/dist/auth0-spa-js.worker.production.js`, from the same host as your application or using the Auth0 CDN
+`https://cdn.auth0.com/js/auth0-spa-js/<version>/auth0-spa-js.worker.production.js`.
+
+**Note**: The worker is only used when `useRefreshTokens: true`, `cacheLocation: 'memory'`, and the `cache` is not custom.
+

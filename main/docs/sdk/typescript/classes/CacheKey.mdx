@@ -1,0 +1,116 @@
+---
+title: Cache Key
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+## Constructor
+
+### CacheKey()
+
+```typescript
+new CacheKey(data: CacheKeyData, prefix: string, suffix?: string)
+```
+
+#### Parameters
+
+<ResponseField name="data" type="CacheKeyData" required>
+Type: [CacheKeyData](/docs/sdk/typescript/types/CacheKeyData)
+</ResponseField>
+
+<ResponseField name="prefix" type="string" required>
+</ResponseField>
+
+<ResponseField name="suffix" type="string">
+</ResponseField>
+
+#### Returns
+
+`CacheKey`
+
+## Properties
+
+### audience
+
+```typescript
+audience: string
+```
+
+### clientId
+
+```typescript
+clientId: string
+```
+
+### prefix
+
+```typescript
+prefix: string
+```
+
+### scope
+
+```typescript
+scope: string
+```
+
+### suffix
+
+```typescript
+suffix: string
+```
+
+## Methods
+
+### fromCacheEntry()
+
+```typescript
+fromCacheEntry(entry: CacheEntry): CacheKey
+```
+
+Utility function to build a `CacheKey` instance from a cache entry
+
+#### Parameters
+
+<ResponseField name="entry" type="CacheEntry" required>
+The entry
+
+Type: [CacheEntry](/docs/sdk/typescript/types/CacheEntry)
+</ResponseField>
+
+#### Returns
+
+`CacheKey`
+
+### fromKey()
+
+```typescript
+fromKey(key: string): CacheKey
+```
+
+Converts a cache key string into a `CacheKey` instance.
+
+#### Parameters
+
+<ResponseField name="key" type="string" required>
+The key to convert
+</ResponseField>
+
+#### Returns
+
+`CacheKey`
+
+### toKey()
+
+```typescript
+toKey(): string
+```
+
+Converts this `CacheKey` instance into a string for use in a cache
+
+#### Returns
+
+`string`
+

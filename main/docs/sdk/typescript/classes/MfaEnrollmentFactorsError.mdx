@@ -1,0 +1,61 @@
+---
+title: Mfa Enrollment Factors Error
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+
+<SdkReferenceTags />
+
+*Error thrown when getting enrollment factors fails.*
+
+## Constructor
+
+### MfaEnrollmentFactorsError()
+
+```typescript
+new MfaEnrollmentFactorsError(error: string, error_description: string)
+```
+
+#### Parameters
+
+<ResponseField name="error" type="string" required>
+</ResponseField>
+
+<ResponseField name="error_description" type="string" required>
+</ResponseField>
+
+#### Returns
+
+`MfaEnrollmentFactorsError`
+
+## Properties
+
+### error
+
+```typescript
+error: string
+```
+
+### error_description
+
+```typescript
+error_description: string
+```
+
+## Methods
+
+### fromPayload()
+
+```typescript
+fromPayload(__namedParameters: object): MfaError
+```
+
+#### Parameters
+
+<ResponseField name="__namedParameters" type="object" required>
+</ResponseField>
+
+#### Returns
+
+`MfaError`
+
