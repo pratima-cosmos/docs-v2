@@ -3,8 +3,14 @@ title: create Auth0 Client
 ---
 
 import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+import { SdkLibrarySelector } from "/snippets/SdkLibrarySelector.jsx";
+import { SdkVersionSelector } from "/snippets/SdkVersionSelector.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
 
 <SdkReferenceTags />
+<SdkLibrarySelector />
+<SdkVersionSelector />
+<SdkNavActiveColor />
 
 ```typescript
 createAuth0Client(options: Auth0ClientOptions & object): Promise<Auth0Client>

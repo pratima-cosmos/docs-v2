@@ -4,6 +4,9 @@ description: Browse the available Auth0 SDKs and libraries to integrate Auth0 in
 ---
 import {sdkCardInfo} from "/snippets/sdks/versions.mdx";
 import {SectionCard} from "/snippets/SectionsWithCards.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
+
+<SdkNavActiveColor />
 
 Auth0 SDK libraries make it easy for developers to integrate and interact with Auth0. Explore any library on GitHub, download a sample application, or use a quickstart for customized help.
 
@@ -39,6 +42,8 @@ Have a traditional web application that runs on a server? Auth0 maintains these 
   <SectionCard item={sdkCardInfo["Java MVC"]} />
   <SectionCard item={sdkCardInfo["Java EE"]} />
   <SectionCard item={sdkCardInfo["Hono"]} />
+  <SectionCard item={sdkCardInfo["TanStack"]} />
+  <SectionCard item={sdkCardInfo["React Router"]} />
 </Columns>
 
 ## Backend Service and API SDK Libraries

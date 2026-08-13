@@ -124,10 +124,21 @@ export const SdkReferenceTags = () => {
 
     tagLinks();
 
+    // Scoped to the sidebar element itself, not document.body: watching the
+    // whole page meant any unrelated DOM change anywhere - including the
+    // "On this page" TOC toggling its active heading while scrolling - fired
+    // this and re-scanned every one of the 143 tagged links each time. That
+    // repeated, expensive re-scan during scroll is what produced the
+    // blank/whitewashed flash in the sidebar. The sidebar element itself
+    // changes far less often (new content, section expand/collapse), so
+    // watching just that is enough to still catch lazily-rendered sections.
+    var sidebarEl = document.getElementById("sidebar-content");
     var observer = new MutationObserver(function () {
       tagLinks();
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+    if (sidebarEl) {
+      observer.observe(sidebarEl, { childList: true, subtree: true });
+    }
 
     return function () {
       observer.disconnect();
