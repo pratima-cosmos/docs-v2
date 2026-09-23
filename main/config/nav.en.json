@@ -48,22 +48,6 @@
       "$ref": "./navigation/platform.json"
     },
     {
-      "tab": "SDKs",
-      "icon": "/icons/sdks.svg",
-      "menu": [
-        {
-          "item": "SDK Libraries",
-          "icon": "/icons/sdks.svg",
-          "$ref": "./navigation/sdk-libraries.json"
-        },
-        {
-          "item": "SDK Reference",
-          "icon": "/icons/sdk-reference.svg",
-          "$ref": "./navigation/generated/spa-js-reference.en.json"
-        }
-      ]
-    },
-    {
       "tab": "Dev Tools",
       "icon": "/icons/dev-tools.svg",
       "menu": [
@@ -71,6 +55,11 @@
           "item": "APIs",
           "icon": "/icons/apis.svg",
           "$ref": "./navigation/apis.json"
+        },
+        {
+          "item": "SDK Libraries",
+          "icon": "/icons/sdks.svg",
+          "$ref": "./navigation/sdk-libraries.json"
         },
         {
           "item": "Events Catalog",

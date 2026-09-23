@@ -1,0 +1,162 @@
+---
+description: Describes the Auth0 SDK for Vue Single Page Apps
+title: Auth0 Vue SDK for Single Page Apps
+---
+
+The Auth0 Vue SDK (auth0-vue) is a JavaScript library for implementing authentication and authorization in Vue apps with Auth0. It provides a plugin and composable so you can secure Vue apps using best practices while writing less code.
+
+The Auth0 Vue SDK handles grant and protocol details, token expiration and renewal, as well as token storage and caching. Under the hood, it implements [Universal Login](/docs/authenticate/login/auth0-universal-login) and the [Authorization Code Grant Flow with PKCE](/docs/get-started/authentication-and-authorization-flow/authorization-code-flow-with-pkce).
+
+The library is [hosted on GitHub](https://github.com/auth0/auth0-vue) where you can [read more about the API](https://auth0.github.io/auth0-vue/).
+
+## Installation
+
+<Callout icon="file-lines" color="#0EA5E9" iconType="regular">
+
+The Vue SDK is compatible with Vue 3.x and newer.
+
+</Callout>
+
+You have a few options for using auth0-vue in your project.
+
+* From [npm](https://npmjs.org/):
+
+  `npm install @auth0/auth0-vue`
+* From [yarn](https://yarnpkg.com/):
+  `yarn add @auth0/auth0-vue`
+
+## Getting started
+
+Register the Auth0 plugin when you create your Vue app:
+
+```typescript src/main.ts lines
+import { createApp } from 'vue'
+import { createAuth0 } from '@auth0/auth0-vue'
+import App from './App.vue'
+
+const app = createApp(App)
+
+app.use(createAuth0({
+  domain: '{yourDomain}',
+  clientId: 'YOUR_AUTH0_CLIENT_ID',
+  authorizationParams: {
+    redirect_uri: window.location.origin
+  }
+}))
+
+app.mount('#app')
+```
+
+## Login
+
+Use the `useAuth0` composable to access `loginWithRedirect` and log your users in.
+
+```vue lines
+<script setup lang="ts">
+import { useAuth0 } from '@auth0/auth0-vue'
+
+const { loginWithRedirect } = useAuth0()
+</script>
+
+<template>
+  <button @click="loginWithRedirect">Log in</button>
+</template>
+```
+
+## Logout
+
+Use `logout` to log your users out. Make sure `returnTo` is specified in **Allowed Logout URLs** in your <Tooltip tip="Auth0 Dashboard: Auth0's main product to configure your services." cta="View Glossary" href="/docs/glossary?term=Auth0+Dashboard">Auth0 Dashboard</Tooltip>.
+
+```vue lines
+<script setup lang="ts">
+import { useAuth0 } from '@auth0/auth0-vue'
+
+const { logout } = useAuth0()
+
+const handleLogout = () => {
+  logout({
+    logoutParams: {
+      returnTo: window.location.origin
+    }
+  })
+}
+</script>
+
+<template>
+  <button @click="handleLogout">Log out</button>
+</template>
+```
+
+## Authentication State and User Profile
+
+The authentication state and user profile are exposed as reactive refs from `useAuth0`:
+
+```vue lines
+<script setup lang="ts">
+import { useAuth0 } from '@auth0/auth0-vue'
+
+const { isAuthenticated, user } = useAuth0()
+</script>
+
+<template>
+  <div v-if="isAuthenticated">
+    <p>{{ user.name }}</p>
+    <p>{{ user.email }}</p>
+  </div>
+</template>
+```
+
+## Protect a route
+
+Protect a route using the `authGuard` navigation guard from Vue Router. Visits to this route when unauthenticated will redirect the user to the login page and back to this page after login.
+
+```typescript src/router/index.ts lines
+import { createRouter, createWebHistory } from 'vue-router'
+import { authGuard } from '@auth0/auth0-vue'
+import Profile from '../views/Profile.vue'
+
+const routes = [
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    beforeEnter: authGuard
+  }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
+
+export default router
+```
+
+## Call an API
+
+To call a protected API with an <Tooltip tip="Access Token: Authorization credential, in the form of an opaque string or JWT, used to access an API." cta="View Glossary" href="/docs/glossary?term=Access+Token">Access Token</Tooltip>, specify the `audience` and `scope` in `createAuth0` or `getAccessTokenSilently`, then use the token to call your API.
+
+```vue lines
+<script setup lang="ts">
+import { useAuth0 } from '@auth0/auth0-vue'
+
+const { getAccessTokenSilently } = useAuth0()
+
+const callApi = async () => {
+  const token = await getAccessTokenSilently({
+    authorizationParams: {
+      audience: 'https://api.example.com/',
+      scope: 'read:posts'
+    }
+  })
+
+  const response = await fetch('https://api.example.com/posts', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return response.json()
+}
+</script>
+```
