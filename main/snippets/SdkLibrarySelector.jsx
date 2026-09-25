@@ -9,40 +9,35 @@ export const SdkLibrarySelector = () => {
       {
         name: "auth0-spa-js",
         versions: [
-          { version: "2.27.0", status: "live" },
-          { version: "2.26.0", status: "live" }
+          { version: "2.27.0", status: "live" }
         ],
         selectedVersionIndex: 0
       },
       {
         name: "auth0-react",
         versions: [
-          { version: "2.27.0", status: "live" },
-          { version: "2.26.0", status: "live" }
+          { version: "2.27.0", status: "live" }
         ],
         selectedVersionIndex: 0
       },
       {
         name: "auth0-angular",
         versions: [
-          { version: "2.9.0", status: "live" },
-          { version: "2.8.0", status: "live" }
+          { version: "2.9.0", status: "live" }
         ],
         selectedVersionIndex: 0
       },
       {
         name: "auth0-vue",
         versions: [
-          { version: "2.3.1", status: "live" },
-          { version: "2.2.1", status: "live" }
+          { version: "2.3.1", status: "live" }
         ],
         selectedVersionIndex: 0
       },
       {
         name: "ACUL",
         versions: [
-          { version: "1.6.0", status: "live" },
-          { version: "1.0.0", status: "deprecated" }
+          { version: "1.6.0", status: "live" }
         ],
         selectedVersionIndex: 0
       }
@@ -276,38 +271,47 @@ export const SdkLibrarySelector = () => {
     function renderPanel() {
       panel.innerHTML = "";
       LIBRARIES.forEach(function (lib, idx) {
-        var isSelectedLibrary =
-          activeSelection.kind === "library" && activeSelection.libIdx === idx;
+        var isSelected = selectedIndex === idx;
+        var ver = lib.versions[lib.selectedVersionIndex];
 
-        var group = document.createElement("div");
-        group.style.padding = "0.4rem 0.5rem";
-        group.style.borderRadius = "0.5rem";
-        group.style.background = "transparent";
+        var row = document.createElement("button");
+        row.type = "button";
+        row.style.display = "flex";
+        row.style.alignItems = "center";
+        row.style.gap = "0.6rem";
+        row.style.width = "100%";
+        row.style.padding = "0.3rem 0.5rem";
+        row.style.borderRadius = "0.5rem";
+        row.style.border = "none";
+        row.style.background = isSelected ? "rgba(109, 91, 208, 0.1)" : "transparent";
+        row.style.cursor = "pointer";
+        row.style.textAlign = "left";
 
-        var groupHeader = document.createElement("div");
-        groupHeader.style.display = "flex";
-        groupHeader.style.alignItems = "center";
-        groupHeader.style.gap = "0.6rem";
-        groupHeader.style.marginBottom = "0.3rem";
-        groupHeader.style.borderRadius = "0.4rem";
-        groupHeader.style.padding = "0.2rem 0.3rem";
-        groupHeader.style.background = isSelectedLibrary ? "rgba(109, 91, 208, 0.1)" : "transparent";
+        var rowText = document.createElement("div");
+        rowText.style.minWidth = "0";
 
-        var rowName = document.createElement("a");
-        rowName.href = "#";
+        var rowName = document.createElement("div");
         rowName.textContent = lib.name;
         rowName.style.fontSize = "0.85rem";
         rowName.style.fontWeight = "600";
-        rowName.style.textDecoration = "none";
-        rowName.style.display = "inline-block";
-        if (isSelectedLibrary) {
+        if (isSelected) {
           rowName.style.color = "#6d5bd0";
         } else {
           rowName.className = "text-gray-900 dark:text-gray-100";
         }
 
-        rowName.addEventListener("click", function (e) {
-          e.preventDefault();
+        var rowVersion = document.createElement("div");
+        rowVersion.textContent = "version: v" + ver.version;
+        rowVersion.className = "text-gray-500 dark:text-gray-400";
+        rowVersion.style.fontSize = "0.75rem";
+
+        rowText.appendChild(rowName);
+        rowText.appendChild(rowVersion);
+
+        row.appendChild(makeIcon(lib));
+        row.appendChild(rowText);
+
+        row.addEventListener("click", function (e) {
           e.stopPropagation();
           selectedIndex = idx;
           activeSelection = { kind: "library", libIdx: idx, verIdx: null };
@@ -317,77 +321,7 @@ export const SdkLibrarySelector = () => {
           renderDummyPreview(lib);
         });
 
-        groupHeader.appendChild(makeIcon(lib));
-        groupHeader.appendChild(rowName);
-        group.appendChild(groupHeader);
-
-        var versionList = document.createElement("div");
-        versionList.style.display = "flex";
-        versionList.style.flexDirection = "column";
-        versionList.style.gap = "0.2rem";
-        // Icon (2rem) + groupHeader gap (0.6rem) puts the library name's
-        // text at 2.6rem from this column's left edge; vRow below adds its
-        // own 0.5rem left padding, so 2.1rem here lines the version text up
-        // under that same starting letter instead of drifting further right.
-        versionList.style.padding = "0 0.5rem 0 2.1rem";
-
-        lib.versions.forEach(function (v, vIdx) {
-          var isSelectedVersion =
-            activeSelection.kind === "version" &&
-            activeSelection.libIdx === idx &&
-            activeSelection.verIdx === vIdx;
-          var vRow = document.createElement("button");
-          vRow.type = "button";
-          vRow.style.display = "flex";
-          vRow.style.alignItems = "center";
-          vRow.style.justifyContent = "space-between";
-          vRow.style.gap = "0.4rem";
-          vRow.style.width = "100%";
-          vRow.style.padding = "0.3rem 0.5rem";
-          vRow.style.borderRadius = "0.4rem";
-          vRow.style.border = "none";
-          vRow.style.background = isSelectedVersion ? "rgba(109, 91, 208, 0.1)" : "transparent";
-          vRow.style.fontSize = "0.75rem";
-          vRow.style.cursor = "pointer";
-          vRow.style.textAlign = "left";
-
-          var vLeft = document.createElement("span");
-          vLeft.style.display = "flex";
-          vLeft.style.alignItems = "center";
-          vLeft.style.gap = "0.4rem";
-
-          var vLabel = document.createElement("span");
-          vLabel.textContent = "version: v" + v.version;
-          vLabel.className = isSelectedVersion ? "" : "text-gray-900 dark:text-gray-100";
-          if (isSelectedVersion) {
-            vLabel.style.color = "#6d5bd0";
-          }
-          vLeft.appendChild(vLabel);
-          vRow.appendChild(vLeft);
-
-          if (isSelectedVersion) {
-            var check = document.createElement("span");
-            check.style.color = "#6d5bd0";
-            check.style.display = "flex";
-            check.style.flexShrink = "0";
-            check.innerHTML = CHECK_ICON;
-            vRow.appendChild(check);
-          }
-
-          vRow.addEventListener("click", function (e) {
-            e.stopPropagation();
-            lib.selectedVersionIndex = vIdx;
-            selectedIndex = idx;
-            activeSelection = { kind: "version", libIdx: idx, verIdx: vIdx };
-            panel.style.display = "none";
-            renderTrigger();
-            renderPanel();
-            renderDummyPreview(lib);
-          });
-          versionList.appendChild(vRow);
-        });
-        group.appendChild(versionList);
-        panel.appendChild(group);
+        panel.appendChild(row);
       });
     }
 
