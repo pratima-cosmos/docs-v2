@@ -1,0 +1,19 @@
+---
+title: Refresh Token Mode
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
+
+<SdkReferenceTags />
+<SdkNavActiveColor />
+
+*The refresh-token variant used when `useRefreshTokens: true`.
+
+- `RefreshTokenMode.Offline` (default): rotating offline refresh tokens.
+- `RefreshTokenMode.Online`: non-rotating Online Refresh Tokens (ORTs).*
+
+```typescript
+type RefreshTokenMode = object
+```
+

@@ -1,0 +1,38 @@
+---
+title: Challenge Response
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
+
+<SdkReferenceTags />
+<SdkNavActiveColor />
+
+*Response from initiating an MFA challenge*
+
+## Properties
+
+### bindingMethod
+
+```typescript
+bindingMethod: string
+```
+
+Binding method for OOB (e.g., 'prompt')
+
+### challengeType
+
+```typescript
+challengeType: "otp" | "oob"
+```
+
+Type of challenge created
+
+### oobCode
+
+```typescript
+oobCode: string
+```
+
+Out-of-band code (for OOB challenges)
+

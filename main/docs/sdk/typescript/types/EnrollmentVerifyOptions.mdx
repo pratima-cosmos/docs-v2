@@ -1,0 +1,16 @@
+---
+title: Enrollment Verify Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
+
+<SdkReferenceTags />
+<SdkNavActiveColor />
+
+*Type: [EmailEnrollmentVerifyOptions](/docs/sdk/typescript/interfaces/EmailEnrollmentVerifyOptions), [PasskeyEnrollmentVerifyOptions](/docs/sdk/typescript/interfaces/PasskeyEnrollmentVerifyOptions), [PasswordEnrollmentVerifyOptions](/docs/sdk/typescript/interfaces/PasswordEnrollmentVerifyOptions), [PhoneEnrollmentVerifyOptions](/docs/sdk/typescript/interfaces/PhoneEnrollmentVerifyOptions), [PushNotificationEnrollmentVerifyOptions](/docs/sdk/typescript/interfaces/PushNotificationEnrollmentVerifyOptions), [RecoveryCodeEnrollmentVerifyOptions](/docs/sdk/typescript/interfaces/RecoveryCodeEnrollmentVerifyOptions), [TotpEnrollmentVerifyOptions](/docs/sdk/typescript/interfaces/TotpEnrollmentVerifyOptions)*
+
+```typescript
+type EnrollmentVerifyOptions = PasskeyEnrollmentVerifyOptions | PhoneEnrollmentVerifyOptions | EmailEnrollmentVerifyOptions | TotpEnrollmentVerifyOptions | PushNotificationEnrollmentVerifyOptions | RecoveryCodeEnrollmentVerifyOptions | PasswordEnrollmentVerifyOptions
+```
+

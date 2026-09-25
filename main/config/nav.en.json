@@ -57,7 +57,7 @@
           "$ref": "./navigation/apis.json"
         },
         {
-          "item": "SDKs",
+          "item": "SDK Libraries",
           "icon": "/icons/sdks.svg",
           "$ref": "./navigation/sdk-libraries.json"
         },

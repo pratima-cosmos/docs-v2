@@ -1,0 +1,18 @@
+---
+title: Enrollment Response
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
+
+<SdkReferenceTags />
+<SdkNavActiveColor />
+
+*Union type for all enrollment response types
+
+Type: [OobEnrollmentResponse](/docs/sdk/typescript/interfaces/OobEnrollmentResponse), [OtpEnrollmentResponse](/docs/sdk/typescript/interfaces/OtpEnrollmentResponse)*
+
+```typescript
+type EnrollmentResponse = OtpEnrollmentResponse | OobEnrollmentResponse
+```
+

@@ -388,6 +388,7 @@ export const SectionCard = ({ item }) => {
   const sample = getLink(item, "sample app");
   const quickstart = getLink(item, "quickstart");
   const docs = getLink(item, "Get started");
+  const reference = getLink(item, "reference");
 
   const title = item?.name ?? "";
   const subtext = item?.subtext ?? "";
@@ -465,17 +466,17 @@ export const SectionCard = ({ item }) => {
 
       <div className="px-4 md:px-5 pt-3 pb-4">
         <div className="flex flex-col gap-3 w-full">
-          <div className="libraries_cards flex items-center w-full gap-5">
+          <div className="libraries_cards flex items-center justify-between w-full">
             {github && (
               <a
                 href={github.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="no_external_icon inline-flex flex-1 items-center gap-1.5 text-sm font-medium !text-black dark:!text-white !no-underline !border-0 transition-colors duration-200 hover:!text-neutral-700 dark:hover:!text-neutral-200 h-6"
+                className="no_external_icon inline-flex items-center gap-1.5 text-sm font-medium !text-black dark:!text-white !no-underline !border-0 transition-colors duration-200 hover:!text-neutral-700 dark:hover:!text-neutral-200 h-6"
                 style={{ borderBottom: "none !important" }}
               >
                 <Icon icon="github" className="w-3 h-3 shrink-0" />
-                <span className="w-full">Github</span>
+                <span>Github</span>
               </a>
             )}
 
@@ -484,28 +485,48 @@ export const SectionCard = ({ item }) => {
                 href={sample.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="no_external_icon inline-flex flex-1 items-center gap-1.5 text-sm font-medium !text-black dark:!text-white !no-underline !border-0 transition-colors duration-200 hover:!text-neutral-700 dark:hover:!text-neutral-200 h-6"
+                className="no_external_icon inline-flex items-center gap-1.5 text-sm font-medium !text-black dark:!text-white !no-underline !border-0 transition-colors duration-200 hover:!text-neutral-700 dark:hover:!text-neutral-200 h-6 ml-auto"
                 style={{ borderBottom: "none !important" }}
               >
                 <Icon icon="download" className="w-3 h-3 shrink-0" />
-                <span className="w-full">Sample App</span>
+                <span>Sample App</span>
               </a>
             )}
           </div>
 
-          {tertiary && (
-            <a
-              href={tertiary.url}
-              className="no_external_icon inline-flex flex-1 items-center gap-1.5 text-sm font-medium !text-black dark:!text-white !no-underline !border-0 transition-colors duration-200 hover:!text-neutral-700 dark:hover:!text-neutral-200 h-6"
-              style={{ borderBottom: "none !important" }}
-            >
-              {tertiaryLabel === "Quickstart" ? (
-                <Icon icon="play" className="w-3 h-3 shrink-0" />
-              ) : (
-                <Icon icon="file-lines" className="w-3 h-3 shrink-0" />
+          {(tertiary || reference) && (
+            <div className="flex items-center justify-between w-full">
+              {tertiary && (
+                <a
+                  href={tertiary.url}
+                  className="no_external_icon inline-flex items-center gap-1.5 text-sm font-medium !text-black dark:!text-white !no-underline !border-0 transition-colors duration-200 hover:!text-neutral-700 dark:hover:!text-neutral-200 h-6"
+                  style={{ borderBottom: "none !important" }}
+                >
+                  {tertiaryLabel === "Quickstart" ? (
+                    <Icon icon="play" className="w-3 h-3 shrink-0" />
+                  ) : (
+                    <Icon icon="file-lines" className="w-3 h-3 shrink-0" />
+                  )}
+                  <span>{tertiaryLabel}</span>
+                </a>
               )}
-              <span className="w-full">{tertiaryLabel}</span>
-            </a>
+
+              {reference && (
+                <a
+                  href={reference.url}
+                  className="no_external_icon inline-flex items-center gap-1.5 text-sm font-medium !text-black dark:!text-white !no-underline !border-0 transition-colors duration-200 hover:!text-neutral-700 dark:hover:!text-neutral-200 h-6 ml-auto"
+                  style={{ borderBottom: "none !important" }}
+                >
+                  <img
+                    noZoom
+                    src="/icons/sdk-reference.svg"
+                    alt=""
+                    className="size-4 shrink-0"
+                  />
+                  <span>Reference</span>
+                </a>
+              )}
+            </div>
           )}
         </div>
       </div>

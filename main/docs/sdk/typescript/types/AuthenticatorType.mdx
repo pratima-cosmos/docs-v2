@@ -1,0 +1,17 @@
+---
+title: Authenticator Type
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
+
+<SdkReferenceTags />
+<SdkNavActiveColor />
+
+*Supported authenticator types.
+Note: Email authenticators use 'oob' type with oobChannel: 'email'*
+
+```typescript
+type AuthenticatorType = "otp" | "oob" | "recovery-code"
+```
+

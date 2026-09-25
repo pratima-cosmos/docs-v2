@@ -1,0 +1,17 @@
+---
+title: Oob Channel
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
+
+<SdkReferenceTags />
+<SdkNavActiveColor />
+
+*Out-of-band delivery channels.
+Includes 'email' which is also delivered out-of-band.*
+
+```typescript
+type OobChannel = "sms" | "voice" | "auth0" | "email"
+```
+

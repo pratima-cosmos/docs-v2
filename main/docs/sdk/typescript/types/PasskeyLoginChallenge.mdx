@@ -1,0 +1,19 @@
+---
+title: Passkey Login Challenge
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
+
+<SdkReferenceTags />
+<SdkNavActiveColor />
+
+*A passkey login challenge ready for the WebAuthn ceremony.
+
+`publicKey` is decoded (base64url → ArrayBuffer) and can be fed directly into
+a WebAuthn assertion ceremony . `authSession` must be retained and passed to `getTokenWithPasskey()`.*
+
+```typescript
+type PasskeyLoginChallenge = object
+```
+

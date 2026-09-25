@@ -1,0 +1,19 @@
+---
+title: Passkey Signup Challenge Options
+---
+
+import { SdkReferenceTags } from "/snippets/SdkReferenceTags.jsx";
+import { SdkNavActiveColor } from "/snippets/SdkNavActiveColor.jsx";
+
+<SdkReferenceTags />
+<SdkNavActiveColor />
+
+*Options for requesting a passkey signup challenge.
+
+At least one user identifier (`email`, `username`, or `phoneNumber`) must be provided.
+Which identifiers are accepted depends on what is configured on your database connection.*
+
+```typescript
+type PasskeySignupChallengeOptions = PasskeySignupChallengeBaseOptions & object | object | object
+```
+
